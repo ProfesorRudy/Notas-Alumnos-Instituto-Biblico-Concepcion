@@ -32,10 +32,37 @@ button:hover { background: #d4891a; }
 .btn-salir { background: none; color: #999; border: 1px solid #ddd; font-size: 0.78rem; padding: 6px 12px; margin-left: auto; }
 .btn-salir:hover { background: #f5f5f5; color: #555; }
 
-.menu-tabs { display: flex; gap: 8px; margin: 1.25rem 0; }
-.tab { flex: 1; padding: 11px 8px; border: 1.5px solid #ddd; border-radius: 10px; background: #fff; color: #888; font-size: 0.85rem; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.2s; }
+.menu-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 1.25rem 0; }
+.tab { padding: 10px 6px; border: 1.5px solid #ddd; border-radius: 10px; background: #fff; color: #888; font-size: 0.78rem; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.2s; line-height: 1.3; }
 .tab:hover { border-color: #f5a623; background:#fff; }
 .tab.active { border-color: #f5a623; background: #fff4e0; color: #d4891a; }
+
+/* Asistencia */
+.asistencia-summary { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 12px 16px; margin-bottom: 10px; }
+.asistencia-pct { font-size: 1.35rem; font-weight: 700; }
+.asistencia-log { display: flex; flex-wrap: wrap; gap: 6px; }
+.asistencia-chip { font-size: 0.74rem; font-weight: 600; padding: 5px 10px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; min-width: 62px; }
+.asistencia-chip .fecha { font-size: 0.68rem; font-weight: 400; opacity: 0.75; margin-bottom: 1px; }
+.presente { background: #e6f9f0; color: #1a9e5c; }
+.ausente { background: #fff0f0; color: #c0392b; }
+.atraso { background: #fff8e1; color: #e67e22; }
+
+/* Observaciones y Avisos (lista general) */
+.aviso-item { background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
+.aviso-fecha { font-size: 0.72rem; color: #aaa; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
+.aviso-titulo { font-size: 0.9rem; font-weight: 700; color: #1a1a2e; margin-bottom: 3px; }
+.aviso-texto { font-size: 0.84rem; color: #555; line-height: 1.4; }
+.sin-avisos { font-size: 0.83rem; color: #aaa; text-align: center; padding: 20px 10px; }
+
+/* Horario */
+.horario-row { display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; flex-wrap: wrap; }
+.horario-dia { font-size: 0.85rem; font-weight: 700; color: #1a1a2e; min-width: 78px; }
+.horario-hora { font-size: 0.82rem; color: #666; }
+.modalidad-badge { font-size: 0.72rem; font-weight: 700; padding: 4px 10px; border-radius: 99px; margin-left: auto; }
+.presencial { background: #eaf1ff; color: #2b6cb0; }
+.online { background: #f3e8ff; color: #8033c9; }
+.hibrido { background: #fff4e0; color: #d4891a; }
+.horario-lugar { font-size: 0.78rem; color: #999; width: 100%; }
 
 .curso-card { background: #f8f9fc; border-radius: 12px; padding: 1.1rem 1.2rem; margin-bottom: 14px; }
 .curso-titulo { display:flex; align-items:center; gap:8px; font-size: 0.95rem; font-weight: 700; color: #1a1a2e; margin-bottom: 0.85rem; }
@@ -105,12 +132,20 @@ a.btn-descargar:hover { background: #d4891a; }
     </div>
 
     <div class="menu-tabs">
-      <div class="tab active" id="tab-materiales" onclick="mostrarSeccion('materiales')">📚 Materias y Materiales</div>
-      <div class="tab" id="tab-notas" onclick="mostrarSeccion('notas')">📊 Mis Calificaciones</div>
+      <div class="tab active" id="tab-materiales" onclick="mostrarSeccion('materiales')">📚 Materias y<br>Materiales</div>
+      <div class="tab" id="tab-notas" onclick="mostrarSeccion('notas')">📊 Mis<br>Calificaciones</div>
+      <div class="tab" id="tab-asistencia" onclick="mostrarSeccion('asistencia')">🗓️ Mi<br>Asistencia</div>
+      <div class="tab" id="tab-observaciones" onclick="mostrarSeccion('observaciones')">📝<br>Observaciones</div>
+      <div class="tab" id="tab-avisos" onclick="mostrarSeccion('avisos')">📢 Avisos<br>Generales</div>
+      <div class="tab" id="tab-horario" onclick="mostrarSeccion('horario')">🕒 Horario y<br>Modalidad</div>
     </div>
 
     <div id="seccion-materiales"></div>
     <div id="seccion-notas" style="display:none;"></div>
+    <div id="seccion-asistencia" style="display:none;"></div>
+    <div id="seccion-observaciones" style="display:none;"></div>
+    <div id="seccion-avisos" style="display:none;"></div>
+    <div id="seccion-horario" style="display:none;"></div>
   </div>
 
 </div>
@@ -149,7 +184,76 @@ const alumnos = {
   "8.188.445-5": { nombre: "Sergio Guillermo Rebolledo Gallegos", cursos: { "Filosofía Moderna": { t1: 100, t2: null, ex: null } } },
   "10.040.390-0": { nombre: "Urzula Torres Torres", cursos: { "Filosofía Moderna": { t1: 100, t2: null, ex: null } } },
   "11.986.425-9": { nombre: "María Soledad Ubilla Mendoza", cursos: { "Filosofía Moderna": { t1: 80, t2: null, ex: null } } },
-  "10.544.296-3": { nombre: "Nelson Arismendi Ojeda", cursos: { "Filosofía Moderna": { t1: 80, t2: null, ex: null } } }
+  "10.544.296-3": { nombre: "Nelson Arismendi Ojeda", cursos: { "Filosofía Moderna": { t1: 80, t2: null, ex: null } } },
+  "23.502.993-6": { nombre: "Avila Nieto, Angela", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "11.452.141-8": { nombre: "Barra Barra, Mónica", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "16.038.613-4": { nombre: "Caamaño Correa, Stephanie", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "17.853.309-6": { nombre: "Cerda Quintana, Valeska", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "12.182.346-2": { nombre: "Córdova Cáceres, Cristián", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "12.703.841-4": { nombre: "Flores Cabrera, Carlos", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "21.216.524-7": { nombre: "Foreman Higuera, Jaime", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "14.051.047-5": { nombre: "Gonzalez Alfaro, Oscar", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "14.272.037-K": { nombre: "Gutiérrez Zapata, Marcela", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "13.601.474-9": { nombre: "Jimenez Riquelme, Lisset", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "16.513.840-6": { nombre: "Lepe Delgado, Esteban", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "9.781.940-8": { nombre: "Líbano Escobar, Sonia", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "20.116.717-5": { nombre: "López Novoa, Gerson", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "28.474.255-9": { nombre: "Martinez Vera, Carlos", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "21.165.197-0": { nombre: "Morales Concha, Gerald", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "16.012.222-6": { nombre: "Nova Palma, Claudio", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "15.193.496-K": { nombre: "Quinchavil Cid, Noemí", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "14.341.897-9": { nombre: "Ramirez Yañe, Valeria", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "20.020.152-3": { nombre: "Ramírez Vergara, Juan", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "18.804.372-0": { nombre: "Riquelme Valenzuela, Gerson", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "17.182.577-6": { nombre: "Ruminot Muñoz, Elizabeth", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "9.950.138-3": { nombre: "Sagredo Leon, Eliana", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "22.616.202-K": { nombre: "Segura Muñoz, Dante", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "11.708.911-8": { nombre: "Vidal Shaw, Gerly", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } },
+  "16.965.915-K": { nombre: "Yañez Vasquez, Alvaro", cursos: { "Ética del A.T.": { t1: null, t2: null, ex: null } } }
+};
+
+/* =====================================================================
+   3b) ASISTENCIA  (agrega o edita aquí)
+   Formato: "RUT": { "Nombre curso": [ {fecha:"DD-MM-AAAA", estado:"Presente"|"Ausente"|"Atraso"}, ... ] }
+   Si un alumno no tiene registros aún, simplemente no lo agregues (o deja el arreglo vacío []).
+   ===================================================================== */
+const asistencia = {
+  "17.615.853-0": { "Introducción A.T.": [
+    { fecha: "07-04-2026", estado: "Presente" },
+    { fecha: "14-04-2026", estado: "Presente" },
+    { fecha: "21-04-2026", estado: "Atraso" },
+    { fecha: "28-04-2026", estado: "Ausente" }
+  ] },
+  "15.865.472-5": { "Filosofía Moderna": [
+    { fecha: "08-04-2026", estado: "Presente" },
+    { fecha: "15-04-2026", estado: "Presente" },
+    { fecha: "22-04-2026", estado: "Presente" }
+  ] }
+};
+
+/* =====================================================================
+   3c) OBSERVACIONES  (mismas para todos los alumnos)
+   ===================================================================== */
+const observaciones = [
+  { fecha: "20-06-2026", texto: "Recuerden que las tareas atrasadas solo se reciben hasta el viernes de cada semana." },
+  { fecha: "02-06-2026", texto: "Buen desempeño general del curso en la primera unidad. ¡Sigan así!" }
+];
+
+/* =====================================================================
+   3d) AVISOS GENERALES  (mismos para todos los alumnos)
+   ===================================================================== */
+const avisos = [
+  { fecha: "28-06-2026", titulo: "Receso de invierno", texto: "No habrá clases entre el 13 y el 17 de julio. Se reanudan el 20 de julio." },
+  { fecha: "10-06-2026", titulo: "Cambio de sala", texto: "Las clases de Filosofía Moderna se trasladan a la Sala 2 a partir de la próxima semana." }
+];
+
+/* =====================================================================
+   3e) HORARIO Y MODALIDAD POR CURSO  (agrega o edita aquí)
+   modalidad: "Presencial", "Online" o "Híbrido"
+   ===================================================================== */
+const horarios = {
+  "Introducción A.T.": { dia: "Lunes", hora: "19:00 – 20:30", modalidad: "Presencial", lugar: "Sala 1 · Instituto Bíblico Concepción" },
+  "Filosofía Moderna": { dia: "Miércoles", hora: "19:00 – 20:30", modalidad: "Híbrido", lugar: "Sala 2 · también vía Zoom" }
 };
 
 /* =====================================================================
@@ -169,6 +273,10 @@ const materiales = {
   "Filosofía Moderna": [
     { titulo: "Programa del curso", desc: "Contenidos y calendario del semestre", tipo: "pdf", url: "materiales/filosofia-moderna/programa.pdf" },
     { titulo: "Guía de lectura: Descartes", desc: "Meditaciones Metafísicas · Unidad 1", tipo: "pdf", url: "materiales/filosofia-moderna/descartes.pdf" }
+  ],
+  "Ética del A.T.": [
+    { titulo: "Plan de Curso", desc: "Descripción, evaluación y cronograma · Programa Biblia 2026", tipo: "pdf", url: "materiales/etica-at/plan-de-curso.pdf" },
+    { titulo: "Clase 1: Creación, el carácter de Dios y el Pacto", desc: "Fundamentos de la ética veterotestamentaria", tipo: "pdf", url: "materiales/etica-at/clase-1-creacion-pacto.pdf" }
   ]
 };
 
@@ -198,6 +306,10 @@ function ingresar() {
   document.getElementById('alumno-rut-display').textContent = 'RUT: ' + key;
   renderMateriales();
   renderNotas();
+  renderAsistencia();
+  renderObservaciones();
+  renderAvisos();
+  renderHorario();
   document.getElementById('vista-login').style.display = 'none';
   document.getElementById('vista-panel').style.display = 'block';
   mostrarSeccion('materiales');
@@ -211,11 +323,12 @@ function salir() {
   document.getElementById('rut-input').focus();
 }
 
+const SECCIONES = ['materiales', 'notas', 'asistencia', 'observaciones', 'avisos', 'horario'];
 function mostrarSeccion(sec) {
-  document.getElementById('seccion-materiales').style.display = sec === 'materiales' ? 'block' : 'none';
-  document.getElementById('seccion-notas').style.display = sec === 'notas' ? 'block' : 'none';
-  document.getElementById('tab-materiales').classList.toggle('active', sec === 'materiales');
-  document.getElementById('tab-notas').classList.toggle('active', sec === 'notas');
+  for (const s of SECCIONES) {
+    document.getElementById('seccion-' + s).style.display = (s === sec) ? 'block' : 'none';
+    document.getElementById('tab-' + s).classList.toggle('active', s === sec);
+  }
 }
 
 function renderMateriales() {
@@ -271,6 +384,82 @@ function renderNotas() {
       '</div>';
   }
   html += '<p class="nota-pie">Escala 0 – 100 pts · Nota mínima de aprobación: 60 pts · Las notas "Pendiente" aún no han sido registradas.</p>';
+  cont.innerHTML = html;
+}
+
+function renderAsistencia() {
+  const cont = document.getElementById('seccion-asistencia');
+  const datosAlumno = asistencia[alumnoActual.rut] || {};
+  let html = '';
+  for (const curso of Object.keys(alumnoActual.cursos)) {
+    const registros = datosAlumno[curso] || [];
+    html += '<div class="curso-card"><div class="curso-titulo">📖 ' + curso + '</div>';
+    if (registros.length === 0) {
+      html += '<p class="sin-materiales">Aún no hay registros de asistencia para este curso.</p></div>';
+      continue;
+    }
+    const presentes = registros.filter(r => r.estado === 'Presente').length;
+    const pct = Math.round((presentes / registros.length) * 100);
+    const color = pct >= 75 ? '#1a9e5c' : (pct >= 50 ? '#e67e22' : '#c0392b');
+    html += '<div class="asistencia-summary"><div class="promedio-label">Asistencia registrada</div>' +
+      '<div class="asistencia-pct" style="color:' + color + '">' + pct + '%</div></div>' +
+      '<div class="asistencia-log">';
+    for (const r of registros) {
+      const cls = r.estado === 'Presente' ? 'presente' : (r.estado === 'Atraso' ? 'atraso' : 'ausente');
+      const icono = r.estado === 'Presente' ? '✓' : (r.estado === 'Atraso' ? '⏱' : '✗');
+      html += '<div class="asistencia-chip ' + cls + '"><span class="fecha">' + r.fecha + '</span>' + icono + ' ' + r.estado + '</div>';
+    }
+    html += '</div></div>';
+  }
+  cont.innerHTML = html;
+}
+
+function renderObservaciones() {
+  const cont = document.getElementById('seccion-observaciones');
+  if (observaciones.length === 0) {
+    cont.innerHTML = '<p class="sin-avisos">No hay observaciones publicadas por el momento.</p>';
+    return;
+  }
+  let html = '';
+  for (const o of observaciones) {
+    html += '<div class="aviso-item"><div class="aviso-fecha">' + o.fecha + '</div><div class="aviso-texto">' + o.texto + '</div></div>';
+  }
+  cont.innerHTML = html;
+}
+
+function renderAvisos() {
+  const cont = document.getElementById('seccion-avisos');
+  if (avisos.length === 0) {
+    cont.innerHTML = '<p class="sin-avisos">No hay avisos publicados por el momento.</p>';
+    return;
+  }
+  let html = '';
+  for (const a of avisos) {
+    html += '<div class="aviso-item"><div class="aviso-fecha">' + a.fecha + '</div>' +
+      '<div class="aviso-titulo">' + a.titulo + '</div>' +
+      '<div class="aviso-texto">' + a.texto + '</div></div>';
+  }
+  cont.innerHTML = html;
+}
+
+function renderHorario() {
+  const cont = document.getElementById('seccion-horario');
+  let html = '';
+  for (const curso of Object.keys(alumnoActual.cursos)) {
+    const h = horarios[curso];
+    html += '<div class="curso-card"><div class="curso-titulo">📖 ' + curso + '</div>';
+    if (!h) {
+      html += '<p class="sin-materiales">Aún no hay horario publicado para este curso.</p></div>';
+      continue;
+    }
+    const modCls = h.modalidad === 'Presencial' ? 'presencial' : (h.modalidad === 'Online' ? 'online' : 'hibrido');
+    html += '<div class="horario-row">' +
+      '<div class="horario-dia">' + h.dia + '</div>' +
+      '<div class="horario-hora">' + h.hora + '</div>' +
+      '<span class="modalidad-badge ' + modCls + '">' + h.modalidad + '</span>' +
+      '<div class="horario-lugar">' + h.lugar + '</div>' +
+      '</div></div>';
+  }
   cont.innerHTML = html;
 }
 
