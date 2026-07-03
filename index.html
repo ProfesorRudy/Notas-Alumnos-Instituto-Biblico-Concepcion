@@ -253,7 +253,8 @@ const avisos = [
    ===================================================================== */
 const horarios = {
   "Introducción A.T.": { dia: "Lunes", hora: "19:00 – 20:30", modalidad: "Presencial", lugar: "Sala 1 · Instituto Bíblico Concepción" },
-  "Filosofía Moderna": { dia: "Miércoles", hora: "19:00 – 20:30", modalidad: "Híbrido", lugar: "Sala 2 · también vía Zoom" }
+  "Filosofía Moderna": { dia: "Miércoles", hora: "19:00 – 20:30", modalidad: "Híbrido", lugar: "Sala 2 · también vía Zoom" },
+  "Ética del A.T.": { dia: "Lunes", hora: "19:30 – 22:00 (break 20:30 – 21:00)", modalidad: "Híbrido", lugar: "Sala 1" }
 };
 
 /* =====================================================================
@@ -275,8 +276,9 @@ const materiales = {
     { titulo: "Guía de lectura: Descartes", desc: "Meditaciones Metafísicas · Unidad 1", tipo: "pdf", url: "materiales/filosofia-moderna/descartes.pdf" }
   ],
   "Ética del A.T.": [
-    { titulo: "Plan de Curso", desc: "Descripción, evaluación y cronograma · Programa Biblia 2026", tipo: "pdf", url: "materiales/etica-at/plan-de-curso.pdf" },
-    { titulo: "Clase 1: Creación, el carácter de Dios y el Pacto", desc: "Fundamentos de la ética veterotestamentaria", tipo: "pdf", url: "materiales/etica-at/clase-1-creacion-pacto.pdf" }
+    { titulo: "Plan de Curso", desc: "Descripción, evaluación y cronograma · Programa Biblia 2026", tipo: "pdf", url: "materiales/ética-at/plan-de-curso.pdf" },
+    { titulo: "Clase 1: Creación, el carácter de Dios y el Pacto", desc: "Fundamentos de la ética veterotestamentaria", tipo: "pdf", url: "materiales/ética-at/clase-1-creacion-pacto.pdf" },
+    { titulo: "Bases bíblicas de la ética (Texto guía)", desc: "James E. Giles · Casa Bautista de Publicaciones", tipo: "link", url: "https://1drv.ms/b/c/ebe29fc88bad7c9a/IQAhr_x_B_fcT5XTpkHiXm7LARDUt-jYN7Y-S2cTJSXhq4k?e=14ysOo" }
   ]
 };
 
@@ -341,11 +343,14 @@ function renderMateriales() {
       html += '<p class="sin-materiales">Aún no hay materiales publicados para este curso.</p>';
     } else {
       for (const m of items) {
+        const esLink = m.tipo === 'link';
+        const attrDescarga = esLink ? '' : ' download';
+        const textoBoton = esLink ? '↗ Abrir' : '⬇ Descargar';
         html += '<div class="material-item">' +
           '<div class="material-icon">' + (iconos[m.tipo] || '📄') + '</div>' +
           '<div class="material-info"><div class="material-nombre">' + m.titulo + '</div>' +
           '<div class="material-desc">' + (m.desc || '') + '</div></div>' +
-          '<a class="btn-descargar" href="' + m.url + '" target="_blank" rel="noopener" download>⬇ Descargar</a>' +
+          '<a class="btn-descargar" href="' + m.url + '" target="_blank" rel="noopener"' + attrDescarga + '>' + textoBoton + '</a>' +
           '</div>';
       }
     }
