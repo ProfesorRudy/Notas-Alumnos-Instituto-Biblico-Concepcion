@@ -46,6 +46,7 @@ button:hover { background: #d4891a; }
 .presente { background: #e6f9f0; color: #1a9e5c; }
 .ausente { background: #fff0f0; color: #c0392b; }
 .atraso { background: #fff8e1; color: #e67e22; }
+.media-clase { background: #e0f7fa; color: #00838f; }
 
 /* Observaciones y Avisos (lista general) */
 .aviso-item { background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
@@ -401,15 +402,15 @@ function renderAsistencia() {
       html += '<p class="sin-materiales">Aún no hay registros de asistencia para este curso.</p></div>';
       continue;
     }
-    const presentes = registros.filter(r => r.estado === 'Presente').length;
-    const pct = Math.round((presentes / registros.length) * 100);
+    const puntos = registros.reduce((acc, r) => acc + (r.estado === 'Presente' ? 1 : (r.estado === 'Media clase' ? 0.5 : 0)), 0);
+    const pct = Math.round((puntos / registros.length) * 100);
     const color = pct >= 75 ? '#1a9e5c' : (pct >= 50 ? '#e67e22' : '#c0392b');
     html += '<div class="asistencia-summary"><div class="promedio-label">Asistencia registrada</div>' +
       '<div class="asistencia-pct" style="color:' + color + '">' + pct + '%</div></div>' +
       '<div class="asistencia-log">';
     for (const r of registros) {
-      const cls = r.estado === 'Presente' ? 'presente' : (r.estado === 'Atraso' ? 'atraso' : 'ausente');
-      const icono = r.estado === 'Presente' ? '✓' : (r.estado === 'Atraso' ? '⏱' : '✗');
+      const cls = r.estado === 'Presente' ? 'presente' : (r.estado === 'Atraso' ? 'atraso' : (r.estado === 'Media clase' ? 'media-clase' : 'ausente'));
+      const icono = r.estado === 'Presente' ? '✓' : (r.estado === 'Atraso' ? '⏱' : (r.estado === 'Media clase' ? '◐' : '✗'));
       html += '<div class="asistencia-chip ' + cls + '"><span class="fecha">' + r.fecha + '</span>' + icono + ' ' + r.estado + '</div>';
     }
     html += '</div></div>';
