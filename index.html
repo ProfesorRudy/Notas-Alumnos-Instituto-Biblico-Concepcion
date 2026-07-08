@@ -307,9 +307,12 @@ const observaciones = [
 ];
 
 /* =====================================================================
-   3d) AVISOS GENERALES  (mismos para todos los alumnos)
+   3d) AVISOS GENERALES
+   Agrega "curso: '<nombre del curso>'" para que un aviso solo lo vean los
+   alumnos de ese curso. Sin ese campo, el aviso se muestra a todos.
    ===================================================================== */
 const avisos = [
+  { fecha: "08-07-2026", titulo: "Examen", texto: "El examen será reemplazado por la nota 2 (trabajo en grupo desarrollado en clases). Bendiciones.", curso: "Introducción A.T." }
 ];
 
 /* =====================================================================
@@ -512,12 +515,13 @@ function renderObservaciones() {
 
 function renderAvisos() {
   const cont = document.getElementById('seccion-avisos');
-  if (avisos.length === 0) {
+  const avisosAlumno = avisos.filter(a => !a.curso || Object.keys(alumnoActual.cursos).includes(a.curso));
+  if (avisosAlumno.length === 0) {
     cont.innerHTML = '<p class="sin-avisos">No hay avisos publicados por el momento.</p>';
     return;
   }
   let html = '';
-  for (const a of avisos) {
+  for (const a of avisosAlumno) {
     html += '<div class="aviso-item"><div class="aviso-fecha">' + a.fecha + '</div>' +
       '<div class="aviso-titulo">' + a.titulo + '</div>' +
       '<div class="aviso-texto">' + a.texto + '</div></div>';
