@@ -164,19 +164,19 @@ document.getElementById('logo-ibc').src = LOGO_B64;
    Usa null en las notas que aún no están registradas.
    ===================================================================== */
 const alumnos = {
-  "17.615.853-0": { nombre: "Baeza Espinoza, Marlyn", cursos: { "Introducción A.T.": { t1: null, t2: 100, ex: null } } },
+  "17.615.853-0": { nombre: "Baeza Espinoza, Marlyn", cursos: { "Introducción A.T.": { t1: 97, t2: 100, ex: 100 } } },
   "16.767.543-3": { nombre: "Cifuentes Valdebenito, Jennifer", cursos: { "Introducción A.T.": { t1: 0, t2: 0, ex: 0 } } },
   "20.759.687-6": { nombre: "Faúndez Ramírez, Consuelo", cursos: { "Introducción A.T.": { t1: 0, t2: 0, ex: 0 } } },
-  "11.984.351-0": { nombre: "Gonzalez Contreras, Isabel", cursos: { "Introducción A.T.": { t1: null, t2: 100, ex: null } } },
+  "11.984.351-0": { nombre: "Gonzalez Contreras, Isabel", cursos: { "Introducción A.T.": { t1: 86, t2: 100, ex: 100 } } },
   "13.788.829-7": { nombre: "Jara Arellano, Boris", cursos: { "Introducción A.T.": { t1: 0, t2: 0, ex: 0 } } },
-  "9.718.696-0": { nombre: "Lagos Aburto, Carlos", cursos: { "Introducción A.T.": { t1: null, t2: 100, ex: null } } },
-  "10.458.204-4": { nombre: "Osorio Inzunza, Ana Luz", cursos: { "Introducción A.T.": { t1: null, t2: 100, ex: null } } },
-  "16.416.923-5": { nombre: "Pérez Ayala, Nadixia Evein", cursos: { "Introducción A.T.": { t1: null, t2: 100, ex: null } } },
-  "17.614.372-K": { nombre: "Riquelme Fernández, Herman", cursos: { "Introducción A.T.": { t1: null, t2: 100, ex: null } } },
-  "12.526.537-5": { nombre: "Rojas Nuñez, Griselda", cursos: { "Introducción A.T.": { t1: null, t2: 100, ex: null }, "Ética del Nuevo Testamento": { t1: null, t2: null, ex: null } } },
-  "15.157.909-4": { nombre: "Sánchez Cofré, César", cursos: { "Introducción A.T.": { t1: null, t2: 100, ex: null } } },
-  "6.688.590-9": { nombre: "Sanhueza Ascencio, Marcelo", cursos: { "Introducción A.T.": { t1: null, t2: 100, ex: null } } },
-  "16.690.272-K": { nombre: "Toloza Lozano, Karen", cursos: { "Introducción A.T.": { t1: null, t2: 100, ex: null } } },
+  "9.718.696-0": { nombre: "Lagos Aburto, Carlos", cursos: { "Introducción A.T.": { t1: 72, t2: 100, ex: 100 } } },
+  "10.458.204-4": { nombre: "Osorio Inzunza, Ana Luz", cursos: { "Introducción A.T.": { t1: 97, t2: 100, ex: 100 } } },
+  "16.416.923-5": { nombre: "Pérez Ayala, Nadixia Evein", cursos: { "Introducción A.T.": { t1: 86, t2: 100, ex: 100 } } },
+  "17.614.372-K": { nombre: "Riquelme Fernández, Herman", cursos: { "Introducción A.T.": { t1: 93, t2: 100, ex: 100 } } },
+  "12.526.537-5": { nombre: "Rojas Nuñez, Griselda", cursos: { "Introducción A.T.": { t1: 93, t2: 100, ex: 100 }, "Ética del Nuevo Testamento": { t1: null, t2: null, ex: null } } },
+  "15.157.909-4": { nombre: "Sánchez Cofré, César", cursos: { "Introducción A.T.": { t1: 72, t2: 100, ex: 100 } } },
+  "6.688.590-9": { nombre: "Sanhueza Ascencio, Marcelo", cursos: { "Introducción A.T.": { t1: 86, t2: 100, ex: 100 } } },
+  "16.690.272-K": { nombre: "Toloza Lozano, Karen", cursos: { "Introducción A.T.": { t1: 55, t2: 100, ex: 100 } } },
   "15.865.472-5": { nombre: "Cristian Collio Liguen", cursos: { "Filosofía Moderna": { t1: 96, t2: null, ex: null } } },
   "20.194.247-0": { nombre: "Pedro Duran Vivanco", cursos: { "Filosofía Moderna": { t1: 20, t2: null, ex: null } } },
   "15.180.128-5": { nombre: "Fredy Garrido Paredes", cursos: { "Filosofía Moderna": { t1: 100, t2: null, ex: null } } },
@@ -231,7 +231,8 @@ const alumnos = {
   "15.954.682-9": { nombre: "Flores Aguilera, Cristian Marcelo", cursos: { "Ética del Nuevo Testamento": { t1: null, t2: null, ex: null } } },
   "16.807.217-1": { nombre: "Espinoza Sanhueza, Manuel Aaron", cursos: { "Ética del Nuevo Testamento": { t1: null, t2: null, ex: null } } },
   "18.143.676-K": { nombre: "Severino Novoa, Alejandro Esteban", cursos: { "Ética del Nuevo Testamento": { t1: null, t2: null, ex: null } } },
-  "18.707.109-7": { nombre: "Muñoz Zúñiga, Camila Francisca", cursos: { "Ética del Nuevo Testamento": { t1: null, t2: null, ex: null } } }
+  "18.707.109-7": { nombre: "Muñoz Zúñiga, Camila Francisca", cursos: { "Ética del Nuevo Testamento": { t1: null, t2: null, ex: null } } },
+  "16.863.871-K": { nombre: "Vidal Viviana", cursos: { "Introducción A.T.": { t1: 100, t2: 100, ex: 100 } } }
 };
 
 /* =====================================================================
