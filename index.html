@@ -77,6 +77,8 @@ button:hover { background: #d4891a; }
 .material-desc { font-size: 0.76rem; color: #999; margin-top: 1px; }
 a.btn-descargar { text-decoration: none; background: #f5a623; color: #fff; font-size: 0.78rem; font-weight: 600; padding: 7px 14px; border-radius: 8px; white-space: nowrap; transition: background 0.2s; }
 a.btn-descargar:hover { background: #d4891a; }
+.material-audio { align-items: flex-start; flex-direction: column; }
+.material-audio audio { width: 100%; margin-top: 8px; height: 36px; }
 .sin-materiales { font-size: 0.83rem; color: #aaa; text-align: center; padding: 10px; }
 
 /* Notas */
@@ -371,7 +373,7 @@ const materiales = {
   ]
 };
 
-const iconos = { pdf: "📄", doc: "📝", ppt: "📊", video: "🎬", link: "🔗" };
+const iconos = { pdf: "📄", doc: "📝", ppt: "📊", video: "🎬", link: "🔗", audio: "🎵" };
 
 /* ===================== LÓGICA (no es necesario editar) ===================== */
 let alumnoActual = null;
@@ -437,6 +439,15 @@ function renderMateriales() {
       html += '<p class="sin-materiales">Aún no hay materiales publicados para este curso.</p>';
     } else {
       for (const m of items) {
+        if (m.tipo === 'audio') {
+          html += '<div class="material-item material-audio">' +
+            '<div class="material-icon">' + (iconos[m.tipo] || '🎵') + '</div>' +
+            '<div class="material-info"><div class="material-nombre">' + m.titulo + '</div>' +
+            '<div class="material-desc">' + (m.desc || '') + '</div>' +
+            '<audio controls src="' + m.url + '"></audio>' +
+            '</div></div>';
+          continue;
+        }
         const esLink = m.tipo === 'link';
         const attrDescarga = esLink ? '' : ' download';
         const textoBoton = esLink ? '↗ Abrir' : '⬇ Descargar';
