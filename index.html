@@ -25,6 +25,12 @@ button:hover { background: #d4891a; }
 
 /* ===== Dashboard ===== */
 #vista-panel { display: none; }
+#vista-profesor { display: none; }
+.profesor-alumno-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 10px 14px; margin-bottom: 8px; flex-wrap: wrap; }
+.profesor-alumno-nombre { font-size: 0.85rem; font-weight: 600; color: #1a1a2e; }
+.profesor-alumno-rut { font-size: 0.72rem; color: #999; }
+.profesor-alumno-notas { font-size: 0.78rem; color: #555; white-space: nowrap; }
+.profesor-alumno-asist { font-size: 0.78rem; font-weight: 700; white-space: nowrap; }
 .alumno-header { display: flex; align-items: center; gap: 14px; }
 .avatar { width: 50px; height: 50px; border-radius: 50%; background: #fff4e0; color: #f5a623; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; flex-shrink: 0; }
 .alumno-nombre { font-size: 1.05rem; font-weight: 700; color: #1a1a2e; }
@@ -149,6 +155,19 @@ a.btn-descargar:hover { background: #d4891a; }
     <div id="seccion-observaciones" style="display:none;"></div>
     <div id="seccion-avisos" style="display:none;"></div>
     <div id="seccion-horario" style="display:none;"></div>
+  </div>
+
+  <!-- ============ VISTA: PROFESOR (todos los cursos y alumnos) ============ -->
+  <div class="card" id="vista-profesor">
+    <div class="alumno-header">
+      <div class="avatar">👨‍🏫</div>
+      <div>
+        <div class="alumno-nombre">Modo Profesor</div>
+        <div class="alumno-rut">Vista de solo lectura</div>
+      </div>
+      <button class="btn-salir" onclick="salir()">Salir</button>
+    </div>
+    <div id="seccion-profesor"></div>
   </div>
 
 </div>
@@ -605,6 +624,7 @@ const iconos = { pdf: "📄", doc: "📝", ppt: "📊", video: "🎬", link: "�
 
 /* ===================== LÓGICA (no es necesario editar) ===================== */
 let alumnoActual = null;
+const RUT_PROFESOR = "14.353.686-6";
 
 function normRut(r) { return r.replace(/[\s.]/g, '').toUpperCase(); }
 function initials(n) { return n.split(/[\s,]+/).filter(Boolean).slice(0, 2).map(p => p[0]).join('').toUpperCase(); }
@@ -615,6 +635,12 @@ function ingresar() {
   const err = document.getElementById('error-msg');
   err.style.display = 'none';
   if (!raw) { err.textContent = 'Por favor ingresa tu RUT.'; err.style.display = 'block'; return; }
+  if (normRut(raw) === normRut(RUT_PROFESOR)) {
+    renderProfesor();
+    document.getElementById('vista-login').style.display = 'none';
+    document.getElementById('vista-profesor').style.display = 'block';
+    return;
+  }
   const key = Object.keys(alumnos).find(k => normRut(k) === normRut(raw));
   if (!key) {
     err.textContent = 'RUT no encontrado. Verifica que esté bien escrito, incluyendo el guión y el dígito verificador.';
@@ -645,6 +671,7 @@ function salir() {
   alumnoActual = null;
   document.getElementById('rut-input').value = '';
   document.getElementById('vista-panel').style.display = 'none';
+  document.getElementById('vista-profesor').style.display = 'none';
   document.getElementById('vista-login').style.display = 'block';
   document.getElementById('rut-input').focus();
 }
@@ -801,6 +828,35 @@ function renderHorario() {
       '<span class="modalidad-badge ' + modCls + '">' + h.modalidad + '</span>' +
       '<div class="horario-lugar">' + h.lugar + '</div>' +
       '</div></div>';
+  }
+  cont.innerHTML = html;
+}
+
+function renderProfesor() {
+  const cont = document.getElementById('seccion-profesor');
+  const cursos = [...new Set(Object.values(alumnos).flatMap(a => Object.keys(a.cursos)))];
+  let html = '';
+  for (const curso of cursos) {
+    const inscritos = Object.entries(alumnos).filter(([rut, a]) => curso in a.cursos);
+    html += '<div class="curso-card"><div class="curso-titulo">📖 ' + curso + ' <span class="curso-badge">' + inscritos.length + ' alumnos</span></div>';
+    for (const [rut, a] of inscritos) {
+      const n = a.cursos[curso];
+      const disponibles = [n.t1, n.t2, n.ex].filter(v => v !== null && v !== undefined);
+      const prom = (n.notaFinal !== null && n.notaFinal !== undefined)
+        ? n.notaFinal
+        : (disponibles.length ? disponibles.reduce((s, v) => s + v, 0) / disponibles.length : null);
+      const promTxt = prom !== null ? prom.toFixed(1) : 'Sin datos';
+      const promColor = prom !== null ? (prom >= 60 ? '#1a9e5c' : '#c0392b') : '#aaa';
+      const registros = (asistencia[rut] && asistencia[rut][curso]) || [];
+      const puntos = registros.reduce((s, r) => s + (r.estado === 'Presente' ? 1 : (r.estado === 'Media clase' ? 0.5 : 0)), 0);
+      const asistTxt = registros.length ? Math.round((puntos / registros.length) * 100) + '%' : 'Sin datos';
+      html += '<div class="profesor-alumno-row">' +
+        '<div><div class="profesor-alumno-nombre">' + a.nombre + (a.bloqueado ? ' 🔒' : '') + '</div><div class="profesor-alumno-rut">' + rut + '</div></div>' +
+        '<div class="profesor-alumno-notas">T1: ' + fmtNota(n.t1) + ' · T2: ' + fmtNota(n.t2) + ' · Ex: ' + fmtNota(n.ex) + ' · Prom: <span style="color:' + promColor + '">' + promTxt + '</span></div>' +
+        '<div class="profesor-alumno-asist">Asist: ' + asistTxt + '</div>' +
+        '</div>';
+    }
+    html += '</div>';
   }
   cont.innerHTML = html;
 }
