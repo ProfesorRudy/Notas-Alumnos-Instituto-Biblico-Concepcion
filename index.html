@@ -553,6 +553,19 @@ const observaciones = {
 };
 
 /* =====================================================================
+   3c-bis) OBSERVACIONES POR CURSO (se muestran a todos los alumnos del curso)
+   Formato: "Nombre curso": [ { fecha:"DD-MM-AAAA", texto:"..." }, ... ]
+   ===================================================================== */
+const observacionesCurso = {
+  "Ética del A.T.": [
+    { fecha: "01-08-2026", texto: "Ponderación del Promedio Final: Trabajo 1 = 35% · Examen = 35% · Asistencia = 30%." }
+  ],
+  "Ética del Nuevo Testamento": [
+    { fecha: "01-08-2026", texto: "Ponderación del Promedio Final: Trabajo 1 = 35% · Examen = 35% · Asistencia = 30%." }
+  ]
+};
+
+/* =====================================================================
    3d) AVISOS GENERALES
    Agrega "curso: '<nombre del curso>'" para que un aviso solo lo vean los
    alumnos de ese curso. Sin ese campo, el aviso se muestra a todos.
@@ -766,11 +779,18 @@ function renderAsistencia() {
 function renderObservaciones() {
   const cont = document.getElementById('seccion-observaciones');
   const registros = observaciones[alumnoActual.rut] || [];
-  if (registros.length === 0) {
+  let html = '';
+  for (const curso of Object.keys(alumnoActual.cursos)) {
+    for (const o of (observacionesCurso[curso] || [])) {
+      html += '<div class="aviso-item"><div class="aviso-fecha">' + o.fecha + '</div>' +
+        '<div class="aviso-titulo">📖 ' + curso + '</div>' +
+        '<div class="aviso-texto">' + o.texto + '</div></div>';
+    }
+  }
+  if (registros.length === 0 && html === '') {
     cont.innerHTML = '<p class="sin-avisos">No hay observaciones publicadas por el momento.</p>';
     return;
   }
-  let html = '';
   for (const o of registros) {
     html += '<div class="aviso-item"><div class="aviso-fecha">' + o.fecha + '</div><div class="aviso-texto">' + o.texto + '</div></div>';
   }
