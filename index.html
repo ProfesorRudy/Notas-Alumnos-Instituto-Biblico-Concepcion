@@ -83,6 +83,7 @@ a.btn-descargar:hover { background: #d4891a; }
 
 /* Notas */
 .notas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
+.notas-grid-2 { grid-template-columns: repeat(2, 1fr); }
 .nota-box { background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 12px 8px; text-align: center; }
 .nota-label { font-size: 0.72rem; color: #888; margin-bottom: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
 .nota-valor { font-size: 1.5rem; font-weight: 700; color: #1a1a2e; }
@@ -703,7 +704,8 @@ function renderNotas() {
   const cont = document.getElementById('seccion-notas');
   let html = '';
   for (const [curso, n] of Object.entries(alumnoActual.cursos)) {
-    const disponibles = [n.t1, n.t2, n.ex].filter(v => v !== null && v !== undefined);
+    const sinTrabajo2 = (curso === "Ética del Nuevo Testamento" || curso === "Ética del A.T.");
+    const disponibles = (sinTrabajo2 ? [n.t1, n.ex] : [n.t1, n.t2, n.ex]).filter(v => v !== null && v !== undefined);
     const prom = (n.notaFinal !== null && n.notaFinal !== undefined)
       ? n.notaFinal
       : (disponibles.length ? disponibles.reduce((s, v) => s + v, 0) / disponibles.length : null);
@@ -719,9 +721,9 @@ function renderNotas() {
     }
     html += '<div class="curso-card">' +
       '<div class="curso-titulo">📖 ' + curso + '</div>' +
-      '<div class="notas-grid">' +
+      '<div class="notas-grid' + (sinTrabajo2 ? ' notas-grid-2' : '') + '">' +
         '<div class="nota-box"><div class="nota-label">Trabajo 1</div><div class="nota-valor">' + fmtNota(n.t1) + '</div></div>' +
-        '<div class="nota-box"><div class="nota-label">Trabajo 2</div><div class="nota-valor">' + fmtNota(n.t2) + '</div></div>' +
+        (sinTrabajo2 ? '' : '<div class="nota-box"><div class="nota-label">Trabajo 2</div><div class="nota-valor">' + fmtNota(n.t2) + '</div></div>') +
         '<div class="nota-box"><div class="nota-label">Examen</div><div class="nota-valor">' + fmtNota(n.ex) + '</div></div>' +
       '</div>' +
       '<div class="promedio-row">' +
