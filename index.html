@@ -652,7 +652,8 @@ const iconos = { pdf: "📄", doc: "📝", ppt: "📊", video: "🎬", link: "�
 /* ===================== LÓGICA (no es necesario editar) ===================== */
 let alumnoActual = null;
 
-function normRut(r) { return r.replace(/[\s.]/g, '').toUpperCase(); }
+/* Ignora espacios, puntos y guión: acepta 18.131.401-K, 18131401-K y 18131401K. */
+function normRut(r) { return r.replace(/[\s.\-]/g, '').toUpperCase(); }
 function initials(n) { return n.split(/[\s,]+/).filter(Boolean).slice(0, 2).map(p => p[0]).join('').toUpperCase(); }
 function fmtNota(v) { return (v === null || v === undefined) ? '<span class="pendiente">Pendiente</span>' : v; }
 
