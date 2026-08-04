@@ -703,8 +703,13 @@ function mostrarSeccion(sec) {
   }
 }
 
+/* Mensaje para el alumno que aún no tiene ninguna materia asignada. */
+const SIN_CURSOS = '<p class="sin-avisos">Aún no tienes materias asignadas.<br>Si crees que es un error, comunícate con el Instituto.</p>';
+function sinCursos() { return Object.keys(alumnoActual.cursos).length === 0; }
+
 function renderMateriales() {
   const cont = document.getElementById('seccion-materiales');
+  if (sinCursos()) { cont.innerHTML = SIN_CURSOS; return; }
   let html = '';
   for (const curso of Object.keys(alumnoActual.cursos)) {
     const items = materiales[curso] || [];
@@ -777,6 +782,7 @@ function estaCursada(n) {
 
 function renderNotas() {
   const cont = document.getElementById('seccion-notas');
+  if (sinCursos()) { cont.innerHTML = SIN_CURSOS; return; }
   const entradas = Object.entries(alumnoActual.cursos);
   const enCurso  = entradas.filter(([, n]) => !estaCursada(n));
   const cursadas = entradas.filter(([, n]) =>  estaCursada(n));
@@ -795,6 +801,7 @@ function renderNotas() {
 
 function renderAsistencia() {
   const cont = document.getElementById('seccion-asistencia');
+  if (sinCursos()) { cont.innerHTML = SIN_CURSOS; return; }
   const datosAlumno = asistencia[alumnoActual.rut] || {};
   let html = '';
   for (const curso of Object.keys(alumnoActual.cursos)) {
@@ -859,6 +866,7 @@ function renderAvisos() {
 
 function renderHorario() {
   const cont = document.getElementById('seccion-horario');
+  if (sinCursos()) { cont.innerHTML = SIN_CURSOS; return; }
   let html = '';
   for (const curso of Object.keys(alumnoActual.cursos)) {
     const h = horarios[curso];
