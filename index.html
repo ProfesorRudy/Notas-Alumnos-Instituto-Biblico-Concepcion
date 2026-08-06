@@ -261,8 +261,13 @@ const alumnos = {
 
 /* =====================================================================
    3b) ASISTENCIA  (agrega o edita aquí)
-   Formato: "RUT": { "Nombre curso": [ {fecha:"DD-MM-AAAA", estado:"Presente"|"Ausente"|"Atraso"}, ... ] }
+   Formato: "RUT": { "Nombre curso": [ {fecha:"DD-MM-AAAA", estado:"Presente"|"Ausente"|"Atraso"|"Media clase"}, ... ] }
+   En el porcentaje de asistencia: "Presente" vale 1, "Media clase" vale 0,5 y
+   "Ausente"/"Atraso" valen 0.
    Si un alumno no tiene registros aún, simplemente no lo agregues (o deja el arreglo vacío []).
+   Cada RUT debe aparecer UNA sola vez en este objeto: si repites la clave, la
+   última declaración borra en silencio a la anterior. Para un alumno con varios
+   cursos, agrégalos dentro de la misma entrada.
    ===================================================================== */
 const asistencia = {
   "17.615.853-0": { "Introducción A.T.": [
@@ -371,7 +376,7 @@ const asistencia = {
     { fecha: "10-06-2026", estado: "Presente" },
     { fecha: "17-06-2026", estado: "Presente" },
     { fecha: "24-06-2026", estado: "Presente" }
-  ] },
+  ], "Contexto del Antiguo Testamento": [ { fecha: "05-08-2026", estado: "Media clase" } ] },
   "6.688.590-9": { "Introducción A.T.": [
     { fecha: "06-05-2026", estado: "Presente" },
     { fecha: "13-05-2026", estado: "Presente" },
