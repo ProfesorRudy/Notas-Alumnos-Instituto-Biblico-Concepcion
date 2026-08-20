@@ -730,11 +730,19 @@ function mostrarSeccion(sec) {
 const SIN_CURSOS = '<p class="sin-avisos">Aún no tienes materias asignadas.<br>Si crees que es un error, comunícate con el Instituto.</p>';
 function sinCursos() { return Object.keys(alumnoActual.cursos).length === 0; }
 
+/* Cursos ya finalizados que solo deben verse en "Mis Calificaciones";
+   desaparecen de Materiales, Tareas, Asistencia y Horario. */
+const CURSOS_SOLO_CALIFICACIONES = ["Introducción A.T."];
+const SIN_CURSOS_ACTIVOS = '<p class="sin-avisos">No tienes materias activas en este momento.<br>Revisa "Mis Calificaciones" para ver tus cursos finalizados.</p>';
+function cursosActivos() { return Object.keys(alumnoActual.cursos).filter(c => !CURSOS_SOLO_CALIFICACIONES.includes(c)); }
+
 function renderMateriales() {
   const cont = document.getElementById('seccion-materiales');
   if (sinCursos()) { cont.innerHTML = SIN_CURSOS; return; }
+  const cursos = cursosActivos();
+  if (cursos.length === 0) { cont.innerHTML = SIN_CURSOS_ACTIVOS; return; }
   let html = '';
-  for (const curso of Object.keys(alumnoActual.cursos)) {
+  for (const curso of cursos) {
     const items = materiales[curso] || [];
     html += '<div class="curso-card"><div class="curso-titulo">📖 ' + curso + '</div>';
     if (items.length === 0) {
@@ -769,8 +777,10 @@ function renderMateriales() {
 function renderTareas() {
   const cont = document.getElementById('seccion-tareas');
   if (sinCursos()) { cont.innerHTML = SIN_CURSOS; return; }
+  const cursos = cursosActivos();
+  if (cursos.length === 0) { cont.innerHTML = SIN_CURSOS_ACTIVOS; return; }
   let html = '';
-  for (const curso of Object.keys(alumnoActual.cursos)) {
+  for (const curso of cursos) {
     const items = tareas[curso] || [];
     html += '<div class="curso-card"><div class="curso-titulo">📖 ' + curso + '</div>';
     if (items.length === 0) {
@@ -846,9 +856,11 @@ function renderNotas() {
 function renderAsistencia() {
   const cont = document.getElementById('seccion-asistencia');
   if (sinCursos()) { cont.innerHTML = SIN_CURSOS; return; }
+  const cursos = cursosActivos();
+  if (cursos.length === 0) { cont.innerHTML = SIN_CURSOS_ACTIVOS; return; }
   const datosAlumno = asistencia[alumnoActual.rut] || {};
   let html = '';
-  for (const curso of Object.keys(alumnoActual.cursos)) {
+  for (const curso of cursos) {
     const registros = datosAlumno[curso] || [];
     html += '<div class="curso-card"><div class="curso-titulo">📖 ' + curso + '</div>';
     if (registros.length === 0) {
@@ -911,8 +923,10 @@ function renderAvisos() {
 function renderHorario() {
   const cont = document.getElementById('seccion-horario');
   if (sinCursos()) { cont.innerHTML = SIN_CURSOS; return; }
+  const cursos = cursosActivos();
+  if (cursos.length === 0) { cont.innerHTML = SIN_CURSOS_ACTIVOS; return; }
   let html = '';
-  for (const curso of Object.keys(alumnoActual.cursos)) {
+  for (const curso of cursos) {
     const h = horarios[curso];
     html += '<div class="curso-card"><div class="curso-titulo">📖 ' + curso + '</div>';
     if (!h) {
