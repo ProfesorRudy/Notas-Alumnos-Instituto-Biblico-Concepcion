@@ -140,6 +140,7 @@ a.btn-descargar:hover { background: #d4891a; }
 
     <div class="menu-tabs">
       <div class="tab active" id="tab-materiales" onclick="mostrarSeccion('materiales')">📚 Materias y<br>Materiales</div>
+      <div class="tab" id="tab-tareas" onclick="mostrarSeccion('tareas')">✅ Tareas a<br>Realizar</div>
       <div class="tab" id="tab-notas" onclick="mostrarSeccion('notas')">📊 Mis<br>Calificaciones</div>
       <div class="tab" id="tab-asistencia" onclick="mostrarSeccion('asistencia')">🗓️ Mi<br>Asistencia</div>
       <div class="tab" id="tab-observaciones" onclick="mostrarSeccion('observaciones')">📝<br>Observaciones</div>
@@ -148,6 +149,7 @@ a.btn-descargar:hover { background: #d4891a; }
     </div>
 
     <div id="seccion-materiales"></div>
+    <div id="seccion-tareas" style="display:none;"></div>
     <div id="seccion-notas" style="display:none;"></div>
     <div id="seccion-asistencia" style="display:none;"></div>
     <div id="seccion-observaciones" style="display:none;"></div>
@@ -594,6 +596,13 @@ const avisos = [
 ];
 
 /* =====================================================================
+   3e-bis) TAREAS A REALIZAR POR CURSO  (agrega o edita aquí)
+   Formato: "Nombre curso": [ { titulo:"...", desc:"...", fecha:"DD-MM-AAAA" (fecha de entrega) }, ... ]
+   ===================================================================== */
+const tareas = {
+};
+
+/* =====================================================================
    3e) HORARIO Y MODALIDAD POR CURSO  (agrega o edita aquí)
    modalidad: "Presencial", "Online" o "Híbrido"
    ===================================================================== */
@@ -690,6 +699,7 @@ function ingresar() {
   document.getElementById('alumno-nombre').textContent = alumnoActual.nombre;
   document.getElementById('alumno-rut-display').textContent = 'RUT: ' + key;
   renderMateriales();
+  renderTareas();
   renderNotas();
   renderAsistencia();
   renderObservaciones();
@@ -708,7 +718,7 @@ function salir() {
   document.getElementById('rut-input').focus();
 }
 
-const SECCIONES = ['materiales', 'notas', 'asistencia', 'observaciones', 'avisos', 'horario'];
+const SECCIONES = ['materiales', 'tareas', 'notas', 'asistencia', 'observaciones', 'avisos', 'horario'];
 function mostrarSeccion(sec) {
   for (const s of SECCIONES) {
     document.getElementById('seccion-' + s).style.display = (s === sec) ? 'block' : 'none';
@@ -749,6 +759,27 @@ function renderMateriales() {
           '<div class="material-desc">' + (m.desc || '') + '</div></div>' +
           '<a class="btn-descargar" href="' + m.url + '" target="_blank" rel="noopener"' + attrDescarga + '>' + textoBoton + '</a>' +
           '</div>';
+      }
+    }
+    html += '</div>';
+  }
+  cont.innerHTML = html;
+}
+
+function renderTareas() {
+  const cont = document.getElementById('seccion-tareas');
+  if (sinCursos()) { cont.innerHTML = SIN_CURSOS; return; }
+  let html = '';
+  for (const curso of Object.keys(alumnoActual.cursos)) {
+    const items = tareas[curso] || [];
+    html += '<div class="curso-card"><div class="curso-titulo">📖 ' + curso + '</div>';
+    if (items.length === 0) {
+      html += '<p class="sin-materiales">Aún no hay tareas asignadas para este curso.</p>';
+    } else {
+      for (const t of items) {
+        html += '<div class="aviso-item"><div class="aviso-fecha">📅 Fecha de entrega: ' + t.fecha + '</div>' +
+          '<div class="aviso-titulo">' + t.titulo + '</div>' +
+          '<div class="aviso-texto">' + (t.desc || '') + '</div></div>';
       }
     }
     html += '</div>';
