@@ -600,6 +600,9 @@ const avisos = [
    Formato: "Nombre curso": [ { titulo:"...", desc:"...", fecha:"DD-MM-AAAA" (fecha de entrega) }, ... ]
    ===================================================================== */
 const tareas = {
+  "Contexto del Antiguo Testamento": [
+    { titulo: "Tarea Documental: Dioses y Demonios de Egipto", desc: "Ver el documental \"Dioses y Demonios del Antiguo Egipto\" (47 min) y responder por escrito: 1) Describa cómo surge la creación y el ciclo de vida de Re. 2) ¿Cómo era el parto de una mujer egipcia? 3) ¿Qué pensamiento tenían los egipcios con respecto a la muerte? Video: https://www.youtube.com/watch?v=KM6pBk6YQKo", fecha: "02-09-2026", url: "materiales/contexto-at/tarea-documental-dioses-demonios-egipto.docx" }
+  ]
 };
 
 /* =====================================================================
@@ -787,9 +790,14 @@ function renderTareas() {
       html += '<p class="sin-materiales">Aún no hay tareas asignadas para este curso.</p>';
     } else {
       for (const t of items) {
+        const adjunto = t.url
+          ? '<a class="btn-descargar" href="' + t.url + '" target="_blank" rel="noopener" download>⬇ Descargar</a>'
+          : '';
         html += '<div class="aviso-item"><div class="aviso-fecha">📅 Fecha de entrega: ' + t.fecha + '</div>' +
           '<div class="aviso-titulo">' + t.titulo + '</div>' +
-          '<div class="aviso-texto">' + (t.desc || '') + '</div></div>';
+          '<div class="aviso-texto">' + (t.desc || '') + '</div>' +
+          (adjunto ? '<div style="margin-top:8px;">' + adjunto + '</div>' : '') +
+          '</div>';
       }
     }
     html += '</div>';
