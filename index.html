@@ -999,15 +999,6 @@ const materiales = {
     { titulo: "Programa del curso", desc: "Contenidos y calendario del semestre", tipo: "pdf", url: "materiales/filosofia-moderna/programa.pdf" },
     { titulo: "Guía de lectura: Descartes", desc: "Meditaciones Metafísicas · Unidad 1", tipo: "pdf", url: "materiales/filosofia-moderna/descartes.pdf" }
   ],
-  "Ética del A.T.": [
-    { titulo: "Plan de Curso", desc: "Descripción, evaluación y cronograma · Programa Biblia 2026", tipo: "pdf", url: "materiales/etica-at/plan-de-curso.pdf" },
-    { titulo: "Clase 1: Creación, el carácter de Dios y el Pacto", desc: "Fundamentos de la ética veterotestamentaria", tipo: "pdf", url: "materiales/etica-at/clase-1.pdf" },
-    { titulo: "Clase 2: Ética del A.T.", desc: "Material de la segunda clase", tipo: "pdf", url: "materiales/etica-at/clase-2.pdf" },
-    { titulo: "Clase 3: Los Profetas - justicia social, derecho y fidelidad al Pacto", desc: "La denuncia del pecado social y el llamado a la restauración del derecho", tipo: "pdf", url: "materiales/etica-at/clase-3.pdf" },
-    { titulo: "Clase 4: Ética del Antiguo Testamento", desc: "Material de la cuarta clase", tipo: "pdf", url: "materiales/etica-at/clase-4.pdf" },
-    { titulo: "Bases bíblicas de la ética (Texto guía)", desc: "James E. Giles · Casa Bautista de Publicaciones", tipo: "pdf", url: "materiales/compartido/bases-biblicas-de-la-etica-giles.pdf" },
-    { titulo: "Audio Resumen: La niñez moral del Antiguo Testamento", desc: "Audio resumen de Ética del Antiguo Testamento", tipo: "audio", url: "materiales/etica-at/audio-resumen-ninez-moral.m4a" }
-  ],
   "Contexto del Antiguo Testamento": [
     { titulo: "Plan de Curso", desc: "Descripción, evaluación, cronograma y bibliografía · Programa Biblia 2026", tipo: "doc", url: "materiales/contexto-at/plan-de-curso.docx" },
     { titulo: "Clase 1: Historia y Geografía Bíblicas", desc: "Israel en el mundo antiguo, la Media Luna Fértil y del henoteísmo al monoteísmo · Diapositivas de la sesión", tipo: "pdf", url: "materiales/contexto-at/clase-1.pdf" },
@@ -1158,7 +1149,7 @@ function sinCursos() { return Object.keys(alumnoActual.cursos).length === 0; }
 
 /* Cursos ya finalizados que solo deben verse en "Mis Calificaciones";
    desaparecen de Materiales, Tareas, Asistencia y Horario. */
-const CURSOS_SOLO_CALIFICACIONES = ["Introducción A.T.", "Filosofía Moderna", "Ética del Nuevo Testamento"];
+const CURSOS_SOLO_CALIFICACIONES = ["Introducción A.T.", "Filosofía Moderna", "Ética del Nuevo Testamento", "Ética del A.T."];
 const SIN_CURSOS_ACTIVOS = '<p class="sin-avisos">No tienes materias activas en este momento.<br>Revisa "Mis Calificaciones" para ver tus cursos finalizados.</p>';
 function cursosActivos() { return Object.keys(alumnoActual.cursos).filter(c => !CURSOS_SOLO_CALIFICACIONES.includes(c)); }
 
