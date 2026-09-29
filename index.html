@@ -1008,14 +1008,6 @@ const materiales = {
     { titulo: "Bases bíblicas de la ética (Texto guía)", desc: "James E. Giles · Casa Bautista de Publicaciones", tipo: "pdf", url: "materiales/compartido/bases-biblicas-de-la-etica-giles.pdf" },
     { titulo: "Audio Resumen: La niñez moral del Antiguo Testamento", desc: "Audio resumen de Ética del Antiguo Testamento", tipo: "audio", url: "materiales/etica-at/audio-resumen-ninez-moral.m4a" }
   ],
-  "Ética del Nuevo Testamento": [
-    { titulo: "Plan de Curso", desc: "Programa y cronograma del curso", tipo: "pdf", url: "materiales/etica-nt/plan-de-curso.pdf" },
-    { titulo: "Libro guía de la materia", desc: "Bases bíblicas de la ética · James E. Giles", tipo: "pdf", url: "materiales/compartido/bases-biblicas-de-la-etica-giles.pdf" },
-    { titulo: "Clase 1: Ética del Nuevo Testamento", desc: "Material de la primera clase", tipo: "pdf", url: "materiales/etica-nt/clase-1.pdf" },
-    { titulo: "Clase 2: Ética del Nuevo Testamento", desc: "Material de la segunda clase", tipo: "pdf", url: "materiales/etica-nt/clase-2.pdf" },
-    { titulo: "Clase 3: Ética del Nuevo Testamento", desc: "Material de la tercera clase", tipo: "pdf", url: "materiales/etica-nt/clase-3.pdf" },
-    { titulo: "Clase 4: Ética del Nuevo Testamento", desc: "Material de la cuarta clase", tipo: "pdf", url: "materiales/etica-nt/clase-4.pdf" }
-  ],
   "Contexto del Antiguo Testamento": [
     { titulo: "Plan de Curso", desc: "Descripción, evaluación, cronograma y bibliografía · Programa Biblia 2026", tipo: "doc", url: "materiales/contexto-at/plan-de-curso.docx" },
     { titulo: "Clase 1: Historia y Geografía Bíblicas", desc: "Israel en el mundo antiguo, la Media Luna Fértil y del henoteísmo al monoteísmo · Diapositivas de la sesión", tipo: "pdf", url: "materiales/contexto-at/clase-1.pdf" },
@@ -1166,7 +1158,7 @@ function sinCursos() { return Object.keys(alumnoActual.cursos).length === 0; }
 
 /* Cursos ya finalizados que solo deben verse en "Mis Calificaciones";
    desaparecen de Materiales, Tareas, Asistencia y Horario. */
-const CURSOS_SOLO_CALIFICACIONES = ["Introducción A.T.", "Filosofía Moderna"];
+const CURSOS_SOLO_CALIFICACIONES = ["Introducción A.T.", "Filosofía Moderna", "Ética del Nuevo Testamento"];
 const SIN_CURSOS_ACTIVOS = '<p class="sin-avisos">No tienes materias activas en este momento.<br>Revisa "Mis Calificaciones" para ver tus cursos finalizados.</p>';
 function cursosActivos() { return Object.keys(alumnoActual.cursos).filter(c => !CURSOS_SOLO_CALIFICACIONES.includes(c)); }
 
