@@ -370,6 +370,37 @@ a.btn-descargar:hover { background: linear-gradient(180deg, var(--blue-500), var
 .pendiente-badge { background: var(--warn-bg); color: var(--warn); }
 .nota-pie { font-size: 0.76rem; color: var(--ink-400); text-align: center; margin-top: 14px; line-height: 1.5; }
 
+/* Contacto del profesor */
+.profesor-perfil { display: flex; align-items: center; gap: 16px; margin-bottom: 1.1rem; }
+.profesor-foto {
+  width: 92px; height: 92px; border-radius: 50%; flex-shrink: 0; overflow: hidden;
+  background: linear-gradient(180deg, var(--blue-100), var(--blue-50)); border: 3px solid var(--surface);
+  box-shadow: 0 0 0 1.5px var(--blue-100), var(--shadow-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.9rem; font-weight: 800; color: var(--blue-600);
+}
+.profesor-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.profesor-nombre { font-size: 1.15rem; font-weight: 800; color: var(--ink-900); }
+.profesor-cargo { font-size: 0.8rem; color: var(--ink-500); margin-top: 2px; }
+a.contacto-item { text-decoration: none; color: inherit; }
+.contacto-item .material-icon.wsp { background: #e7f7ee; color: #1a8f4c; }
+.contacto-valor { font-size: 0.95rem; font-weight: 700; color: var(--blue-600); margin-top: 2px; overflow-wrap: anywhere; }
+.contacto-item .material-icon.wsp + .material-info .contacto-valor { color: #1a8f4c; }
+.mensaje-form label { margin-bottom: 6px; font-size: 0.8rem; }
+.mensaje-form select, .mensaje-form textarea {
+  width: 100%; border: 1.5px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface-soft);
+  font-family: inherit; font-size: 0.92rem; color: var(--ink-900); padding: 10px 12px; margin-bottom: 12px; outline: none;
+}
+.mensaje-form textarea { min-height: 120px; resize: vertical; line-height: 1.45; }
+.mensaje-form select:focus, .mensaje-form textarea:focus { border-color: var(--blue-400); box-shadow: 0 0 0 4px rgba(69,116,196,.16); background: var(--surface); }
+.mensaje-botones { display: flex; gap: 9px; flex-wrap: wrap; }
+.mensaje-botones button { display: inline-flex; align-items: center; gap: 7px; font-size: 0.85rem; }
+.mensaje-botones button svg { width: 16px; height: 16px; }
+.mensaje-botones button.btn-wsp { background: linear-gradient(180deg, #25b565, #1a8f4c); }
+.mensaje-botones button.btn-wsp:hover { background: linear-gradient(180deg, #1f9f58, #167a41); }
+.mensaje-nota { font-size: 0.76rem; color: var(--ink-400); margin-top: 10px; line-height: 1.45; }
+.mensaje-error { font-size: 0.8rem; color: #b42318; margin: -4px 0 10px; display: none; }
+
 @media (max-width: 420px) {
   .notas-grid { grid-template-columns: 1fr 1fr; }
 }
@@ -428,6 +459,7 @@ a.btn-descargar:hover { background: linear-gradient(180deg, var(--blue-500), var
           <button class="nav-item" id="tab-observaciones" onclick="mostrarSeccion('observaciones')" title="Observaciones"><span class="ico-observaciones"></span><span class="nav-label">Observaciones</span></button>
           <button class="nav-item" id="tab-avisos" onclick="mostrarSeccion('avisos')" title="Avisos Generales"><span class="ico-avisos"></span><span class="nav-label">Avisos Generales</span></button>
           <button class="nav-item" id="tab-horario" onclick="mostrarSeccion('horario')" title="Horario y Modalidad"><span class="ico-horario"></span><span class="nav-label">Horario y Modalidad</span></button>
+          <button class="nav-item" id="tab-profesor" onclick="mostrarSeccion('profesor')" title="Contacto del Profesor"><span class="ico-profesor"></span><span class="nav-label">Contacto del Profesor</span></button>
         </nav>
       </aside>
 
@@ -440,6 +472,7 @@ a.btn-descargar:hover { background: linear-gradient(180deg, var(--blue-500), var
         <div id="seccion-observaciones" style="display:none;"></div>
         <div id="seccion-avisos" style="display:none;"></div>
         <div id="seccion-horario" style="display:none;"></div>
+        <div id="seccion-profesor" style="display:none;"></div>
       </main>
     </div>
   </div>
@@ -457,6 +490,10 @@ document.getElementById('logo-ibc').src = LOGO_B64;
    1b) ICONOS (SVG minimalistas estilo Lucide — no es necesario editar)
    ===================================================================== */
 const ICONS = {
+  whatsapp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.2 19.8l1.2-4.1A8.3 8.3 0 1 1 8.6 19l-4.4.8z"/><path d="M9.2 8.6c.2-.5.5-.6.8-.6h.5c.2 0 .4.1.5.4l.6 1.5c.1.2 0 .4-.1.6l-.5.6c.6 1.2 1.5 2.1 2.7 2.7l.6-.5c.2-.1.4-.2.6-.1l1.5.6c.3.1.4.3.4.5v.5c0 .3-.1.6-.6.8-1.3.6-3.2 0-4.8-1.6S8.6 9.9 9.2 8.6z"/></svg>',
+  mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/></svg>',
+  send: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 3.5L10 14"/><path d="M20.5 3.5l-6.5 17-4-6.5-6.5-4z"/></svg>',
+  user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.8"/><path d="M4.5 20.5c0-4 3.4-6.5 7.5-6.5s7.5 2.5 7.5 6.5"/></svg>',
   book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7c-1.8-1.6-4.2-2.3-7.5-2.3v13c3.3 0 5.7.7 7.5 2.3 1.8-1.6 4.2-2.3 7.5-2.3v-13c-3.3 0-5.7.7-7.5 2.3z"/><path d="M12 7v13"/></svg>',
   tasks: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M8 12.5l2.6 2.6L16.5 9"/></svg>',
   users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.3"/><path d="M2.8 20c0-3.3 2.7-5.7 6.2-5.7s6.2 2.4 6.2 5.7"/><path d="M15.5 4.8a3.3 3.3 0 0 1 0 6.4"/><path d="M17.3 14.4c2.4.6 4 2.6 4 5.6"/></svg>',
@@ -491,7 +528,7 @@ const ICONS = {
 const ICON_SLOTS = {
   'ico-materiales': 'book', 'ico-tareas': 'tasks', 'ico-grupo': 'users', 'ico-notas': 'chart',
   'ico-asistencia': 'calendarCheck', 'ico-observaciones': 'fileEdit', 'ico-avisos': 'megaphone',
-  'ico-horario': 'clock', 'ico-salir': 'logout', 'ico-toggle': 'panel',
+  'ico-horario': 'clock', 'ico-profesor': 'user', 'ico-salir': 'logout', 'ico-toggle': 'panel',
   'ico-idcard': 'idCard', 'ico-arrow': 'arrowRight', 'ico-alert': 'alertCircle'
 };
 for (const [slotClass, iconKey] of Object.entries(ICON_SLOTS)) {
@@ -967,6 +1004,18 @@ const trabajoGrupo = {
 };
 
 /* =====================================================================
+   3e-0) CONTACTO DEL PROFESOR  (edita aquí)
+   whatsapp: número con código de país, ej: "+56 9 1234 5678" (vacío = no se muestra)
+   foto: ruta de la imagen (si no existe, se muestran las iniciales)
+   ===================================================================== */
+const profesor = {
+  nombre: "Rudy Fuentes",
+  foto: "materiales/profesor/foto.jpg",
+  whatsapp: "+56 9 5633 9029",
+  correo: "fuentes82@hotmail.com"
+};
+
+/* =====================================================================
    3e) HORARIO Y MODALIDAD POR CURSO  (agrega o edita aquí)
    modalidad: "Presencial", "Online" o "Híbrido"
    ===================================================================== */
@@ -1115,6 +1164,7 @@ function procesarIngreso(raw) {
   renderObservaciones();
   renderAvisos();
   renderHorario();
+  renderProfesor();
   document.getElementById('vista-login').style.display = 'none';
   document.getElementById('vista-panel').style.display = 'block';
   document.body.classList.add('logged-in');
@@ -1135,7 +1185,7 @@ function toggleSidebar() {
   document.getElementById('sidebar').classList.toggle('collapsed');
 }
 
-const SECCIONES = ['materiales', 'tareas', 'trabajogrupo', 'notas', 'asistencia', 'observaciones', 'avisos', 'horario'];
+const SECCIONES = ['materiales', 'tareas', 'trabajogrupo', 'notas', 'asistencia', 'observaciones', 'avisos', 'horario', 'profesor'];
 function mostrarSeccion(sec) {
   for (const s of SECCIONES) {
     document.getElementById('seccion-' + s).style.display = (s === sec) ? 'block' : 'none';
@@ -1390,6 +1440,61 @@ function renderHorario() {
       '</div></div>';
   }
   cont.innerHTML = html;
+}
+
+function escHtml(t) { return String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]); }
+function wspNumero() { return profesor.whatsapp.replace(/\D/g, ''); }
+
+function renderProfesor() {
+  const cont = document.getElementById('seccion-profesor');
+  const wsp = wspNumero();
+  const ini = escHtml(initials(profesor.nombre));
+  const foto = profesor.foto
+    ? '<img src="' + escHtml(profesor.foto) + '" alt="Foto del profesor ' + escHtml(profesor.nombre) + '" onerror="this.parentNode.textContent=\'' + ini + '\'">'
+    : ini;
+  let html = '<div class="curso-card"><div class="profesor-perfil"><div class="profesor-foto">' + foto + '</div>' +
+    '<div><div class="profesor-nombre">' + escHtml(profesor.nombre) + '</div><div class="profesor-cargo">Profesor · Instituto Bíblico Concepción</div></div></div>';
+  if (wsp) {
+    html += '<a class="material-item contacto-item" href="https://wa.me/' + wsp + '" target="_blank" rel="noopener">' +
+      '<div class="material-icon wsp">' + ICONS.whatsapp + '</div>' +
+      '<div class="material-info"><div class="material-desc">WhatsApp</div><div class="contacto-valor">' + escHtml(profesor.whatsapp) + '</div></div></a>';
+  }
+  if (profesor.correo) {
+    html += '<a class="material-item contacto-item" href="mailto:' + profesor.correo + '">' +
+      '<div class="material-icon">' + ICONS.mail + '</div>' +
+      '<div class="material-info"><div class="material-desc">Correo electrónico</div><div class="contacto-valor">' + escHtml(profesor.correo) + '</div></div></a>';
+  }
+  html += '</div>';
+
+  const cursos = Object.keys(alumnoActual.cursos);
+  html += '<div class="curso-card mensaje-form"><div class="curso-titulo">' + ICONS.send + ' Enviar mensaje al profesor</div>';
+  if (cursos.length) {
+    html += '<label for="msg-curso">Curso</label><select id="msg-curso"><option value="">Consulta general</option>' +
+      cursos.map(c => '<option>' + escHtml(c) + '</option>').join('') + '</select>';
+  }
+  html += '<label for="msg-texto">Mensaje</label><textarea id="msg-texto" placeholder="Escribe aquí tu consulta…"></textarea>' +
+    '<p class="mensaje-error" id="msg-error">Escribe tu mensaje antes de enviarlo.</p><div class="mensaje-botones">';
+  if (wsp) html += '<button type="button" class="btn-wsp" onclick="enviarMensaje(\'wsp\')">' + ICONS.whatsapp + '<span>Enviar por WhatsApp</span></button>';
+  if (profesor.correo) html += '<button type="button" onclick="enviarMensaje(\'correo\')">' + ICONS.mail + '<span>Enviar por correo</span></button>';
+  html += '</div><p class="mensaje-nota">Se abrirá WhatsApp o tu aplicación de correo con el mensaje ya escrito, incluyendo tu nombre y RUT. Solo debes confirmar el envío.</p></div>';
+  cont.innerHTML = html;
+}
+
+function enviarMensaje(via) {
+  const texto = document.getElementById('msg-texto').value.trim();
+  const err = document.getElementById('msg-error');
+  if (!texto) { err.style.display = 'block'; document.getElementById('msg-texto').focus(); return; }
+  err.style.display = 'none';
+  const sel = document.getElementById('msg-curso');
+  const curso = sel && sel.value ? sel.value : '';
+  const cuerpo = 'Hola profesor, soy ' + alumnoActual.nombre + ' (RUT ' + alumnoActual.rut + ').' +
+    (curso ? '\nCurso: ' + curso : '') + '\n\n' + texto;
+  if (via === 'wsp') {
+    window.open('https://wa.me/' + wspNumero() + '?text=' + encodeURIComponent(cuerpo), '_blank', 'noopener');
+  } else {
+    const asunto = 'Consulta portal' + (curso ? ' · ' + curso : '') + ' · ' + alumnoActual.nombre;
+    window.location.href = 'mailto:' + profesor.correo + '?subject=' + encodeURIComponent(asunto) + '&body=' + encodeURIComponent(cuerpo);
+  }
 }
 
 document.getElementById('rut-input').addEventListener('keydown', e => { if (e.key === 'Enter') ingresar(); });
