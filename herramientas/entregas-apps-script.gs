@@ -3,6 +3,7 @@
  *
  * Guarda en Google Drive los archivos que los alumnos entregan desde la pestaña
  * "Entrega de Trabajos" del portal, y anota cada entrega en una planilla.
+ * También guarda y entrega las fotos de perfil de los alumnos.
  *
  * Instalación (una sola vez):
  *   1. Entra a https://script.google.com con tu cuenta de Google y crea un "Proyecto nuevo".
@@ -15,17 +16,25 @@
  *      ENTREGAS_URL dentro de index.html.
  *
  * En tu Drive se crea la carpeta "Entregas Portal IBC", con una subcarpeta por
- * curso y por trabajo, y la planilla "Registro de entregas".
+ * curso y por trabajo, la planilla "Registro de entregas" y la carpeta
+ * "Fotos de alumnos" (un archivo por RUT; borra uno para quitar esa foto).
+ *
+ * Para actualizar el código: pega la versión nueva, guarda y luego
+ * Implementar > Gestionar implementaciones > Editar (lápiz) > Versión: Nueva versión > Implementar.
+ * Así la URL no cambia.
  */
 
 const CARPETA_RAIZ = 'Entregas Portal IBC';
 const PORTAL_URL = 'https://profesorrudy.github.io/index.html';
 const MAX_BYTES = 10 * 1024 * 1024; // 10 MB
+const CARPETA_FOTOS = 'Fotos de alumnos';
+const MAX_FOTO_BYTES = 600 * 1024; // las fotos llegan ya reducidas desde el portal
 const EXTENSIONES = ['doc', 'docx', 'pdf', 'odt', 'rtf', 'txt', 'ppt', 'pptx', 'jpg', 'jpeg', 'png'];
 
 function doPost(e) {
   try {
     const d = JSON.parse(e.postData.contents);
+    if (d.accion === 'foto') return guardarFoto(d);
     const rut = String(d.rut || '').trim();
     const curso = String(d.curso || '').trim();
     const tarea = limpiar(String(d.tarea || '').trim()) || 'Trabajo';
@@ -61,7 +70,49 @@ function doPost(e) {
   }
 }
 
-/* Comprueba en el portal publicado que el RUT exista, no esté bloqueado y tenga el curso. */
+/* Foto de perfil: el portal la pide con ?foto=RUT al ingresar el alumno. */
+function doGet(e) {
+  const rut = String((e && e.parameter && e.parameter.foto) || '');
+  if (!rut) return responder(false, 'Portal del Alumno · Instituto Bíblico Concepción');
+  const id = PropertiesService.getScriptProperties().getProperty('foto_' + normRut(rut));
+  if (!id) return responder(true, 'Sin foto.', { foto: null });
+  try {
+    const f = DriveApp.getFileById(id);
+    if (f.isTrashed()) return responder(true, 'Sin foto.', { foto: null });
+    const blob = f.getBlob();
+    return responder(true, 'Foto.', { foto: 'data:' + blob.getContentType() + ';base64,' + Utilities.base64Encode(blob.getBytes()) });
+  } catch (err) {
+    return responder(true, 'Sin foto.', { foto: null });
+  }
+}
+
+function guardarFoto(d) {
+  const rut = String(d.rut || '').trim();
+  if (!rut || !d.datos) return responder(false, 'Faltan datos de la foto.');
+  const alumno = buscarAlumno(rut, null);
+  if (!alumno) return responder(false, 'RUT no habilitado en el portal.');
+  const bytes = Utilities.base64Decode(d.datos);
+  if (bytes.length > MAX_FOTO_BYTES) return responder(false, 'La foto es demasiado grande.');
+  const props = PropertiesService.getScriptProperties();
+  const clave = 'foto_' + normRut(rut);
+  const lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    const anterior = props.getProperty(clave);
+    if (anterior) { try { DriveApp.getFileById(anterior).setTrashed(true); } catch (e) { /* ya no existe */ } }
+    const carpeta = subcarpeta(raiz(), CARPETA_FOTOS);
+    const archivo = carpeta.createFile(Utilities.newBlob(bytes, 'image/jpeg', limpiar(alumno + ' - ' + rut) + '.jpg'));
+    props.setProperty(clave, archivo.getId());
+    return responder(true, 'Foto actualizada.');
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function normRut(r) { return String(r).replace(/[\s.\-]/g, '').toUpperCase(); }
+
+/* Comprueba en el portal publicado que el RUT exista y no esté bloqueado;
+   si se indica un curso, además que esté matriculado en él. */
 function buscarAlumno(rut, curso) {
   const cache = CacheService.getScriptCache();
   let html = cache.get('portal');
@@ -69,13 +120,12 @@ function buscarAlumno(rut, curso) {
     html = UrlFetchApp.fetch(PORTAL_URL, { muteHttpExceptions: true }).getContentText();
     try { cache.put('portal', html, 600); } catch (e) { /* el portal es muy grande para la caché */ }
   }
-  const norm = r => r.replace(/[\s.\-]/g, '').toUpperCase();
   const lineas = html.split('\n');
   for (const l of lineas) {
     const m = l.match(/^\s*"([0-9.]+-[0-9Kk])": \{ nombre: "([^"]+)"/);
-    if (m && norm(m[1]) === norm(rut)) {
+    if (m && normRut(m[1]) === normRut(rut)) {
       if (l.indexOf('bloqueado: true') !== -1) return null;
-      if (l.indexOf('"' + curso + '"') === -1) return null;
+      if (curso && l.indexOf('"' + curso + '"') === -1) return null;
       return m[2];
     }
   }
