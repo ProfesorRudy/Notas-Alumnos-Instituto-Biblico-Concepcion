@@ -186,6 +186,9 @@ button:disabled { cursor: default; transform: none !important; }
 .reloj svg { width: 14px; height: 14px; color: var(--blue-500); }
 .reloj-sep { color: var(--ink-300); }
 .reloj-hora { font-weight: 700; color: var(--ink-800); font-variant-numeric: tabular-nums; }
+.alumno-ingreso { font-size: 0.74rem; color: var(--ink-400); margin-top: 2px; display: flex; align-items: flex-start; gap: 4px; line-height: 1.35; }
+.alumno-ingreso svg { width: 12px; height: 12px; flex-shrink: 0; margin-top: 2px; }
+.alumno-ingreso:empty { display: none; }
 .alumno-nombre { font-size: 1rem; font-weight: 700; color: var(--ink-900); line-height: 1.25; }
 .alumno-rut { font-size: 0.79rem; color: var(--ink-400); margin-top: 1px; }
 .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
@@ -502,6 +505,7 @@ a.contacto-item { text-decoration: none; color: inherit; }
       <div>
         <div class="alumno-nombre" id="alumno-nombre"></div>
         <div class="alumno-rut" id="alumno-rut-display"></div>
+        <div class="alumno-ingreso" id="alumno-ingreso"></div>
       </div>
       <div class="topbar-actions">
         <button class="btn-salir" onclick="salir()"><span class="ico-salir"></span>Salir</button>
@@ -1238,6 +1242,7 @@ function procesarIngreso(raw) {
   document.getElementById('avatar').textContent = initials(alumnoActual.nombre);
   document.getElementById('foto-aviso').className = 'foto-aviso';
   cargarFotoPerfil();
+  registrarIngreso();
   document.getElementById('alumno-nombre').textContent = alumnoActual.nombre;
   document.getElementById('alumno-rut-display').textContent = 'RUT: ' + key;
   renderMateriales();
@@ -1671,6 +1676,38 @@ function renderHistorialEntregas() {
     : h.map(e => '<div class="material-item"><div class="material-icon">' + ICONS.checkCircle + '</div>' +
         '<div class="material-info"><div class="material-nombre">' + escHtml(e.trabajo) + ' · ' + escHtml(e.curso) + '</div>' +
         '<div class="material-desc">' + escHtml(e.archivo) + ' · entregado el ' + escHtml(e.fecha) + '</div></div></div>').join('');
+}
+
+/* ---------- Último ingreso (se registra en Google Drive vía ENTREGAS_URL) ---------- */
+function textoIngreso(iso) {
+  const f = new Date(iso);
+  if (isNaN(f)) return '';
+  const zona = { timeZone: 'America/Santiago' };
+  const dia = d => d.toLocaleDateString('es-CL', { ...zona, year: 'numeric', month: '2-digit', day: '2-digit' });
+  const hora = f.toLocaleTimeString('es-CL', { ...zona, hour: '2-digit', minute: '2-digit', hour12: false });
+  const hoy = new Date();
+  const ayer = new Date(hoy.getTime() - 86400000);
+  if (dia(f) === dia(hoy)) return 'hoy a las ' + hora;
+  if (dia(f) === dia(ayer)) return 'ayer a las ' + hora;
+  const mismoAnio = f.toLocaleDateString('es-CL', { ...zona, year: 'numeric' }) === hoy.toLocaleDateString('es-CL', { ...zona, year: 'numeric' });
+  return f.toLocaleDateString('es-CL', { ...zona, weekday: 'long', day: 'numeric', month: 'long', ...(mismoAnio ? {} : { year: 'numeric' }) }).replace(',', '') + ', ' + hora;
+}
+
+function mostrarIngreso(iso) {
+  const el = document.getElementById('alumno-ingreso');
+  el.innerHTML = ICONS.clock + '<span>' + (iso ? 'Último ingreso: ' + textoIngreso(iso) : '¡Bienvenido! Es tu primer ingreso') + '</span>';
+}
+
+async function registrarIngreso() {
+  const rut = alumnoActual.rut;
+  let local = null;
+  try { local = localStorage.getItem('ingreso-' + rut); localStorage.setItem('ingreso-' + rut, new Date().toISOString()); } catch (e) { /* sin almacenamiento local */ }
+  mostrarIngreso(local);
+  if (!ENTREGAS_URL) return;
+  try {
+    const r = await (await fetch(ENTREGAS_URL, { method: 'POST', body: JSON.stringify({ accion: 'ingreso', rut: rut }) })).json();
+    if (r.ok && 'anterior' in r && alumnoActual && alumnoActual.rut === rut) mostrarIngreso(r.anterior);
+  } catch (e) { /* sin conexión: se mantiene lo guardado en este navegador */ }
 }
 
 /* ---------- Foto de perfil (se guarda en Google Drive vía ENTREGAS_URL) ---------- */
