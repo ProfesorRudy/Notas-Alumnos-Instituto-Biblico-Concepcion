@@ -178,6 +178,14 @@ button:disabled { cursor: default; transform: none !important; }
 .foto-aviso.ok { display: block; background: #e7f7ee; color: #146c3a; border: 1px solid #bfe6cf; }
 .foto-aviso.error { display: block; background: #fdecea; color: #b42318; border: 1px solid #f5c6c0; }
 .foto-aviso.info { display: block; background: var(--blue-50); color: var(--blue-700); border: 1px solid var(--blue-100); }
+.reloj {
+  display: inline-flex; align-items: center; gap: 7px; margin-top: 10px; padding: 5px 13px;
+  border-radius: 99px; background: var(--surface); border: 1px solid var(--border);
+  font-size: 0.8rem; color: var(--ink-500); box-shadow: var(--shadow-xs);
+}
+.reloj svg { width: 14px; height: 14px; color: var(--blue-500); }
+.reloj-sep { color: var(--ink-300); }
+.reloj-hora { font-weight: 700; color: var(--ink-800); font-variant-numeric: tabular-nums; }
 .alumno-nombre { font-size: 1rem; font-weight: 700; color: var(--ink-900); line-height: 1.25; }
 .alumno-rut { font-size: 0.79rem; color: var(--ink-400); margin-top: 1px; }
 .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
@@ -462,6 +470,7 @@ a.contacto-item { text-decoration: none; color: inherit; }
     <h1>Instituto Bíblico Concepción</h1>
     <p class="sub1">Interdenominacional</p>
     <p class="sub2">Portal del Alumno</p>
+    <div class="reloj" id="reloj" aria-live="off"><span class="ico-reloj"></span><span id="reloj-fecha"></span><span class="reloj-sep">·</span><span class="reloj-hora" id="reloj-hora"></span></div>
   </div>
 
   <!-- ============ VISTA: INGRESO ============ -->
@@ -585,7 +594,7 @@ const ICONS = {
 const ICON_SLOTS = {
   'ico-materiales': 'book', 'ico-tareas': 'tasks', 'ico-entregas': 'upload', 'ico-grupo': 'users', 'ico-notas': 'chart',
   'ico-asistencia': 'calendarCheck', 'ico-observaciones': 'fileEdit', 'ico-avisos': 'megaphone',
-  'ico-horario': 'clock', 'ico-profesor': 'user', 'ico-salir': 'logout', 'ico-toggle': 'panel',
+  'ico-horario': 'clock', 'ico-reloj': 'clock', 'ico-profesor': 'user', 'ico-salir': 'logout', 'ico-toggle': 'panel',
   'ico-idcard': 'idCard', 'avatar-cam': 'camera', 'ico-arrow': 'arrowRight', 'ico-alert': 'alertCircle'
 };
 for (const [slotClass, iconKey] of Object.entries(ICON_SLOTS)) {
@@ -1786,6 +1795,17 @@ function enviarMensaje(via) {
     window.location.href = 'mailto:' + profesor.correo + '?subject=' + encodeURIComponent(asunto) + '&body=' + encodeURIComponent(cuerpo);
   }
 }
+
+/* Reloj con la fecha y hora de Chile (Concepción). */
+function actualizarReloj() {
+  const ahora = new Date();
+  const zona = { timeZone: 'America/Santiago' };
+  const fecha = ahora.toLocaleDateString('es-CL', { ...zona, weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  document.getElementById('reloj-fecha').textContent = fecha.charAt(0).toUpperCase() + fecha.slice(1);
+  document.getElementById('reloj-hora').textContent = ahora.toLocaleTimeString('es-CL', { ...zona, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+}
+actualizarReloj();
+setInterval(actualizarReloj, 1000);
 
 document.getElementById('rut-input').addEventListener('keydown', e => { if (e.key === 'Enter') ingresar(); });
 document.getElementById('avatar-wrap').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); document.getElementById('foto-input').click(); } });
