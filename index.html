@@ -370,6 +370,38 @@ a.btn-descargar:hover { background: linear-gradient(180deg, var(--blue-500), var
 .pendiente-badge { background: var(--warn-bg); color: var(--warn); }
 .nota-pie { font-size: 0.76rem; color: var(--ink-400); text-align: center; margin-top: 14px; line-height: 1.5; }
 
+/* Entrega de trabajos */
+.entrega-form label { margin-bottom: 6px; font-size: 0.8rem; }
+.entrega-form select, .entrega-form textarea {
+  width: 100%; border: 1.5px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface-soft);
+  font-family: inherit; font-size: 0.92rem; color: var(--ink-900); padding: 10px 12px; margin-bottom: 12px; outline: none;
+}
+.entrega-form textarea { min-height: 70px; resize: vertical; line-height: 1.45; }
+.entrega-form select:focus, .entrega-form textarea:focus { border-color: var(--blue-400); box-shadow: 0 0 0 4px rgba(69,116,196,.16); background: var(--surface); }
+.dropzone {
+  border: 2px dashed var(--border-strong); border-radius: var(--radius-sm); background: var(--surface-soft);
+  padding: 26px 16px; text-align: center; cursor: pointer; margin-bottom: 12px; color: var(--ink-500);
+  transition: border-color .15s var(--ease), background .15s var(--ease);
+}
+.dropzone:hover, .dropzone.over { border-color: var(--blue-400); background: var(--blue-50); }
+.dropzone svg { width: 30px; height: 30px; color: var(--blue-500); margin-bottom: 6px; }
+.dropzone-titulo { font-size: 0.92rem; font-weight: 700; color: var(--ink-800); }
+.dropzone-sub { font-size: 0.76rem; color: var(--ink-400); margin-top: 3px; }
+.dropzone-link { color: var(--blue-500); text-decoration: underline; }
+.archivo-elegido { display: none; align-items: center; gap: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 13px; margin-bottom: 12px; background: var(--surface); }
+.archivo-elegido .material-info { min-width: 0; }
+.archivo-elegido .material-nombre { overflow-wrap: anywhere; }
+button.btn-quitar { background: none; color: var(--ink-500); box-shadow: none; padding: 6px 10px; font-size: 0.78rem; border: 1px solid var(--border); }
+button.btn-quitar:hover { background: var(--surface-sunk); color: var(--ink-800); transform: none; box-shadow: none; }
+.entrega-botones button { display: inline-flex; align-items: center; gap: 7px; font-size: 0.88rem; }
+.entrega-botones button svg { width: 16px; height: 16px; }
+.entrega-msg { display: none; font-size: 0.85rem; border-radius: var(--radius-sm); padding: 11px 13px; margin-top: 12px; line-height: 1.45; }
+.entrega-msg.ok { display: block; background: #e7f7ee; color: #146c3a; border: 1px solid #bfe6cf; }
+.entrega-msg.error { display: block; background: #fdecea; color: #b42318; border: 1px solid #f5c6c0; }
+.entrega-msg.info { display: block; background: var(--blue-50); color: var(--blue-700); border: 1px solid var(--blue-100); }
+.entrega-historial { margin-top: 4px; }
+.entrega-historial .material-item { margin-bottom: 7px; }
+
 /* Contacto del profesor */
 .profesor-perfil { display: flex; align-items: center; gap: 16px; margin-bottom: 1.1rem; }
 .profesor-foto {
@@ -453,6 +485,7 @@ a.contacto-item { text-decoration: none; color: inherit; }
         <nav class="nav-list">
           <button class="nav-item active" id="tab-materiales" onclick="mostrarSeccion('materiales')" title="Materias y Materiales"><span class="ico-materiales"></span><span class="nav-label">Materias y Materiales</span></button>
           <button class="nav-item" id="tab-tareas" onclick="mostrarSeccion('tareas')" title="Tareas a Realizar"><span class="ico-tareas"></span><span class="nav-label">Tareas a Realizar</span></button>
+          <button class="nav-item" id="tab-entregas" onclick="mostrarSeccion('entregas')" title="Entrega de Trabajos"><span class="ico-entregas"></span><span class="nav-label">Entrega de Trabajos</span></button>
           <button class="nav-item" id="tab-trabajogrupo" onclick="mostrarSeccion('trabajogrupo')" title="Trabajo en Grupo"><span class="ico-grupo"></span><span class="nav-label">Trabajo en Grupo</span></button>
           <button class="nav-item" id="tab-notas" onclick="mostrarSeccion('notas')" title="Mis Calificaciones"><span class="ico-notas"></span><span class="nav-label">Mis Calificaciones</span></button>
           <button class="nav-item" id="tab-asistencia" onclick="mostrarSeccion('asistencia')" title="Mi Asistencia"><span class="ico-asistencia"></span><span class="nav-label">Mi Asistencia</span></button>
@@ -466,6 +499,7 @@ a.contacto-item { text-decoration: none; color: inherit; }
       <main class="main-content">
         <div id="seccion-materiales"></div>
         <div id="seccion-tareas" style="display:none;"></div>
+        <div id="seccion-entregas" style="display:none;"></div>
         <div id="seccion-trabajogrupo" style="display:none;"></div>
         <div id="seccion-notas" style="display:none;"></div>
         <div id="seccion-asistencia" style="display:none;"></div>
@@ -490,6 +524,7 @@ document.getElementById('logo-ibc').src = LOGO_B64;
    1b) ICONOS (SVG minimalistas estilo Lucide — no es necesario editar)
    ===================================================================== */
 const ICONS = {
+  upload: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.5V4"/><path d="M7.5 8.5L12 4l4.5 4.5"/><path d="M4.5 15v3a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-3"/></svg>',
   whatsapp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.2 19.8l1.2-4.1A8.3 8.3 0 1 1 8.6 19l-4.4.8z"/><path d="M9.2 8.6c.2-.5.5-.6.8-.6h.5c.2 0 .4.1.5.4l.6 1.5c.1.2 0 .4-.1.6l-.5.6c.6 1.2 1.5 2.1 2.7 2.7l.6-.5c.2-.1.4-.2.6-.1l1.5.6c.3.1.4.3.4.5v.5c0 .3-.1.6-.6.8-1.3.6-3.2 0-4.8-1.6S8.6 9.9 9.2 8.6z"/></svg>',
   mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/></svg>',
   send: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 3.5L10 14"/><path d="M20.5 3.5l-6.5 17-4-6.5-6.5-4z"/></svg>',
@@ -526,7 +561,7 @@ const ICONS = {
 
 /* Inyecta cada icono en su placeholder <span class="ico-*"> del HTML estático. */
 const ICON_SLOTS = {
-  'ico-materiales': 'book', 'ico-tareas': 'tasks', 'ico-grupo': 'users', 'ico-notas': 'chart',
+  'ico-materiales': 'book', 'ico-tareas': 'tasks', 'ico-entregas': 'upload', 'ico-grupo': 'users', 'ico-notas': 'chart',
   'ico-asistencia': 'calendarCheck', 'ico-observaciones': 'fileEdit', 'ico-avisos': 'megaphone',
   'ico-horario': 'clock', 'ico-profesor': 'user', 'ico-salir': 'logout', 'ico-toggle': 'panel',
   'ico-idcard': 'idCard', 'ico-arrow': 'arrowRight', 'ico-alert': 'alertCircle'
@@ -1006,6 +1041,19 @@ const trabajoGrupo = {
 };
 
 /* =====================================================================
+   3e-00) ENTREGA DE TRABAJOS
+   ENTREGAS_URL: dirección de la aplicación web de Google Apps Script que guarda
+   los archivos en Google Drive (ver herramientas/entregas-apps-script.gs).
+   Vacío = la pestaña muestra que la entrega en línea aún no está habilitada.
+   trabajosEntrega: trabajos que se pueden elegir por curso. Si un curso no
+   aparece aquí, se usan los títulos de "Tareas a Realizar" y "Trabajo 1/2".
+   ===================================================================== */
+const ENTREGAS_URL = "";
+const trabajosEntrega = {
+  "Evangelio de Lucas": ["Trabajo 1", "Trabajo 2"]
+};
+
+/* =====================================================================
    3e-0) CONTACTO DEL PROFESOR  (edita aquí)
    whatsapp: número con código de país, ej: "+56 9 1234 5678" (vacío = no se muestra)
    foto: ruta de la imagen (si no existe, se muestran las iniciales)
@@ -1161,6 +1209,7 @@ function procesarIngreso(raw) {
   document.getElementById('alumno-rut-display').textContent = 'RUT: ' + key;
   renderMateriales();
   renderTareas();
+  renderEntregas();
   renderTrabajoGrupo();
   renderNotas();
   renderAsistencia();
@@ -1188,7 +1237,7 @@ function toggleSidebar() {
   document.getElementById('sidebar').classList.toggle('collapsed');
 }
 
-const SECCIONES = ['materiales', 'tareas', 'trabajogrupo', 'notas', 'asistencia', 'observaciones', 'avisos', 'horario', 'profesor'];
+const SECCIONES = ['materiales', 'tareas', 'entregas', 'trabajogrupo', 'notas', 'asistencia', 'observaciones', 'avisos', 'horario', 'profesor'];
 function mostrarSeccion(sec) {
   for (const s of SECCIONES) {
     document.getElementById('seccion-' + s).style.display = (s === sec) ? 'block' : 'none';
@@ -1447,6 +1496,149 @@ function renderHorario() {
 
 function escHtml(t) { return String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]); }
 function wspNumero() { return profesor.whatsapp.replace(/\D/g, ''); }
+
+const ENTREGA_MAX_MB = 10;
+const ENTREGA_EXT = ['doc', 'docx', 'pdf', 'odt', 'rtf', 'txt', 'ppt', 'pptx', 'jpg', 'jpeg', 'png'];
+let entregaArchivo = null;
+
+function opcionesTrabajo(curso) {
+  const lista = trabajosEntrega[curso] || [...(tareas[curso] || []).map(t => t.titulo), 'Trabajo 1', 'Trabajo 2'];
+  return [...new Set(lista), 'Otro trabajo'];
+}
+
+function tamanoLegible(b) { return b < 1024 * 1024 ? Math.max(1, Math.round(b / 1024)) + ' KB' : (b / 1024 / 1024).toFixed(1) + ' MB'; }
+
+function historialEntregas() {
+  try { return JSON.parse(localStorage.getItem('entregas-' + alumnoActual.rut) || '[]'); } catch (e) { return []; }
+}
+
+function renderEntregas() {
+  const cont = document.getElementById('seccion-entregas');
+  entregaArchivo = null;
+  if (sinCursos()) { cont.innerHTML = SIN_CURSOS; return; }
+  const cursos = cursosActivos();
+  if (cursos.length === 0) { cont.innerHTML = SIN_CURSOS_ACTIVOS; return; }
+  let html = '<div class="curso-card entrega-form"><div class="curso-titulo">' + ICONS.upload + ' Entregar un trabajo</div>';
+  if (!ENTREGAS_URL) {
+    html += '<p class="sin-materiales">La entrega en línea aún no está habilitada. Por ahora, envía tu trabajo al profesor desde la pestaña "Contacto del Profesor".</p></div>';
+    cont.innerHTML = html;
+    return;
+  }
+  html += '<label for="ent-curso">Curso</label><select id="ent-curso" onchange="actualizarTrabajos()">' +
+    cursos.map(c => '<option>' + escHtml(c) + '</option>').join('') + '</select>' +
+    '<label for="ent-trabajo">Trabajo</label><select id="ent-trabajo"></select>' +
+    '<label>Archivo</label>' +
+    '<div class="dropzone" id="ent-drop" role="button" tabindex="0" onclick="document.getElementById(\'ent-file\').click()">' +
+      ICONS.upload + '<div class="dropzone-titulo">Arrastra aquí tu archivo</div>' +
+      '<div class="dropzone-sub">o <span class="dropzone-link">haz clic para cargarlo</span> · Word, PDF u otro documento · máximo ' + ENTREGA_MAX_MB + ' MB</div></div>' +
+    '<input type="file" id="ent-file" accept=".' + ENTREGA_EXT.join(',.') + '" style="display:none" onchange="elegirArchivo(this.files[0])">' +
+    '<div class="archivo-elegido" id="ent-elegido"><div class="material-icon">' + ICONS.fileDoc + '</div>' +
+      '<div class="material-info"><div class="material-nombre" id="ent-nombre"></div><div class="material-desc" id="ent-tam"></div></div>' +
+      '<button type="button" class="btn-quitar" onclick="quitarArchivo()">Quitar</button></div>' +
+    '<label for="ent-comentario">Comentario para el profesor (opcional)</label><textarea id="ent-comentario" maxlength="1000"></textarea>' +
+    '<div class="entrega-botones"><button type="button" id="ent-enviar" onclick="enviarEntrega()">' + ICONS.upload + '<span>Entregar trabajo</span></button></div>' +
+    '<div class="entrega-msg" id="ent-msg"></div></div>';
+  html += '<div class="curso-card"><div class="curso-titulo">' + ICONS.checkCircle + ' Mis entregas en este dispositivo</div><div class="entrega-historial" id="ent-historial"></div></div>';
+  cont.innerHTML = html;
+  actualizarTrabajos();
+  renderHistorialEntregas();
+  const drop = document.getElementById('ent-drop');
+  drop.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); drop.click(); } });
+  ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('drop', e => { if (e.dataTransfer.files.length) elegirArchivo(e.dataTransfer.files[0]); });
+}
+
+function actualizarTrabajos() {
+  const curso = document.getElementById('ent-curso').value;
+  document.getElementById('ent-trabajo').innerHTML = opcionesTrabajo(curso).map(t => '<option>' + escHtml(t) + '</option>').join('');
+}
+
+function mensajeEntrega(tipo, texto) {
+  const m = document.getElementById('ent-msg');
+  m.className = 'entrega-msg ' + tipo;
+  m.innerHTML = texto;
+}
+
+function elegirArchivo(f) {
+  if (!f) return;
+  const ext = (f.name.split('.').pop() || '').toLowerCase();
+  if (!ENTREGA_EXT.includes(ext)) { mensajeEntrega('error', 'Ese tipo de archivo no se puede entregar. Usa Word (.doc, .docx), PDF u otro documento.'); return; }
+  if (f.size > ENTREGA_MAX_MB * 1024 * 1024) { mensajeEntrega('error', 'El archivo pesa ' + tamanoLegible(f.size) + '. El máximo es ' + ENTREGA_MAX_MB + ' MB.'); return; }
+  entregaArchivo = f;
+  document.getElementById('ent-nombre').textContent = f.name;
+  document.getElementById('ent-tam').textContent = tamanoLegible(f.size);
+  document.getElementById('ent-elegido').style.display = 'flex';
+  document.getElementById('ent-drop').style.display = 'none';
+  document.getElementById('ent-msg').className = 'entrega-msg';
+}
+
+function quitarArchivo() {
+  entregaArchivo = null;
+  document.getElementById('ent-file').value = '';
+  document.getElementById('ent-elegido').style.display = 'none';
+  document.getElementById('ent-drop').style.display = 'block';
+}
+
+function leerBase64(f) {
+  return new Promise((ok, fallo) => {
+    const r = new FileReader();
+    r.onload = () => ok(String(r.result).split(',')[1] || '');
+    r.onerror = () => fallo(r.error);
+    r.readAsDataURL(f);
+  });
+}
+
+async function enviarEntrega() {
+  if (!entregaArchivo) { mensajeEntrega('error', 'Primero carga el archivo de tu trabajo.'); return; }
+  const btn = document.getElementById('ent-enviar');
+  const curso = document.getElementById('ent-curso').value;
+  const trabajo = document.getElementById('ent-trabajo').value;
+  btn.disabled = true;
+  btn.querySelector('span').textContent = 'Enviando…';
+  mensajeEntrega('info', 'Subiendo tu archivo, no cierres esta página…');
+  try {
+    const datos = await leerBase64(entregaArchivo);
+    const resp = await fetch(ENTREGAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        rut: alumnoActual.rut, nombre: alumnoActual.nombre, curso: curso, tarea: trabajo,
+        archivo: entregaArchivo.name, tipo: entregaArchivo.type, datos: datos,
+        comentario: document.getElementById('ent-comentario').value.trim()
+      })
+    });
+    const r = await resp.json();
+    if (!r.ok) throw new Error(r.mensaje || 'No se pudo guardar el trabajo.');
+    const ahora = new Date();
+    const registro = { curso: curso, trabajo: trabajo, archivo: entregaArchivo.name,
+      fecha: ahora.toLocaleDateString('es-CL') + ' ' + ahora.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }) };
+    try {
+      const h = historialEntregas();
+      h.unshift(registro);
+      localStorage.setItem('entregas-' + alumnoActual.rut, JSON.stringify(h.slice(0, 30)));
+    } catch (e) { /* sin almacenamiento local: no se guarda el historial */ }
+    mensajeEntrega('ok', '<strong>✓ Trabajo recibido.</strong> ' + escHtml(trabajo) + ' · ' + escHtml(curso) + ' · ' + escHtml(registro.archivo) + ' (' + registro.fecha + ').');
+    quitarArchivo();
+    document.getElementById('ent-comentario').value = '';
+    renderHistorialEntregas();
+  } catch (err) {
+    mensajeEntrega('error', 'No se pudo entregar el trabajo: ' + escHtml(err.message) + '<br>Inténtalo de nuevo o envíalo al profesor desde "Contacto del Profesor".');
+  } finally {
+    btn.disabled = false;
+    btn.querySelector('span').textContent = 'Entregar trabajo';
+  }
+}
+
+function renderHistorialEntregas() {
+  const cont = document.getElementById('ent-historial');
+  if (!cont) return;
+  const h = historialEntregas();
+  cont.innerHTML = h.length === 0
+    ? '<p class="sin-materiales">Aún no has entregado trabajos desde este dispositivo.</p>'
+    : h.map(e => '<div class="material-item"><div class="material-icon">' + ICONS.checkCircle + '</div>' +
+        '<div class="material-info"><div class="material-nombre">' + escHtml(e.trabajo) + ' · ' + escHtml(e.curso) + '</div>' +
+        '<div class="material-desc">' + escHtml(e.archivo) + ' · entregado el ' + escHtml(e.fecha) + '</div></div></div>').join('');
+}
 
 function renderProfesor() {
   const cont = document.getElementById('seccion-profesor');
