@@ -3,7 +3,8 @@
  *
  * Guarda en Google Drive los archivos que los alumnos entregan desde la pestaña
  * "Entrega de Trabajos" del portal, y anota cada entrega en una planilla.
- * También guarda y entrega las fotos de perfil de los alumnos.
+ * También guarda y entrega las fotos de perfil de los alumnos, y registra cada
+ * ingreso al portal (hoja "Ingresos" de la misma planilla).
  *
  * Instalación (una sola vez):
  *   1. Entra a https://script.google.com con tu cuenta de Google y crea un "Proyecto nuevo".
@@ -35,6 +36,7 @@ function doPost(e) {
   try {
     const d = JSON.parse(e.postData.contents);
     if (d.accion === 'foto') return guardarFoto(d);
+    if (d.accion === 'ingreso') return registrarIngreso(d);
     const rut = String(d.rut || '').trim();
     const curso = String(d.curso || '').trim();
     const tarea = limpiar(String(d.tarea || '').trim()) || 'Trabajo';
@@ -104,6 +106,33 @@ function guardarFoto(d) {
     const archivo = carpeta.createFile(Utilities.newBlob(bytes, 'image/jpeg', limpiar(alumno + ' - ' + rut) + '.jpg'));
     props.setProperty(clave, archivo.getId());
     return responder(true, 'Foto actualizada.');
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/* Guarda la fecha de este ingreso y devuelve la del ingreso anterior. */
+function registrarIngreso(d) {
+  const rut = String(d.rut || '').trim();
+  if (!rut) return responder(false, 'Falta el RUT.');
+  const alumno = buscarAlumno(rut, null);
+  if (!alumno) return responder(false, 'RUT no habilitado en el portal.');
+  const props = PropertiesService.getScriptProperties();
+  const clave = 'ingreso_' + normRut(rut);
+  const ahora = new Date();
+  const lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    const anterior = props.getProperty(clave);
+    props.setProperty(clave, ahora.toISOString());
+    let hoja = registro().getParent().getSheetByName('Ingresos');
+    if (!hoja) {
+      hoja = registro().getParent().insertSheet('Ingresos');
+      hoja.appendRow(['Fecha', 'Alumno', 'RUT']);
+      hoja.setFrozenRows(1);
+    }
+    hoja.appendRow([ahora, alumno, rut]);
+    return responder(true, 'Ingreso registrado.', { anterior: anterior });
   } finally {
     lock.releaseLock();
   }
