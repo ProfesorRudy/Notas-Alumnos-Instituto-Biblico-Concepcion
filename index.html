@@ -421,6 +421,13 @@ a.btn-descargar svg { width: 14px; height: 14px; }
 a.btn-descargar:hover { background: linear-gradient(180deg, var(--blue-500), var(--blue-600)); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
 .material-audio { align-items: flex-start; flex-direction: column; }
 .material-audio audio { width: 100%; margin-top: 8px; height: 36px; }
+@media (max-width: 560px) {
+  /* En el celular: ícono y texto arriba usando todo el ancho; el botón abajo. */
+  .material-item { flex-wrap: wrap; row-gap: 10px; padding: 12px 13px; }
+  .material-item .material-info { flex: 1 1 calc(100% - 49px); }
+  .material-item > a.btn-descargar { margin-left: 49px; }
+  .curso-card { padding-left: 14px; padding-right: 14px; }
+}
 .sin-materiales { font-size: 0.84rem; color: var(--ink-400); text-align: center; padding: 14px; }
 
 /* Notas */
