@@ -106,7 +106,7 @@ td select { padding: .35rem .5rem; min-width: 170px; }
     <!-- Inscritas -->
     <div data-vista="inscritos" class="tarjeta">
       <div class="barra">
-        <input id="buscar" type="search" placeholder="Buscar por nombre, iglesia o código">
+        <input id="buscar" type="search" placeholder="Buscar por nombre, apellido, iglesia, teléfono o código">
         <select id="filtro">
           <option value="">Todas</option>
           <option value="sin">Sin hospedaje</option>
@@ -260,14 +260,17 @@ function opcionesHosp(seleccionado, textoVacio) {
 /* ---------- Inscritas ---------- */
 const seleccion = new Set();
 
+// Sin mayúsculas ni tildes: "jose" encuentra a "José".
+const normalizar = (t) => String(t).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
 function filtradas() {
-  const q = $('buscar').value.trim().toLowerCase();
+  const q = normalizar($('buscar').value.trim());
   const f = $('filtro').value;
   return datos.inscritos.filter(i => {
     if (f === 'sin' && i.hospedador) return false;
     if (f === 'con' && !i.hospedador) return false;
     if (!q) return true;
-    return [i.codigo, i.nombre, i.apellido, i.iglesia].join(' ').toLowerCase().includes(q);
+    return normalizar([i.codigo, i.nombre, i.apellido, i.iglesia, i.telefono].join(' ')).includes(q);
   });
 }
 
@@ -285,7 +288,8 @@ function pintarInscritos() {
       <td>${esc(i.telefono)}</td>
       <td><select data-asig="${esc(i.codigo)}">${opcionesHosp(i.hospedador, '— Sin hospedaje —')}</select>
         ${i.hospedador && !hp[i.hospedador] ? '<span class="chip lleno">código inválido</span>' : ''}</td>
-      <td><button class="boton peligro peque" data-borrar-ins="${esc(i.codigo)}" title="Eliminar inscripción">✕</button></td>
+      <td style="white-space:nowrap">${hp[i.hospedador] ? `<button class="boton suave peque" data-imprimir="${esc(i.codigo)}" title="Imprimir solo esta tarjeta">🖨 Tarjeta</button>` : ''}
+        <button class="boton peligro peque" data-borrar-ins="${esc(i.codigo)}" title="Eliminar inscripción">✕</button></td>
     </tr>`).join('') : `<tr><td colspan="8" class="vacio">No hay inscripciones${$('buscar').value || $('filtro').value ? ' con ese filtro' : ' todavía'}.</td></tr>`;
   $('masivo-hosp').innerHTML = opcionesHosp('', 'Quitar hospedaje');
   actualizarMasivo();
@@ -310,6 +314,7 @@ $('tbody-ins').addEventListener('change', (e) => {
   if (t.dataset.asig !== undefined) asignar([t.dataset.asig], t.value);
 });
 $('tbody-ins').addEventListener('click', (e) => {
+  if (e.target.dataset.imprimir) return imprimirUna(e.target.dataset.imprimir);
   const c = e.target.dataset.borrarIns;
   if (!c) return;
   const i = datos.inscritos.find(x => x.codigo === c);
@@ -410,12 +415,28 @@ $('lista-hosp').addEventListener('click', (e) => {
 /* ---------- Tarjetas ---------- */
 $('t-hosp').addEventListener('change', pintarTarjetas);
 
+// Imprime la tarjeta de una sola persona (por ejemplo, cuando llega al evento).
+let soloUna = '';
+function imprimirUna(codigo) {
+  soloUna = codigo;
+  pintarTarjetas();
+  document.querySelector('.pestanas button[data-p="tarjetas"]').click();
+  window.print();
+}
+window.addEventListener('afterprint', () => {
+  if (!soloUna) return;
+  soloUna = '';
+  pintarTarjetas();
+  document.querySelector('.pestanas button[data-p="inscritos"]').click();
+});
+
 function pintarTarjetas() {
   const actual = $('t-hosp').value;
   $('t-hosp').innerHTML = '<option value="">Todas las tarjetas</option>' +
     datos.hospedadores.map(h => `<option value="${esc(h.codigo)}" ${h.codigo === actual ? 'selected' : ''}>Solo huéspedes de ${esc(h.nombre)}</option>`).join('');
   const hp = hospPorCodigo();
-  const lista = datos.inscritos.filter(i => hp[i.hospedador] && (!actual || i.hospedador === actual));
+  const lista = datos.inscritos.filter(i => hp[i.hospedador] &&
+    (soloUna ? i.codigo === soloUna : (!actual || i.hospedador === actual)));
   const detalle = [EVENTO.fechas, EVENTO.lugar].filter(Boolean).join(' · ');
   $('vouchers').innerHTML = lista.length ? lista.map(i => {
     const h = hp[i.hospedador];
