@@ -24,6 +24,11 @@
  * la secuencia de comandos, agrega la propiedad CLAVE_PROFESOR con tu clave.
  * El panel del portal pide esa clave para mostrar ingresos y entregas.
  *
+ * Planilla de datos (opcional): sube "Portal IBC - Datos" a tu Drive como Hojas de
+ * cálculo de Google y agrega la propiedad PLANILLA_DATOS con su ID (lo que va entre
+ * /d/ y /edit en su dirección). Desde ese momento el portal lee de ahí alumnos,
+ * notas, asistencia, materiales, tareas, horarios, observaciones y avisos.
+ *
  * Para actualizar el código: pega la versión nueva, guarda y luego
  * Implementar > Gestionar implementaciones > Editar (lápiz) > Versión: Nueva versión > Implementar.
  * Así la URL no cambia.
@@ -42,6 +47,7 @@ function doPost(e) {
     if (d.accion === 'foto') return guardarFoto(d);
     if (d.accion === 'ingreso') return registrarIngreso(d);
     if (d.accion === 'panel') return datosPanel(d);
+    if (d.accion === 'datos') return datosAlumno(d);
     const rut = String(d.rut || '').trim();
     const curso = String(d.curso || '').trim();
     const tarea = limpiar(String(d.tarea || '').trim()) || 'Trabajo';
@@ -51,7 +57,7 @@ function doPost(e) {
     if (!rut || !curso || !nombreArchivo || !d.datos) return responder(false, 'Faltan datos de la entrega.');
     if (EXTENSIONES.indexOf(ext) === -1) return responder(false, 'Tipo de archivo no permitido.');
 
-    const alumno = buscarAlumno(rut, curso);
+    const alumno = buscarAlumno(rut, curso, d.clave);
     if (!alumno) return responder(false, 'El RUT no está matriculado en este curso.');
 
     const bytes = Utilities.base64Decode(d.datos);
@@ -96,7 +102,7 @@ function doGet(e) {
 function guardarFoto(d) {
   const rut = String(d.rut || '').trim();
   if (!rut || !d.datos) return responder(false, 'Faltan datos de la foto.');
-  const alumno = buscarAlumno(rut, null);
+  const alumno = buscarAlumno(rut, null, d.clave);
   if (!alumno) return responder(false, 'RUT no habilitado en el portal.');
   const bytes = Utilities.base64Decode(d.datos);
   if (bytes.length > MAX_FOTO_BYTES) return responder(false, 'La foto es demasiado grande.');
@@ -120,7 +126,7 @@ function guardarFoto(d) {
 function registrarIngreso(d) {
   const rut = String(d.rut || '').trim();
   if (!rut) return responder(false, 'Falta el RUT.');
-  const alumno = buscarAlumno(rut, null);
+  const alumno = buscarAlumno(rut, null, d.clave);
   if (!alumno) return responder(false, 'RUT no habilitado en el portal.');
   const props = PropertiesService.getScriptProperties();
   const clave = 'ingreso_' + normRut(rut);
@@ -161,14 +167,165 @@ function datosPanel(d) {
     fecha: iso(f[0]), alumno: f[1], rut: f[2], curso: f[3], trabajo: f[4], archivo: f[5], comentario: f[6], enlace: f[7]
   }));
   const ingresos = filas(libro.getSheetByName('Ingresos')).map(f => ({ fecha: iso(f[0]), alumno: f[1], rut: f[2] }));
-  return responder(true, 'Datos del panel.', { entregas: entregas, ingresos: ingresos, planilla: libro.getUrl() });
+  const extra = { entregas: entregas, ingresos: ingresos, planilla: libro.getUrl() };
+  const datos = leerDatos();
+  if (datos) {
+    // Con planilla de datos, el portal ya no trae alumnos ni asistencia en su código.
+    const alumnos = {}, asistencia = {};
+    for (const a of Object.values(datos.alumnos)) {
+      alumnos[a.rut] = { nombre: a.nombre, bloqueado: a.bloqueado, cursos: a.cursos };
+      asistencia[a.rut] = datos.asistencia[normRut(a.rut)] || {};
+    }
+    extra.datos = { alumnos: alumnos, asistencia: asistencia, tareas: datos.tareas, cursosCursados: datos.cursosCursados };
+    extra.datosPlanilla = datos.url;
+  }
+  return responder(true, 'Datos del panel.', extra);
 }
 
 function normRut(r) { return String(r).replace(/[\s.\-]/g, '').toUpperCase(); }
 
-/* Comprueba en el portal publicado que el RUT exista y no esté bloqueado;
-   si se indica un curso, además que esté matriculado en él. */
-function buscarAlumno(rut, curso) {
+/* ===================== PLANILLA DE DATOS ===================== */
+
+/* Ingreso de un alumno: valida RUT (y clave, si el alumno tiene una) y devuelve solo sus datos. */
+function datosAlumno(d) {
+  const datos = leerDatos();
+  if (!datos) return responder(false, 'La planilla de datos no está configurada.', { codigo: 'sin_planilla' });
+  const a = datos.alumnos[normRut(d.rut || '')];
+  if (!a) return responder(false, 'RUT no encontrado. Verifica que esté bien escrito, incluyendo el guión y el dígito verificador.', { codigo: 'rut' });
+  if (a.bloqueado) return responder(false, 'Tu acceso al portal está temporalmente restringido. Contacta a tu profesor.', { codigo: 'bloqueado' });
+  if (a.clave) {
+    if (!d.clave) return responder(false, 'Ingresa tu clave.', { codigo: 'clave' });
+    if (String(d.clave).trim() !== a.clave) {
+      Utilities.sleep(1500); // frena intentos de adivinar claves
+      return responder(false, 'Clave incorrecta. Si no la recuerdas, pídela a tu profesor.', { codigo: 'clave_mala' });
+    }
+  }
+  const cursos = Object.keys(a.cursos);
+  const deCursos = obj => { const o = {}; for (const c of cursos) if (obj[c]) o[c] = obj[c]; return o; };
+  return responder(true, 'Datos del alumno.', {
+    alumno: { rut: a.rut, nombre: a.nombre, cursos: a.cursos },
+    cursadas: a.cursadas,
+    asistencia: datos.asistencia[normRut(a.rut)] || {},
+    materiales: deCursos(datos.materiales),
+    tareas: deCursos(datos.tareas),
+    trabajoGrupo: deCursos(datos.trabajoGrupo),
+    horarios: deCursos(datos.horarios),
+    observacionesCurso: deCursos(datos.observacionesCurso),
+    observaciones: datos.observaciones[normRut(a.rut)] || [],
+    avisos: datos.avisos.filter(x => !x.curso || cursos.indexOf(x.curso) !== -1)
+  });
+}
+
+/* Lee toda la planilla y la convierte al formato del portal (en caché 30 s). */
+function leerDatos() {
+  const id = PropertiesService.getScriptProperties().getProperty('PLANILLA_DATOS');
+  if (!id) return null;
+  const cache = CacheService.getScriptCache();
+  const enCache = cache.get('datos');
+  if (enCache) return JSON.parse(enCache);
+
+  const libro = SpreadsheetApp.openById(id.trim());
+  const tabla = nombre => {
+    const h = libro.getSheetByName(nombre);
+    if (!h || h.getLastRow() < 2) return [];
+    return h.getRange(2, 1, h.getLastRow() - 1, h.getLastColumn()).getDisplayValues()
+      .map(f => f.map(v => String(v).trim()))
+      .filter(f => f.some(v => v !== ''));
+  };
+  const porCurso = (filas, armar) => {
+    const o = {};
+    for (const f of filas) { if (!f[0]) continue; (o[f[0]] = o[f[0]] || []).push(armar(f)); }
+    return o;
+  };
+
+  const datos = { url: libro.getUrl(), alumnos: {}, asistencia: {}, observaciones: {}, cursosCursados: [] };
+  for (const f of tabla('Alumnos')) {
+    if (!f[0]) continue;
+    datos.alumnos[normRut(f[0])] = { rut: f[0], nombre: f[1], clave: f[2], bloqueado: /^s[ií]/i.test(f[3]), cursos: {}, cursadas: [] };
+  }
+  const cursando = {}, cursada = {};
+  for (const f of tabla('Notas')) {
+    const a = datos.alumnos[normRut(f[0])];
+    if (!a || !f[2]) continue;
+    a.cursos[f[2]] = { t1: nota(f[3]), t2: nota(f[4]), ex: nota(f[5]), notaFinal: nota(f[6]) };
+    if (/cursada/i.test(f[7])) { a.cursadas.push(f[2]); cursada[f[2]] = true; } else cursando[f[2]] = true;
+  }
+  datos.cursosCursados = Object.keys(cursada).filter(c => !cursando[c]);
+
+  const estados = { '/': 'Presente', 'x': 'Ausente', '%': 'Media clase', 'a': 'Atraso',
+    'presente': 'Presente', 'ausente': 'Ausente', 'media clase': 'Media clase', 'atraso': 'Atraso' };
+  for (const h of libro.getSheets()) {
+    if (!/^asist/i.test(h.getName()) || h.getLastRow() < 2) continue;
+    const v = h.getRange(1, 1, h.getLastRow(), h.getLastColumn()).getDisplayValues();
+    const fCab = v.findIndex(f => String(f[0]).trim().toUpperCase() === 'RUT');
+    if (fCab < 1) continue; // falta la fila 1 con el nombre del curso
+    const curso = String(v[0][0]).split('·')[0].trim();
+    const fechas = v[fCab].map(fechaTexto);
+    for (const f of v.slice(fCab + 1)) {
+      if (!f[0]) continue;
+      const k = normRut(f[0]);
+      const regs = [];
+      for (let c = 2; c < f.length; c++) {
+        const est = estados[String(f[c]).trim().toLowerCase()];
+        if (est && fechas[c]) regs.push({ fecha: fechas[c], estado: est });
+      }
+      if (regs.length) (datos.asistencia[k] = datos.asistencia[k] || {})[curso] = regs;
+    }
+  }
+
+  const tipos = { pdf: 'pdf', word: 'doc', powerpoint: 'ppt', video: 'video', audio: 'audio', enlace: 'link' };
+  const material = f => ({ titulo: f[1], desc: f[2], tipo: tipos[String(f[3]).toLowerCase()] || 'pdf', url: f[4] });
+  datos.materiales = porCurso(tabla('Materiales'), material);
+  datos.trabajoGrupo = porCurso(tabla('Trabajo en grupo'), material);
+  datos.tareas = porCurso(tabla('Tareas'), f => {
+    const t = { titulo: f[1], desc: f[2], fecha: fechaTexto(f[3]) };
+    if (f[4]) t.url = f[4];
+    return t;
+  });
+  datos.horarios = {};
+  for (const f of tabla('Horarios')) if (f[0]) datos.horarios[f[0]] = { dia: f[1], hora: f[2], modalidad: f[3], lugar: f[4] };
+  datos.observacionesCurso = porCurso(tabla('Obs. por curso'), f => ({ fecha: fechaTexto(f[1]), texto: f[2] }));
+  for (const f of tabla('Obs. por alumno')) {
+    if (!f[0]) continue;
+    (datos.observaciones[normRut(f[0])] = datos.observaciones[normRut(f[0])] || []).push({ fecha: fechaTexto(f[2]), texto: f[3] });
+  }
+  datos.avisos = tabla('Avisos').filter(f => f[3] || f[2]).map(f => ({ fecha: fechaTexto(f[0]), curso: f[1], titulo: f[2], texto: f[3] }));
+
+  try { cache.put('datos', JSON.stringify(datos), 30); } catch (e) { /* demasiado grande para la caché */ }
+  return datos;
+}
+
+/* "100", "85,5" o vacío → número o null. */
+function nota(v) {
+  const t = String(v).replace(',', '.').trim();
+  if (t === '') return null;
+  const n = parseFloat(t);
+  return isNaN(n) ? null : n;
+}
+
+/* Acepta 6/10/2026, 06-10-2026 o 2026-10-06 y devuelve DD-MM-AAAA. */
+function fechaTexto(v) {
+  const t = String(v || '').trim();
+  let m = t.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/);
+  if (m) return pad2(m[1]) + '-' + pad2(m[2]) + '-' + (m[3].length === 2 ? '20' + m[3] : m[3]);
+  m = t.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if (m) return pad2(m[3]) + '-' + pad2(m[2]) + '-' + m[1];
+  return t;
+}
+function pad2(n) { return ('0' + n).slice(-2); }
+
+/* Comprueba que el RUT exista, no esté bloqueado y (si se indica) tenga el curso.
+   Usa la planilla de datos si está configurada (y entonces valida también la clave);
+   si no, revisa el portal publicado. */
+function buscarAlumno(rut, curso, claveAlumno) {
+  const datos = leerDatos();
+  if (datos) {
+    const a = datos.alumnos[normRut(rut)];
+    if (!a || a.bloqueado) return null;
+    if (a.clave && String(claveAlumno || '').trim() !== a.clave) return null;
+    if (curso && !a.cursos[curso]) return null;
+    return a.nombre;
+  }
   const cache = CacheService.getScriptCache();
   let html = cache.get('portal');
   if (!html) {
