@@ -44,6 +44,7 @@ td select { padding: .35rem .5rem; min-width: 170px; }
 .voucher .top { background: var(--accent); color: #fff; padding: .8rem 1rem; display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
 .voucher .top small { display: block; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; opacity: .85; }
 .voucher .top strong { font-family: 'Fraunces', Georgia, serif; font-size: 1.15rem; line-height: 1.2; }
+.voucher .logo-v { width: 58px; height: 58px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
 .voucher .top .cod { font-weight: 700; background: rgba(255,255,255,.18); border-radius: 8px; padding: .2rem .5rem; white-space: nowrap; }
 .voucher .cuerpo { padding: .9rem 1rem 1rem; }
 .voucher .bloque { margin-bottom: .75rem; }
@@ -68,9 +69,14 @@ td select { padding: .35rem .5rem; min-width: 170px; }
 <main class="envoltura ancha">
   <header class="cabecera no-imprimir">
     <p style="text-align:left;margin-bottom:.5rem"><a href="index.html" style="color:var(--accent-dark);font-weight:700">← Volver a la inscripción</a></p>
-    <span class="sello" id="ev-organiza"></span>
-    <h1 id="ev-nombre"></h1>
-    <p>Panel de administración · inscripciones y hospedaje</p>
+    <div class="con-logo">
+      <img class="logo" src="logo.jpg" alt="Logo Iglesia Evangélica Pentecostés Internacional LAN-C">
+      <div>
+        <span class="sello" id="ev-organiza"></span>
+        <h1 id="ev-nombre"></h1>
+        <p>Panel de administración · inscripciones y hospedaje</p>
+      </div>
+    </div>
   </header>
 
   <!-- Ingreso -->
@@ -415,7 +421,8 @@ function pintarTarjetas() {
     const h = hp[i.hospedador];
     return `<article class="voucher">
       <div class="top">
-        <div><small>${esc(EVENTO.organiza)}</small><strong>${esc(EVENTO.nombre)}</strong></div>
+        <img class="logo-v" src="logo.jpg" alt="">
+        <div style="flex:1"><small>${esc(EVENTO.organiza)}</small><strong>${esc(EVENTO.nombre)}</strong></div>
         <span class="cod">${esc(i.codigo)}</span>
       </div>
       <div class="cuerpo">
