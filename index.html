@@ -189,6 +189,60 @@ button:disabled { cursor: default; transform: none !important; }
 .alumno-ingreso { font-size: 0.74rem; color: var(--ink-400); margin-top: 2px; display: flex; align-items: flex-start; gap: 4px; line-height: 1.35; }
 .alumno-ingreso svg { width: 12px; height: 12px; flex-shrink: 0; margin-top: 2px; }
 .alumno-ingreso:empty { display: none; }
+/* Panel del profesor */
+.acceso-profesor { text-align: center; margin-top: 12px; font-size: 0.78rem; }
+.acceso-profesor a { color: var(--ink-400); text-decoration: none; border-bottom: 1px dotted var(--ink-300); }
+.acceso-profesor a:hover { color: var(--blue-600); border-color: var(--blue-400); }
+#vista-profe-login #btn-profe { min-width: 96px; }
+.profe-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.profe-topbar .btn-salir { display: inline-flex; align-items: center; gap: 6px; }
+.profe-topbar .btn-salir svg { width: 15px; height: 15px; }
+.profe-body { padding: 1.3rem 1.4rem 1.6rem; }
+.profe-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 1.1rem; }
+.profe-toolbar label { margin: 0; }
+.profe-toolbar select {
+  flex: 1; min-width: 200px; max-width: 360px; border: 1.5px solid var(--border-strong); border-radius: var(--radius-sm);
+  background: var(--surface-soft); font-family: inherit; font-size: 0.92rem; color: var(--ink-900); padding: 9px 12px;
+}
+.profe-toolbar a.btn-descargar span svg, .profe-toolbar a.btn-descargar svg { width: 14px; height: 14px; }
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+.kpi { background: var(--surface-soft); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; }
+.kpi-label { font-size: 0.72rem; color: var(--ink-500); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.kpi-valor { font-size: 1.55rem; font-weight: 800; color: var(--ink-900); margin-top: 4px; font-variant-numeric: tabular-nums; }
+.kpi-sub { font-size: 0.74rem; color: var(--ink-400); margin-top: 1px; }
+.tabla-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+table.profe-tabla { width: 100%; min-width: 540px; border-collapse: collapse; font-size: 0.83rem; }
+.profe-tabla td:first-child { min-width: 190px; }
+.profe-tabla th { text-align: left; font-size: 0.7rem; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-500); background: var(--surface-soft); padding: 9px 11px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.profe-tabla td { padding: 9px 11px; border-bottom: 1px solid var(--border); color: var(--ink-800); vertical-align: top; }
+.profe-tabla tr:last-child td { border-bottom: none; }
+.profe-tabla td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.profe-tabla .rut { color: var(--ink-400); font-size: 0.74rem; }
+.tag { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+.tag.ok { background: #e7f7ee; color: #146c3a; }
+.tag.mal { background: #fdecea; color: #b42318; }
+.tag.medio { background: #fff4e5; color: #a15c07; }
+.tag.gris { background: var(--surface-sunk); color: var(--ink-500); }
+.trabajo-bloque { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 10px; }
+.trabajo-cab { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.trabajo-nombre { font-weight: 700; color: var(--ink-900); font-size: 0.92rem; }
+.barra { height: 7px; background: var(--surface-sunk); border-radius: 99px; overflow: hidden; margin-bottom: 10px; }
+.barra > span { display: block; height: 100%; background: linear-gradient(90deg, var(--blue-400), var(--blue-600)); border-radius: 99px; }
+.sub-titulo { font-size: 0.74rem; font-weight: 700; color: var(--ink-500); text-transform: uppercase; letter-spacing: .04em; margin: 8px 0 6px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 0.76rem; background: var(--surface-soft); border: 1px solid var(--border); border-radius: 99px; padding: 3px 10px; color: var(--ink-700); }
+.chip.pendiente { background: #fff4e5; border-color: #f6dcb4; color: #8a4b05; }
+.entrega-linea { display: flex; gap: 8px; align-items: baseline; font-size: 0.8rem; padding: 4px 0; border-top: 1px dashed var(--border); }
+.entrega-linea:first-child { border-top: none; }
+.entrega-linea a { color: var(--blue-600); font-weight: 600; text-decoration: none; overflow-wrap: anywhere; }
+.entrega-linea a:hover { text-decoration: underline; }
+.entrega-linea .cuando { color: var(--ink-400); white-space: nowrap; margin-left: auto; font-size: 0.74rem; }
+.profe-nota { font-size: 0.76rem; color: var(--ink-400); margin-top: 8px; line-height: 1.45; }
+@media (max-width: 768px) {
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .profe-body { padding: 1rem; }
+  .profe-topbar .btn-txt { display: none; }
+}
 .alumno-nombre { font-size: 1rem; font-weight: 700; color: var(--ink-900); line-height: 1.25; }
 .alumno-rut { font-size: 0.79rem; color: var(--ink-400); margin-top: 1px; }
 .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
@@ -492,6 +546,45 @@ a.contacto-item { text-decoration: none; color: inherit; }
     </div>
     <div class="error" id="error-msg"><span class="error-icon ico-alert"></span><span class="error-text"></span></div>
     <p class="hint">Puedes escribirlo con o sin puntos, pero siempre con el guión (ej: 12.345.678-9).</p>
+    <p class="acceso-profesor"><a href="#profesor" onclick="abrirAccesoProfesor(); return false;">Acceso profesor</a></p>
+  </div>
+
+  <!-- ============ VISTA: ACCESO DEL PROFESOR ============ -->
+  <div class="card" id="vista-profe-login" style="display:none;">
+    <div class="login-eyebrow">Panel del profesor</div>
+    <label for="clave-input">Clave del profesor</label>
+    <div class="input-row">
+      <div class="input-wrap">
+        <span class="input-icon ico-candado"></span>
+        <input type="password" id="clave-input" placeholder="Tu clave" autocomplete="current-password">
+      </div>
+      <button id="btn-profe" onclick="ingresarProfesor()">Entrar</button>
+    </div>
+    <div class="error" id="profe-error"><span class="error-icon ico-alert2"></span><span class="error-text"></span></div>
+    <p class="acceso-profesor"><a href="#" onclick="volverAlIngreso(); return false;">← Volver al acceso de alumnos</a></p>
+  </div>
+
+  <!-- ============ VISTA: PANEL DEL PROFESOR ============ -->
+  <div class="dashboard-shell" id="vista-profe" style="display:none;">
+    <div class="dashboard-topbar profe-topbar">
+      <div class="avatar profe-avatar" id="profe-avatar"></div>
+      <div>
+        <div class="alumno-nombre">Panel del profesor</div>
+        <div class="alumno-rut" id="profe-sub"></div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn-salir" onclick="cargarPanelProfesor()" title="Actualizar datos"><span class="ico-refresh"></span><span class="btn-txt">Actualizar</span></button>
+        <button class="btn-salir" onclick="salirProfesor()"><span class="ico-salir2"></span><span class="btn-txt">Salir</span></button>
+      </div>
+    </div>
+    <div class="profe-body">
+      <div class="profe-toolbar">
+        <label for="profe-curso">Curso</label>
+        <select id="profe-curso" onchange="renderPanelProfesor()"></select>
+        <a class="btn-descargar" id="profe-planilla" href="#" target="_blank" rel="noopener" style="display:none;"><span class="ico-external"></span><span>Abrir planilla</span></a>
+      </div>
+      <div id="profe-contenido"></div>
+    </div>
   </div>
 
   <!-- ============ VISTA: PANEL DEL ALUMNO ============ -->
@@ -558,6 +651,8 @@ document.getElementById('logo-ibc').src = LOGO_B64;
    1b) ICONOS (SVG minimalistas estilo Lucide — no es necesario editar)
    ===================================================================== */
 const ICONS = {
+  lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>',
+  refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3.5V8h4.5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 20.5V16h-4.5"/></svg>',
   camera: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.5-2.5h7L17 8h3v11H4z"/><circle cx="12" cy="13.2" r="3.3"/></svg>',
   upload: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.5V4"/><path d="M7.5 8.5L12 4l4.5 4.5"/><path d="M4.5 15v3a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-3"/></svg>',
   whatsapp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.2 19.8l1.2-4.1A8.3 8.3 0 1 1 8.6 19l-4.4.8z"/><path d="M9.2 8.6c.2-.5.5-.6.8-.6h.5c.2 0 .4.1.5.4l.6 1.5c.1.2 0 .4-.1.6l-.5.6c.6 1.2 1.5 2.1 2.7 2.7l.6-.5c.2-.1.4-.2.6-.1l1.5.6c.3.1.4.3.4.5v.5c0 .3-.1.6-.6.8-1.3.6-3.2 0-4.8-1.6S8.6 9.9 9.2 8.6z"/></svg>',
@@ -599,7 +694,7 @@ const ICON_SLOTS = {
   'ico-materiales': 'book', 'ico-tareas': 'tasks', 'ico-entregas': 'upload', 'ico-grupo': 'users', 'ico-notas': 'chart',
   'ico-asistencia': 'calendarCheck', 'ico-observaciones': 'fileEdit', 'ico-avisos': 'megaphone',
   'ico-horario': 'clock', 'ico-reloj': 'clock', 'ico-profesor': 'user', 'ico-salir': 'logout', 'ico-toggle': 'panel',
-  'ico-idcard': 'idCard', 'avatar-cam': 'camera', 'ico-arrow': 'arrowRight', 'ico-alert': 'alertCircle'
+  'ico-idcard': 'idCard', 'ico-candado': 'lock', 'ico-alert2': 'alertCircle', 'ico-refresh': 'refresh', 'ico-salir2': 'logout', 'ico-external': 'external', 'avatar-cam': 'camera', 'ico-arrow': 'arrowRight', 'ico-alert': 'alertCircle'
 };
 for (const [slotClass, iconKey] of Object.entries(ICON_SLOTS)) {
   const el = document.querySelector('.' + slotClass);
@@ -1678,6 +1773,227 @@ function renderHistorialEntregas() {
         '<div class="material-desc">' + escHtml(e.archivo) + ' · entregado el ' + escHtml(e.fecha) + '</div></div></div>').join('');
 }
 
+/* =====================================================================
+   PANEL DEL PROFESOR
+   La clave se valida en el script de Google (propiedad CLAVE_PROFESOR);
+   sin ella el panel no muestra nada.
+   ===================================================================== */
+let profeClave = null;
+let profeDatos = null;
+
+function mostrarVista(id) {
+  for (const v of ['vista-login', 'vista-panel', 'vista-profe-login', 'vista-profe']) {
+    document.getElementById(v).style.display = (v === id) ? 'block' : 'none';
+  }
+  document.body.classList.toggle('logged-in', id === 'vista-panel' || id === 'vista-profe');
+}
+
+function abrirAccesoProfesor() {
+  let guardada = null;
+  try { guardada = sessionStorage.getItem('clave-profesor'); } catch (e) { /* sin almacenamiento */ }
+  if (guardada) { profeClave = guardada; entrarPanelProfesor(); return; }
+  mostrarVista('vista-profe-login');
+  document.getElementById('clave-input').value = '';
+  document.getElementById('profe-error').style.display = 'none';
+  document.getElementById('clave-input').focus();
+}
+
+function volverAlIngreso() {
+  if (location.hash === '#profesor') history.replaceState(null, '', location.pathname);
+  mostrarVista('vista-login');
+  document.getElementById('rut-input').focus();
+}
+
+function errorProfesor(msg) {
+  const e = document.getElementById('profe-error');
+  e.querySelector('.error-text').textContent = msg;
+  e.style.display = 'flex';
+}
+
+async function pedirDatosPanel(clave) {
+  if (!ENTREGAS_URL) throw new Error('El portal no está conectado a Google Drive.');
+  const r = await (await fetch(ENTREGAS_URL, { method: 'POST', body: JSON.stringify({ accion: 'panel', clave: clave }) })).json();
+  if (!r.ok) throw new Error(r.mensaje || 'No se pudieron obtener los datos.');
+  return r;
+}
+
+async function ingresarProfesor() {
+  const clave = document.getElementById('clave-input').value;
+  if (!clave) { errorProfesor('Escribe tu clave.'); return; }
+  const btn = document.getElementById('btn-profe');
+  btn.disabled = true; btn.textContent = 'Verificando…';
+  try {
+    profeDatos = await pedirDatosPanel(clave);
+    profeClave = clave;
+    try { sessionStorage.setItem('clave-profesor', clave); } catch (e) { /* sin almacenamiento */ }
+    entrarPanelProfesor(true);
+  } catch (err) {
+    errorProfesor(err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Entrar';
+  }
+}
+
+function entrarPanelProfesor(yaCargado) {
+  const sel = document.getElementById('profe-curso');
+  const cursos = cursosDelPanel();
+  sel.innerHTML = cursos.map(c => '<option>' + escHtml(c) + '</option>').join('');
+  if (cursos.includes('Evangelio de Lucas')) sel.value = 'Evangelio de Lucas';
+  document.getElementById('profe-avatar').innerHTML = profesor.foto
+    ? '<img src="' + escHtml(profesor.foto) + '" alt="" onerror="this.parentNode.textContent=\'' + escHtml(initials(profesor.nombre)) + '\'">'
+    : escHtml(initials(profesor.nombre));
+  mostrarVista('vista-profe');
+  if (yaCargado) renderPanelProfesor(); else cargarPanelProfesor();
+}
+
+async function cargarPanelProfesor() {
+  const cont = document.getElementById('profe-contenido');
+  cont.innerHTML = '<p class="sin-materiales">Cargando datos desde Google Drive…</p>';
+  try {
+    profeDatos = await pedirDatosPanel(profeClave);
+    renderPanelProfesor();
+  } catch (err) {
+    if (/clave/i.test(err.message)) { salirProfesor(); errorProfesor(err.message); return; }
+    cont.innerHTML = '<p class="entrega-msg error">No se pudieron cargar los datos: ' + escHtml(err.message) + '</p>';
+  }
+}
+
+function salirProfesor() {
+  profeClave = null; profeDatos = null;
+  try { sessionStorage.removeItem('clave-profesor'); } catch (e) { /* sin almacenamiento */ }
+  abrirAccesoProfesor();
+}
+
+function cursosDelPanel() {
+  const set = new Set();
+  for (const a of Object.values(alumnos)) for (const c of Object.keys(a.cursos)) if (!CURSOS_SOLO_CALIFICACIONES.includes(c)) set.add(c);
+  return [...set].sort((a, b) => a.localeCompare(b, 'es'));
+}
+
+function fechaCorta(iso) {
+  const f = new Date(iso);
+  if (isNaN(f)) return '—';
+  return f.toLocaleDateString('es-CL', { timeZone: 'America/Santiago', day: '2-digit', month: '2-digit' }) + ' ' +
+    f.toLocaleTimeString('es-CL', { timeZone: 'America/Santiago', hour: '2-digit', minute: '2-digit', hour12: false });
+}
+
+function pctAsistencia(registros) {
+  if (!registros || registros.length === 0) return null;
+  const puntos = registros.reduce((acc, r) => acc + (r.estado === 'Presente' ? 1 : (r.estado === 'Media clase' ? 0.5 : 0)), 0);
+  return Math.round((puntos / registros.length) * 100);
+}
+
+function renderPanelProfesor() {
+  if (!profeDatos) return;
+  const curso = document.getElementById('profe-curso').value;
+  const cont = document.getElementById('profe-contenido');
+  const planilla = document.getElementById('profe-planilla');
+  if (profeDatos.planilla) { planilla.href = profeDatos.planilla; planilla.style.display = 'inline-flex'; }
+  document.getElementById('profe-sub').textContent = profesor.nombre + ' · datos actualizados ' + fechaCorta(new Date().toISOString());
+
+  const norm = r => String(r).replace(/[\s.\-]/g, '').toUpperCase();
+  const matriculados = Object.entries(alumnos).filter(([, a]) => a.cursos[curso] !== undefined)
+    .map(([rut, a]) => ({ rut, nombre: a.nombre, bloqueado: !!a.bloqueado }))
+    .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
+  const activos = matriculados.filter(a => !a.bloqueado);
+  const ruts = new Set(matriculados.map(a => norm(a.rut)));
+
+  // Ingresos por alumno
+  const ing = {};
+  for (const i of profeDatos.ingresos) {
+    const k = norm(i.rut);
+    if (!ruts.has(k)) continue;
+    if (!ing[k]) ing[k] = { n: 0, ultimo: null };
+    ing[k].n++;
+    if (!ing[k].ultimo || i.fecha > ing[k].ultimo) ing[k].ultimo = i.fecha;
+  }
+  const hace7 = new Date(Date.now() - 7 * 86400000).toISOString();
+  const activos7 = activos.filter(a => ing[norm(a.rut)] && ing[norm(a.rut)].ultimo >= hace7).length;
+
+  // Entregas del curso
+  const entregas = profeDatos.entregas.filter(e => e.curso === curso).sort((a, b) => b.fecha.localeCompare(a.fecha));
+  const trabajos = [...new Set([...opcionesTrabajo(curso).filter(t => t !== 'Otro trabajo'), ...entregas.map(e => e.trabajo)])];
+
+  // Asistencia
+  const pcts = activos.map(a => pctAsistencia((asistencia[a.rut] || {})[curso])).filter(p => p !== null);
+  const promAsis = pcts.length ? Math.round(pcts.reduce((x, y) => x + y, 0) / pcts.length) : null;
+
+  let html = '<div class="kpi-grid">' +
+    '<div class="kpi"><div class="kpi-label">Alumnos</div><div class="kpi-valor">' + activos.length + '</div><div class="kpi-sub">' + (matriculados.length - activos.length ? (matriculados.length - activos.length) + ' bloqueado(s)' : 'con acceso') + '</div></div>' +
+    '<div class="kpi"><div class="kpi-label">Entraron (7 días)</div><div class="kpi-valor">' + activos7 + '</div><div class="kpi-sub">de ' + activos.length + ' alumnos</div></div>' +
+    '<div class="kpi"><div class="kpi-label">Asistencia promedio</div><div class="kpi-valor">' + (promAsis === null ? '—' : promAsis + '%') + '</div><div class="kpi-sub">' + pcts.length + ' con registros</div></div>' +
+    '<div class="kpi"><div class="kpi-label">Entregas recibidas</div><div class="kpi-valor">' + entregas.length + '</div><div class="kpi-sub">en este curso</div></div>' +
+    '</div>';
+
+  // Entregas por trabajo
+  html += '<div class="curso-card"><div class="curso-titulo">' + ICONS.upload + ' Entregas por trabajo</div>';
+  if (trabajos.length === 0) html += '<p class="sin-materiales">No hay trabajos definidos para este curso.</p>';
+  for (const t of trabajos) {
+    const deT = entregas.filter(e => e.trabajo === t);
+    const entregaron = new Set(deT.map(e => norm(e.rut)));
+    const pendientes = activos.filter(a => !entregaron.has(norm(a.rut)));
+    const n = activos.length - pendientes.length;
+    const pct = activos.length ? Math.round(n / activos.length * 100) : 0;
+    html += '<div class="trabajo-bloque"><div class="trabajo-cab"><span class="trabajo-nombre">' + escHtml(t) + '</span>' +
+      '<span class="tag ' + (pendientes.length === 0 ? 'ok' : 'gris') + '">' + n + ' de ' + activos.length + ' entregaron</span></div>' +
+      '<div class="barra"><span style="width:' + pct + '%"></span></div>';
+    if (deT.length) {
+      html += '<div class="sub-titulo">Recibidos</div>';
+      for (const e of deT) {
+        html += '<div class="entrega-linea"><a href="' + escHtml(e.enlace) + '" target="_blank" rel="noopener">' + escHtml(e.alumno) + '</a>' +
+          (e.comentario ? '<span class="rut">“' + escHtml(e.comentario) + '”</span>' : '') +
+          '<span class="cuando">' + fechaCorta(e.fecha) + '</span></div>';
+      }
+    }
+    if (pendientes.length && t !== 'Otro trabajo') {
+      html += '<div class="sub-titulo">Pendientes (' + pendientes.length + ')</div><div class="chips">' +
+        pendientes.map(a => '<span class="chip pendiente">' + escHtml(a.nombre) + '</span>').join('') + '</div>';
+    }
+    html += '</div>';
+  }
+  html += '</div>';
+
+  // Tabla de alumnos
+  html += '<div class="curso-card"><div class="curso-titulo">' + ICONS.users + ' Alumnos del curso</div><div class="tabla-wrap"><table class="profe-tabla"><thead><tr>' +
+    '<th>Alumno</th><th>Último ingreso</th><th class="num">Ingresos</th><th class="num">Asistencia</th><th class="num">Entregas</th></tr></thead><tbody>';
+  for (const a of matriculados) {
+    const k = norm(a.rut);
+    const i = ing[k];
+    const p = pctAsistencia((asistencia[a.rut] || {})[curso]);
+    const ne = entregas.filter(e => norm(e.rut) === k).length;
+    const tagAsis = p === null ? '<span class="tag gris">—</span>' : '<span class="tag ' + (p >= 75 ? 'ok' : (p >= 50 ? 'medio' : 'mal')) + '">' + p + '%</span>';
+    html += '<tr><td>' + escHtml(a.nombre) + (a.bloqueado ? ' <span class="tag mal">Bloqueado</span>' : '') + '<div class="rut">' + escHtml(a.rut) + '</div></td>' +
+      '<td>' + (i ? fechaCorta(i.ultimo) : '<span class="tag medio">Nunca</span>') + '</td>' +
+      '<td class="num">' + (i ? i.n : 0) + '</td><td class="num">' + tagAsis + '</td><td class="num">' + ne + '</td></tr>';
+  }
+  html += '</tbody></table></div><p class="profe-nota">Asistencia: Presente = 1, Media clase = 0,5. Bajo 75 % en rojo o naranjo. Los ingresos se registran desde que se activó el registro en Google Drive.</p></div>';
+
+  // Asistencia por clase
+  const fechas = {};
+  for (const a of activos) for (const r of ((asistencia[a.rut] || {})[curso] || [])) {
+    if (!fechas[r.fecha]) fechas[r.fecha] = { p: 0, m: 0, a: 0 };
+    if (r.estado === 'Presente') fechas[r.fecha].p++; else if (r.estado === 'Media clase') fechas[r.fecha].m++; else fechas[r.fecha].a++;
+  }
+  const orden = f => f.split('-').reverse().join('');
+  const listaF = Object.keys(fechas).sort((x, y) => orden(x).localeCompare(orden(y)));
+  html += '<div class="curso-card"><div class="curso-titulo">' + ICONS.calendarCheck + ' Asistencia por clase</div>';
+  if (!listaF.length) html += '<p class="sin-materiales">Aún no hay asistencia registrada en este curso.</p>';
+  else {
+    html += '<div class="tabla-wrap"><table class="profe-tabla"><thead><tr><th>Clase</th><th class="num">Presentes</th><th class="num">Media clase</th><th class="num">Ausentes</th></tr></thead><tbody>';
+    for (const f of listaF) html += '<tr><td>' + f + '</td><td class="num">' + fechas[f].p + '</td><td class="num">' + fechas[f].m + '</td><td class="num">' + fechas[f].a + '</td></tr>';
+    html += '</tbody></table></div>';
+  }
+  html += '</div>';
+
+  // Últimos ingresos (todos los cursos)
+  const ult = [...profeDatos.ingresos].sort((a, b) => b.fecha.localeCompare(a.fecha)).slice(0, 15);
+  html += '<div class="curso-card"><div class="curso-titulo">' + ICONS.clock + ' Últimos ingresos al portal (todos los cursos)</div>';
+  html += ult.length ? ult.map(i => '<div class="entrega-linea"><span>' + escHtml(i.alumno) + '</span><span class="cuando">' + fechaCorta(i.fecha) + '</span></div>').join('')
+    : '<p class="sin-materiales">Aún no hay ingresos registrados.</p>';
+  html += '</div>';
+  cont.innerHTML = html;
+}
+
 /* ---------- Último ingreso (se registra en Google Drive vía ENTREGAS_URL) ---------- */
 function textoIngreso(iso) {
   const f = new Date(iso);
@@ -1845,6 +2161,8 @@ actualizarReloj();
 setInterval(actualizarReloj, 1000);
 
 document.getElementById('rut-input').addEventListener('keydown', e => { if (e.key === 'Enter') ingresar(); });
+document.getElementById('clave-input').addEventListener('keydown', e => { if (e.key === 'Enter') ingresarProfesor(); });
+if (location.hash === '#profesor') abrirAccesoProfesor();
 document.getElementById('avatar-wrap').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); document.getElementById('foto-input').click(); } });
 document.getElementById('rut-input').addEventListener('input', (e) => {
   const cursorAlFinal = e.target.selectionEnd === e.target.value.length;

@@ -20,6 +20,10 @@
  * curso y por trabajo, la planilla "Registro de entregas" y la carpeta
  * "Fotos de alumnos" (un archivo por RUT; borra uno para quitar esa foto).
  *
+ * Panel del profesor: en Configuración del proyecto (engranaje) > Propiedades de
+ * la secuencia de comandos, agrega la propiedad CLAVE_PROFESOR con tu clave.
+ * El panel del portal pide esa clave para mostrar ingresos y entregas.
+ *
  * Para actualizar el código: pega la versión nueva, guarda y luego
  * Implementar > Gestionar implementaciones > Editar (lápiz) > Versión: Nueva versión > Implementar.
  * Así la URL no cambia.
@@ -37,6 +41,7 @@ function doPost(e) {
     const d = JSON.parse(e.postData.contents);
     if (d.accion === 'foto') return guardarFoto(d);
     if (d.accion === 'ingreso') return registrarIngreso(d);
+    if (d.accion === 'panel') return datosPanel(d);
     const rut = String(d.rut || '').trim();
     const curso = String(d.curso || '').trim();
     const tarea = limpiar(String(d.tarea || '').trim()) || 'Trabajo';
@@ -136,6 +141,27 @@ function registrarIngreso(d) {
   } finally {
     lock.releaseLock();
   }
+}
+
+/* Panel del profesor: devuelve los registros de entregas e ingresos si la clave es correcta. */
+function datosPanel(d) {
+  const clave = PropertiesService.getScriptProperties().getProperty('CLAVE_PROFESOR');
+  if (!clave) return responder(false, 'Falta configurar CLAVE_PROFESOR en las propiedades del script.');
+  if (String(d.clave || '') !== clave) {
+    Utilities.sleep(1500); // frena intentos de adivinar la clave
+    return responder(false, 'Clave incorrecta.');
+  }
+  const libro = registro().getParent();
+  const filas = hoja => {
+    if (!hoja || hoja.getLastRow() < 2) return [];
+    return hoja.getRange(2, 1, hoja.getLastRow() - 1, hoja.getLastColumn()).getValues();
+  };
+  const iso = v => (v instanceof Date ? v.toISOString() : String(v));
+  const entregas = filas(libro.getSheets()[0]).map(f => ({
+    fecha: iso(f[0]), alumno: f[1], rut: f[2], curso: f[3], trabajo: f[4], archivo: f[5], comentario: f[6], enlace: f[7]
+  }));
+  const ingresos = filas(libro.getSheetByName('Ingresos')).map(f => ({ fecha: iso(f[0]), alumno: f[1], rut: f[2] }));
+  return responder(true, 'Datos del panel.', { entregas: entregas, ingresos: ingresos, planilla: libro.getUrl() });
 }
 
 function normRut(r) { return String(r).replace(/[\s.\-]/g, '').toUpperCase(); }
