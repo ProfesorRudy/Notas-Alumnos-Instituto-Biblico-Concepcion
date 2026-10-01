@@ -99,15 +99,15 @@ label { display: block; font-size: 0.85rem; color: var(--ink-700); margin-bottom
 }
 .input-wrap .input-icon svg { width: 18px; height: 18px; }
 .input-wrap:focus-within .input-icon { color: var(--blue-500); }
-input[type=text] {
+input[type=text], input[type=password] {
   width: 100%; padding: 12px 15px 12px 40px; border: 1.5px solid var(--border-strong); border-radius: var(--radius-sm);
   font-size: 0.98rem; font-family: inherit; font-weight: 600; letter-spacing: 0.02em; color: var(--ink-900);
   outline: none; transition: border-color .18s var(--ease), box-shadow .18s var(--ease), background .18s var(--ease);
   background: var(--surface-soft);
 }
-input[type=text]::placeholder { font-weight: 500; color: var(--ink-300); }
-input[type=text]:focus { border-color: var(--blue-400); box-shadow: 0 0 0 4px rgba(69,116,196,.16); background: var(--surface); }
-input[type=text].input-invalid { border-color: #eab3ac; }
+input[type=text]::placeholder, input[type=password]::placeholder { font-weight: 500; color: var(--ink-300); }
+input[type=text]:focus, input[type=password]:focus { border-color: var(--blue-400); box-shadow: 0 0 0 4px rgba(69,116,196,.16); background: var(--surface); }
+input[type=text].input-invalid, input[type=password].input-invalid { border-color: #eab3ac; }
 button {
   position: relative; padding: 11px 20px; background: linear-gradient(180deg, var(--blue-400), var(--blue-500));
   color: #fff; border: none; border-radius: var(--radius-sm); font-family: inherit; font-size: 0.9rem;
@@ -190,6 +190,9 @@ button:disabled { cursor: default; transform: none !important; }
 .alumno-ingreso svg { width: 12px; height: 12px; flex-shrink: 0; margin-top: 2px; }
 .alumno-ingreso:empty { display: none; }
 /* Panel del profesor */
+.clave-alumno-row { display: none; margin-top: 12px; }
+.clave-alumno-row label { margin-bottom: 6px; }
+.modo-prueba { margin-top: 10px; text-align: center; font-size: 0.74rem; color: #8a4b05; background: #fff4e5; border: 1px solid #f6dcb4; border-radius: 99px; padding: 4px 12px; }
 .acceso-profesor { text-align: center; margin-top: 12px; font-size: 0.78rem; }
 .acceso-profesor a { color: var(--ink-400); text-decoration: none; border-bottom: 1px dotted var(--ink-300); }
 .acceso-profesor a:hover { color: var(--blue-600); border-color: var(--blue-400); }
@@ -551,6 +554,13 @@ a.contacto-item { text-decoration: none; color: inherit; }
         <span class="btn-loading"><span class="spinner"></span>Verificando…</span>
       </button>
     </div>
+    <div class="clave-alumno-row" id="clave-alumno-row">
+      <label for="clave-alumno">Clave</label>
+      <div class="input-wrap">
+        <span class="input-icon ico-candado2"></span>
+        <input type="password" id="clave-alumno" placeholder="Tu clave" autocomplete="current-password" inputmode="numeric">
+      </div>
+    </div>
     <div class="error" id="error-msg"><span class="error-icon ico-alert"></span><span class="error-text"></span></div>
     <p class="hint">Puedes escribirlo con o sin puntos, pero siempre con el guión (ej: 12.345.678-9).</p>
     <p class="acceso-profesor"><a href="#profesor" onclick="abrirAccesoProfesor(); return false;">Acceso profesor</a></p>
@@ -701,7 +711,7 @@ const ICON_SLOTS = {
   'ico-materiales': 'book', 'ico-tareas': 'tasks', 'ico-entregas': 'upload', 'ico-grupo': 'users', 'ico-notas': 'chart',
   'ico-asistencia': 'calendarCheck', 'ico-observaciones': 'fileEdit', 'ico-avisos': 'megaphone',
   'ico-horario': 'clock', 'ico-reloj': 'clock', 'ico-profesor': 'user', 'ico-salir': 'logout', 'ico-toggle': 'panel',
-  'ico-idcard': 'idCard', 'ico-candado': 'lock', 'ico-alert2': 'alertCircle', 'ico-refresh': 'refresh', 'ico-salir2': 'logout', 'ico-external': 'external', 'avatar-cam': 'camera', 'ico-arrow': 'arrowRight', 'ico-alert': 'alertCircle'
+  'ico-idcard': 'idCard', 'ico-candado': 'lock', 'ico-candado2': 'lock', 'ico-alert2': 'alertCircle', 'ico-refresh': 'refresh', 'ico-salir2': 'logout', 'ico-external': 'external', 'avatar-cam': 'camera', 'ico-arrow': 'arrowRight', 'ico-alert': 'alertCircle'
 };
 for (const [slotClass, iconKey] of Object.entries(ICON_SLOTS)) {
   const el = document.querySelector('.' + slotClass);
@@ -713,7 +723,7 @@ for (const [slotClass, iconKey] of Object.entries(ICON_SLOTS)) {
    Formato: "RUT": { nombre: "...", cursos: { "Nombre curso": { t1, t2, ex } } }
    Usa null en las notas que aún no están registradas.
    ===================================================================== */
-const alumnos = {
+let alumnos = {
   "17.615.853-0": { nombre: "Baeza Espinoza, Marlyn", cursos: { "Introducción A.T.": { t1: 97, t2: 100, ex: 100, notaFinal: 99 } , "Contexto del Antiguo Testamento": { t1: null, t2: null, ex: null } } },
   "16.767.543-3": { nombre: "Cifuentes Valdebenito, Jennifer", cursos: { "Introducción A.T.": { t1: 0, t2: 0, ex: 0 } } },
   "20.759.687-6": { nombre: "Faúndez Ramírez, Consuelo", cursos: { "Introducción A.T.": { t1: 0, t2: 0, ex: 0 } } },
@@ -816,7 +826,7 @@ const alumnos = {
    última declaración borra en silencio a la anterior. Para un alumno con varios
    cursos, agrégalos dentro de la misma entrada.
    ===================================================================== */
-const asistencia = {
+let asistencia = {
   "17.615.853-0": { "Introducción A.T.": [
     { fecha: "06-05-2026", estado: "Presente" },
     { fecha: "13-05-2026", estado: "Presente" },
@@ -1103,7 +1113,7 @@ const asistencia = {
    3c) OBSERVACIONES  (individuales por alumno)
    Formato: "RUT": [ { fecha: "DD-MM-AAAA", texto: "..." }, ... ]
    ===================================================================== */
-const observaciones = {
+let observaciones = {
   "15.865.472-5": [ { fecha: "09-07-2026", texto: "La nota del examen corresponde de igual manera a la nota 2." } ],
   "20.194.247-0": [ { fecha: "09-07-2026", texto: "La nota del examen corresponde de igual manera a la nota 2." } ],
   "15.180.128-5": [ { fecha: "09-07-2026", texto: "La nota del examen corresponde de igual manera a la nota 2." } ],
@@ -1119,7 +1129,7 @@ const observaciones = {
    3c-bis) OBSERVACIONES POR CURSO (se muestran a todos los alumnos del curso)
    Formato: "Nombre curso": [ { fecha:"DD-MM-AAAA", texto:"..." }, ... ]
    ===================================================================== */
-const observacionesCurso = {
+let observacionesCurso = {
   "Ética del A.T.": [
     { fecha: "01-08-2026", texto: "Ponderación del Promedio Final: Trabajo 1 = 35% · Examen = 35% · Asistencia = 30%." }
   ],
@@ -1145,14 +1155,14 @@ const observacionesCurso = {
    Agrega "curso: '<nombre del curso>'" para que un aviso solo lo vean los
    alumnos de ese curso. Sin ese campo, el aviso se muestra a todos.
    ===================================================================== */
-const avisos = [
+let avisos = [
 ];
 
 /* =====================================================================
    3e-bis) TAREAS A REALIZAR POR CURSO  (agrega o edita aquí)
    Formato: "Nombre curso": [ { titulo:"...", desc:"...", fecha:"DD-MM-AAAA" (fecha de entrega) }, ... ]
    ===================================================================== */
-const tareas = {
+let tareas = {
   "Contexto del Antiguo Testamento": [
     { titulo: "Tarea Documental: Dioses y Demonios de Egipto", desc: "Ver el documental \"Dioses y Demonios del Antiguo Egipto\" (47 min) y responder por escrito: 1) Describa cómo surge la creación y el ciclo de vida de Re. 2) ¿Cómo era el parto de una mujer egipcia? 3) ¿Qué pensamiento tenían los egipcios con respecto a la muerte? Video: https://www.youtube.com/watch?v=KM6pBk6YQKo", fecha: "02-09-2026", url: "materiales/contexto-at/tarea-documental-dioses-demonios-egipto.docx" },
     { titulo: "Trabajo final: La cultura religiosa de las mujeres", desc: "Leer el documento \"La cultura religiosa de las mujeres\" (Aportes Bíblicos) y responder por escrito: 1) La autora dice que el Antiguo Testamento entrega poca información sobre la vida diaria de las mujeres; según la lectura, ¿por qué ocurre eso? Mencione tres razones que da el texto, explíquelas con sus palabras, y señale cuál le parece la más importante y por qué. 2) El texto cita Jeremías 7:17-18, donde el profeta se enoja porque las mujeres preparan tortas para «la reina del cielo»: ábralo en su Biblia y léalo completo, luego responda ¿qué nos permite saber ese enojo del profeta sobre lo que la gente realmente hacía en Israel? Explique con sus palabras por qué, según la autora, una crítica puede servirnos como prueba.", fecha: "04-10-2026", url: "materiales/contexto-at/trabajo-final-cultura-religiosa-mujeres.pdf" }
@@ -1168,7 +1178,7 @@ const tareas = {
    Lecturas y material de apoyo para actividades grupales.
    Formato: "Nombre curso": [ { titulo:"...", desc:"...", tipo:"pdf"|"doc"|..., url:"..." }, ... ]
    ===================================================================== */
-const trabajoGrupo = {
+let trabajoGrupo = {
   "Contexto del Antiguo Testamento": [
     { titulo: "Una tierra que mana leche y miel: Asentamiento en Canaán", desc: "John Drane, Introducción al Antiguo Testamento · Lectura para trabajo en grupo sobre la llegada de Israel a Canaán y las teorías arqueológicas de su asentamiento", tipo: "pdf", url: "materiales/contexto-at/trabajo-grupo-israel-en-canaan.pdf" }
   ],
@@ -1206,7 +1216,7 @@ const profesor = {
    3e) HORARIO Y MODALIDAD POR CURSO  (agrega o edita aquí)
    modalidad: "Presencial", "Online" o "Híbrido"
    ===================================================================== */
-const horarios = {
+let horarios = {
   "Introducción A.T.": { dia: "Miércoles", hora: "19:30 – 22:00", modalidad: "Online", lugar: "Vía Zoom" },
   "Filosofía Moderna": { dia: "Miércoles", hora: "19:00 – 20:30", modalidad: "Híbrido", lugar: "Sala 2 · también vía Zoom" },
   "Ética del A.T.": { dia: "Lunes", hora: "19:30 – 22:00 (break 20:30 – 21:00)", modalidad: "Híbrido", lugar: "Sala 1" },
@@ -1226,7 +1236,7 @@ const horarios = {
      url: "https://drive.google.com/..."
    - tipo: "pdf", "doc", "ppt", "video" o "link" (solo cambia el ícono)
    ===================================================================== */
-const materiales = {
+let materiales = {
   "Introducción A.T.": [
     { titulo: "Programa del curso", desc: "Contenidos y calendario del semestre", tipo: "pdf", url: "materiales/introduccion-at/programa.pdf" },
     { titulo: "Apuntes: El Pentateuco", desc: "Material de estudio · Unidad 1", tipo: "pdf", url: "materiales/introduccion-at/pentateuco.pdf" }
@@ -1321,6 +1331,14 @@ function ingresar() {
   const btn = document.getElementById('btn-ingresar');
   btn.classList.add('is-loading');
   btn.disabled = true;
+  if (USAR_PLANILLA) {
+    ingresarConPlanilla(raw).finally(() => {
+      btn.classList.remove('is-loading');
+      btn.disabled = false;
+      ingresoEnCurso = false;
+    });
+    return;
+  }
   /* Pequeña demora simulada para transmitir que el portal está verificando el RUT. */
   setTimeout(() => {
     procesarIngreso(raw);
@@ -1328,6 +1346,49 @@ function ingresar() {
     btn.disabled = false;
     ingresoEnCurso = false;
   }, 550);
+}
+
+/* =====================================================================
+   DATOS DESDE LA PLANILLA DE GOOGLE
+   Con USAR_PLANILLA, el portal pide al script de Google los datos del alumno
+   (validando RUT y clave) en vez de usar los que están escritos en este archivo.
+   Mientras se prueba, se activa agregando ?planilla a la dirección.
+   ===================================================================== */
+const USAR_PLANILLA = !!ENTREGAS_URL && new URLSearchParams(location.search).has('planilla');
+let claveAlumno = '';
+
+async function ingresarConPlanilla(raw) {
+  const filaClave = document.getElementById('clave-alumno-row');
+  const clave = filaClave.style.display === 'block' ? document.getElementById('clave-alumno').value.trim() : '';
+  let r;
+  try {
+    r = await (await fetch(ENTREGAS_URL, { method: 'POST', body: JSON.stringify({ accion: 'datos', rut: raw, clave: clave }) })).json();
+  } catch (e) {
+    mostrarError('No se pudo conectar con el portal. Revisa tu conexión a internet e inténtalo de nuevo.');
+    return;
+  }
+  if (!r.ok) {
+    if (r.codigo === 'clave' || r.codigo === 'clave_mala') {
+      filaClave.style.display = 'block';
+      document.getElementById('clave-alumno').focus();
+      if (r.codigo === 'clave_mala') document.getElementById('clave-alumno').value = '';
+    }
+    mostrarError(r.mensaje || 'No se pudo ingresar.');
+    return;
+  }
+  const rut = r.alumno.rut;
+  claveAlumno = clave;
+  alumnos = { [rut]: { nombre: r.alumno.nombre, cursos: r.alumno.cursos } };
+  asistencia = { [rut]: r.asistencia || {} };
+  observaciones = { [rut]: r.observaciones || [] };
+  materiales = r.materiales || {};
+  tareas = r.tareas || {};
+  trabajoGrupo = r.trabajoGrupo || {};
+  horarios = r.horarios || {};
+  observacionesCurso = r.observacionesCurso || {};
+  avisos = r.avisos || [];
+  CURSOS_SOLO_CALIFICACIONES = r.cursadas || [];
+  procesarIngreso(rut);
 }
 
 function procesarIngreso(raw) {
@@ -1365,6 +1426,9 @@ function procesarIngreso(raw) {
 
 function salir() {
   alumnoActual = null;
+  claveAlumno = '';
+  document.getElementById('clave-alumno').value = '';
+  document.getElementById('clave-alumno-row').style.display = 'none';
   document.getElementById('rut-input').value = '';
   ocultarError();
   document.getElementById('vista-panel').style.display = 'none';
@@ -1391,7 +1455,7 @@ function sinCursos() { return Object.keys(alumnoActual.cursos).length === 0; }
 
 /* Cursos ya finalizados que solo deben verse en "Mis Calificaciones";
    desaparecen de Materiales, Tareas, Asistencia y Horario. */
-const CURSOS_SOLO_CALIFICACIONES = ["Introducción A.T.", "Filosofía Moderna", "Ética del Nuevo Testamento", "Ética del A.T."];
+let CURSOS_SOLO_CALIFICACIONES = ["Introducción A.T.", "Filosofía Moderna", "Ética del Nuevo Testamento", "Ética del A.T."];
 const SIN_CURSOS_ACTIVOS = '<p class="sin-avisos">No tienes materias activas en este momento.<br>Revisa "Mis Calificaciones" para ver tus cursos finalizados.</p>';
 function cursosActivos() { return Object.keys(alumnoActual.cursos).filter(c => !CURSOS_SOLO_CALIFICACIONES.includes(c)); }
 
@@ -1742,7 +1806,7 @@ async function enviarEntrega() {
     const resp = await fetch(ENTREGAS_URL, {
       method: 'POST',
       body: JSON.stringify({
-        rut: alumnoActual.rut, nombre: alumnoActual.nombre, curso: curso, tarea: trabajo,
+        rut: alumnoActual.rut, clave: claveAlumno, nombre: alumnoActual.nombre, curso: curso, tarea: trabajo,
         archivo: entregaArchivo.name, tipo: entregaArchivo.type, datos: datos,
         comentario: document.getElementById('ent-comentario').value.trim()
       })
@@ -1821,6 +1885,12 @@ async function pedirDatosPanel(clave) {
   if (!ENTREGAS_URL) throw new Error('El portal no está conectado a Google Drive.');
   const r = await (await fetch(ENTREGAS_URL, { method: 'POST', body: JSON.stringify({ accion: 'panel', clave: clave }) })).json();
   if (!r.ok) throw new Error(r.mensaje || 'No se pudieron obtener los datos.');
+  if (r.datos && USAR_PLANILLA) {
+    alumnos = r.datos.alumnos;
+    asistencia = r.datos.asistencia;
+    tareas = r.datos.tareas || {};
+    CURSOS_SOLO_CALIFICACIONES = r.datos.cursosCursados || [];
+  }
   return r;
 }
 
@@ -2028,7 +2098,7 @@ async function registrarIngreso() {
   mostrarIngreso(local);
   if (!ENTREGAS_URL) return;
   try {
-    const r = await (await fetch(ENTREGAS_URL, { method: 'POST', body: JSON.stringify({ accion: 'ingreso', rut: rut }) })).json();
+    const r = await (await fetch(ENTREGAS_URL, { method: 'POST', body: JSON.stringify({ accion: 'ingreso', rut: rut, clave: claveAlumno }) })).json();
     if (r.ok && 'anterior' in r && alumnoActual && alumnoActual.rut === rut) mostrarIngreso(r.anterior);
   } catch (e) { /* sin conexión: se mantiene lo guardado en este navegador */ }
 }
@@ -2091,7 +2161,7 @@ async function subirFotoPerfil(f) {
     const dataUrl = await reducirFoto(f);
     const r = await (await fetch(ENTREGAS_URL, {
       method: 'POST',
-      body: JSON.stringify({ accion: 'foto', rut: rut, datos: dataUrl.split(',')[1] })
+      body: JSON.stringify({ accion: 'foto', rut: rut, clave: claveAlumno, datos: dataUrl.split(',')[1] })
     })).json();
     if (!r.ok) throw new Error(r.mensaje || 'No se pudo guardar la foto.');
     if (alumnoActual && alumnoActual.rut === rut) mostrarFotoPerfil(dataUrl);
@@ -2169,6 +2239,8 @@ setInterval(actualizarReloj, 1000);
 
 document.getElementById('rut-input').addEventListener('keydown', e => { if (e.key === 'Enter') ingresar(); });
 document.getElementById('clave-input').addEventListener('keydown', e => { if (e.key === 'Enter') ingresarProfesor(); });
+document.getElementById('clave-alumno').addEventListener('keydown', e => { if (e.key === 'Enter') ingresar(); });
+if (USAR_PLANILLA) document.querySelector('#vista-login .hint').insertAdjacentHTML('afterend', '<p class="modo-prueba">Versión de prueba · datos desde la planilla de Google</p>');
 if (location.hash === '#profesor') abrirAccesoProfesor();
 document.getElementById('avatar-wrap').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); document.getElementById('foto-input').click(); } });
 document.getElementById('rut-input').addEventListener('input', (e) => {
