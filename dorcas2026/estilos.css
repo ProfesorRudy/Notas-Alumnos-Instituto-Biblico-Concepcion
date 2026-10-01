@@ -1,12 +1,16 @@
+/* Paleta tomada del logo de IEPI LAN-C: dorado cepillado, blanco y café profundo. */
 :root {
-  --bg: #fbf7f0;
+  --bg: #fbf8f1;
   --surface: #ffffff;
-  --ink: #2a2118;
-  --ink-soft: #6b5d4f;
-  --line: #e8dfd2;
-  --accent: #b5582a;
-  --accent-dark: #8f4220;
-  --accent-soft: #f6e6db;
+  --ink: #2b2214;
+  --ink-soft: #6e624c;
+  --line: #ebe1cb;
+  --accent: #8c6a1f;        /* dorado oscuro: textos y detalles sobre fondo claro */
+  --accent-dark: #6b4f15;
+  --accent-soft: #f6eedb;
+  --oro-claro: #e8cf8a;
+  --oro: linear-gradient(135deg, #d6b45f 0%, #b48c2e 48%, #8a6420 100%);
+  --cepillado: repeating-linear-gradient(115deg, rgba(255,255,255,.06) 0 2px, transparent 2px 7px);
   --ok: #2f7d4f; --ok-bg: #e5f4ea;
   --bad: #b3261e; --bad-bg: #fbe9e7;
   --radius: 14px;
@@ -47,8 +51,12 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); ou
 @media (max-width: 480px) { .fila2 { grid-template-columns: 1fr; } }
 
 .boton { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; font: inherit; font-weight: 700;
-  border: 0; border-radius: 10px; padding: .75rem 1.2rem; cursor: pointer; background: var(--accent); color: #fff; }
+  border: 0; border-radius: 10px; padding: .75rem 1.2rem; cursor: pointer; background: var(--accent); color: #fff;
+  transition: filter .15s, transform .15s; }
 .boton:hover { background: var(--accent-dark); }
+.boton.dorado { background: var(--cepillado), var(--oro); text-shadow: 0 1px 1px rgba(60,40,0,.35);
+  box-shadow: 0 10px 22px -12px rgba(138,100,32,.9); letter-spacing: .02em; }
+.boton.dorado:hover { filter: brightness(1.06); transform: translateY(-1px); }
 .boton:disabled { opacity: .6; cursor: wait; }
 .boton.bloque { width: 100%; margin-top: 1.4rem; }
 .boton.suave { background: var(--accent-soft); color: var(--accent-dark); }
@@ -62,3 +70,32 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); ou
 .aviso.info { background: var(--accent-soft); color: var(--accent-dark); }
 .oculto { display: none !important; }
 .pie { text-align: center; color: var(--ink-soft); font-size: .85rem; margin-top: 1.5rem; }
+
+/* ----- Portada de la inscripción ----- */
+.portada { background: var(--cepillado), var(--oro); color: #fff; text-align: center;
+  padding: 2.6rem 1rem 6.5rem; position: relative; overflow: hidden; }
+.portada::after { content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(600px 260px at 50% 0%, rgba(255,255,255,.28), transparent 70%); }
+.portada > * { position: relative; z-index: 1; }
+.portada .logo { width: 128px; height: 128px; border-radius: 26px; object-fit: cover;
+  border: 3px solid rgba(255,255,255,.45); box-shadow: 0 18px 40px -16px rgba(50,30,0,.7); }
+.portada .sello { display: block; margin-top: 1.1rem; font-size: .78rem; letter-spacing: .3em; text-transform: uppercase;
+  font-weight: 700; opacity: .92; }
+.portada h1 { font-size: clamp(2rem, 7vw, 3.1rem); line-height: 1.08; margin-top: .35rem; text-shadow: 0 2px 10px rgba(60,40,0,.3); }
+.portada .chips { display: flex; justify-content: center; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
+.portada .chips span { background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35);
+  border-radius: 999px; padding: .3rem .85rem; font-weight: 700; font-size: .9rem; }
+.portada blockquote { max-width: 520px; margin: 1.3rem auto 0; font-family: 'Fraunces', Georgia, serif; font-style: italic;
+  font-size: 1.02rem; line-height: 1.5; opacity: .95; }
+.portada cite { display: block; margin-top: .35rem; font-family: 'Nunito Sans', sans-serif; font-style: normal;
+  font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; opacity: .85; }
+.envoltura.sube { margin-top: -5rem; position: relative; z-index: 2; padding-top: 0; }
+.tarjeta.destacada { border-top: 4px solid #c9a24a; }
+.pasos { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin-bottom: 1.2rem; }
+.pasos div { text-align: center; font-size: .8rem; color: var(--ink-soft); line-height: 1.3; }
+.pasos b { display: grid; place-items: center; width: 2rem; height: 2rem; margin: 0 auto .35rem; border-radius: 50%;
+  background: var(--accent-soft); color: var(--accent); font-family: 'Fraunces', Georgia, serif; font-size: 1rem; }
+.listo-icono { display: grid; place-items: center; width: 64px; height: 64px; margin: 0 auto .8rem; border-radius: 50%;
+  background: var(--cepillado), var(--oro); color: #fff; font-size: 2rem; box-shadow: 0 10px 24px -12px rgba(138,100,32,.9); }
+.codigo-grande { font-family: 'Fraunces', Georgia, serif; font-size: 2.2rem; color: var(--accent); margin: .3rem 0 .6rem;
+  letter-spacing: .04em; }
