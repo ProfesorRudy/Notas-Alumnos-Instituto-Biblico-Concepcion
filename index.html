@@ -192,7 +192,6 @@ button:disabled { cursor: default; transform: none !important; }
 /* Panel del profesor */
 .clave-alumno-row { display: none; margin-top: 12px; }
 .clave-alumno-row label { margin-bottom: 6px; }
-.modo-prueba { margin-top: 10px; text-align: center; font-size: 0.74rem; color: #8a4b05; background: #fff4e5; border: 1px solid #f6dcb4; border-radius: 99px; padding: 4px 12px; }
 .acceso-profesor { text-align: center; margin-top: 12px; font-size: 0.78rem; }
 .acceso-profesor a { color: var(--ink-400); text-decoration: none; border-bottom: 1px dotted var(--ink-300); }
 .acceso-profesor a:hover { color: var(--blue-600); border-color: var(--blue-400); }
@@ -719,105 +718,18 @@ for (const [slotClass, iconKey] of Object.entries(ICON_SLOTS)) {
 }
 
 /* =====================================================================
-   2) ALUMNOS Y NOTAS  (agrega o edita aquí)
+   2) ALUMNOS Y NOTAS
+   IMPORTANTE: todos los datos del portal (alumnos, notas, asistencia,
+   observaciones, avisos, tareas, trabajo en grupo, horarios y materiales)
+   se administran en la planilla "Portal IBC - Datos" de Google Drive.
+   Estas variables quedan vacías y se llenan al ingresar cada alumno.
    Formato: "RUT": { nombre: "...", cursos: { "Nombre curso": { t1, t2, ex } } }
    Usa null en las notas que aún no están registradas.
    ===================================================================== */
-let alumnos = {
-  "17.615.853-0": { nombre: "Baeza Espinoza, Marlyn", cursos: { "Introducción A.T.": { t1: 97, t2: 100, ex: 100, notaFinal: 99 } , "Contexto del Antiguo Testamento": { t1: null, t2: null, ex: null } } },
-  "16.767.543-3": { nombre: "Cifuentes Valdebenito, Jennifer", cursos: { "Introducción A.T.": { t1: 0, t2: 0, ex: 0 } } },
-  "20.759.687-6": { nombre: "Faúndez Ramírez, Consuelo", cursos: { "Introducción A.T.": { t1: 0, t2: 0, ex: 0 } } },
-  "19.511.582-6": { nombre: "Candia Gonzalez, Camila", cursos: { "Contexto del Antiguo Testamento": { t1: null, t2: null, ex: null } } },
-  "20.022.133-8": { nombre: "Fuentes Veloso, Andrés", cursos: { "Contexto del Antiguo Testamento": { t1: null, t2: null, ex: null } , "Filosofía Antigua y Medieval": { t1: null, t2: null, ex: null } } },
-  "11.984.351-0": { nombre: "Gonzalez Contreras, Isabel", cursos: { "Introducción A.T.": { t1: 86, t2: 100, ex: 100, notaFinal: 98 }, "Contexto del Antiguo Testamento": { t1: null, t2: null, ex: null } } },
-  "13.788.829-7": { nombre: "Jara Arellano, Boris", cursos: { "Introducción A.T.": { t1: 0, t2: 0, ex: 0 } } },
-  "9.718.696-0": { nombre: "Lagos Aburto, Carlos", cursos: { "Introducción A.T.": { t1: 75, t2: 100, ex: 100, notaFinal: 96 } , "Contexto del Antiguo Testamento": { t1: null, t2: null, ex: null } } },
-  "10.458.204-4": { nombre: "Osorio Inzunza, Ana Luz", cursos: { "Introducción A.T.": { t1: 97, t2: 100, ex: 100, notaFinal: 99 } , "Contexto del Antiguo Testamento": { t1: null, t2: null, ex: null } } },
-  "16.416.923-5": { nombre: "Pérez Ayala, Nadixia Evein", cursos: { "Introducción A.T.": { t1: 86, t2: 100, ex: 100, notaFinal: 98 } , "Contexto del Antiguo Testamento": { t1: null, t2: null, ex: null } } },
-  "17.614.372-K": { nombre: "Riquelme Fernández, Herman", cursos: { "Introducción A.T.": { t1: 93, t2: 100, ex: 100, notaFinal: 99 } , "Contexto del Antiguo Testamento": { t1: null, t2: null, ex: null } } },
-  "12.526.537-5": { nombre: "Rojas Nuñez, Griselda", cursos: { "Introducción A.T.": { t1: 93, t2: 100, ex: 100, notaFinal: 99 }, "Ética del Nuevo Testamento": { t1: 100, t2: null, ex: 88, notaFinal: 96 }, "Contexto del Antiguo Testamento": { t1: null, t2: null, ex: null } , "Filosofía Antigua y Medieval": { t1: null, t2: null, ex: null } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "15.157.909-4": { nombre: "Sánchez Cofré, César", cursos: { "Introducción A.T.": { t1: 75, t2: 100, ex: 100, notaFinal: 96 } , "Contexto del Antiguo Testamento": { t1: null, t2: null, ex: null } } },
-  "6.688.590-9": { nombre: "Sanhueza Ascencio, Marcelo", cursos: { "Introducción A.T.": { t1: 86, t2: 100, ex: 100, notaFinal: 98 } , "Contexto del Antiguo Testamento": { t1: null, t2: null, ex: null } } },
-  "16.690.272-K": { nombre: "Toloza Lozano, Karen", cursos: { "Introducción A.T.": { t1: 75, t2: 100, ex: 100, notaFinal: 96 } , "Contexto del Antiguo Testamento": { t1: null, t2: null, ex: null } } },
-  "15.865.472-5": { nombre: "Cristian Collio Liguen", cursos: { "Filosofía Moderna": { t1: 96, t2: 100, ex: 100, notaFinal: 99 } , "Eclesiología y Pneumatología": { t1: null, t2: null, ex: null } } },
-  "20.194.247-0": { nombre: "Pedro Duran Vivanco", cursos: { "Filosofía Moderna": { t1: 60, t2: 90, ex: 90, notaFinal: 84 } , "Eclesiología y Pneumatología": { t1: null, t2: null, ex: null } } },
-  "15.180.128-5": { nombre: "Fredy Garrido Paredes", cursos: { "Filosofía Moderna": { t1: 100, t2: 100, ex: 100, notaFinal: 100 } , "Eclesiología y Pneumatología": { t1: null, t2: null, ex: null } , "Filosofía Antigua y Medieval": { t1: null, t2: null, ex: null } } },
-  "16.155.833-8": { nombre: "Lisandro Macaya Bustamante", cursos: { "Filosofía Moderna": { t1: 20, t2: 100, ex: 100, notaFinal: 86 } , "Eclesiología y Pneumatología": { t1: null, t2: null, ex: null } } },
-  "18.131.401-K": { nombre: "Francisco Ojeda Nahuelpan", cursos: { "Filosofía Moderna": { t1: 100, t2: 100, ex: 100, notaFinal: 96 } , "Eclesiología y Pneumatología": { t1: null, t2: null, ex: null } } },
-  "8.188.445-5": { nombre: "Sergio Guillermo Rebolledo Gallegos", cursos: { "Filosofía Moderna": { t1: 100, t2: 100, ex: 100, notaFinal: 100 } , "Eclesiología y Pneumatología": { t1: null, t2: null, ex: null } } },
-  "10.040.390-0": { nombre: "Urzula Torres Torres", cursos: { "Filosofía Moderna": { t1: 100, t2: 100, ex: 100, notaFinal: 96 } , "Eclesiología y Pneumatología": { t1: null, t2: null, ex: null } } },
-  "11.986.425-9": { nombre: "María Soledad Ubilla Mendoza", cursos: { "Filosofía Moderna": { t1: 80, t2: 100, ex: 100, notaFinal: 93 } , "Eclesiología y Pneumatología": { t1: null, t2: null, ex: null } } },
-  "10.544.296-3": { nombre: "Nelson Arismendi Ojeda", cursos: { "Filosofía Moderna": { t1: 80, t2: 100, ex: 100, notaFinal: 93 } , "Eclesiología y Pneumatología": { t1: null, t2: null, ex: null } } },
-  "23.502.993-6": { nombre: "Avila Nieto, Angela", cursos: { "Ética del A.T.": { t1: 100, t2: null, ex: 90, notaFinal: 95 } } },
-  "11.452.141-8": { nombre: "Barra Barra, Mónica", cursos: { "Ética del A.T.": { t1: 100, t2: null, ex: 90, notaFinal: 97 } , "Contexto del Antiguo Testamento": { t1: null, t2: null, ex: null } } },
-  "16.038.613-4": { nombre: "Caamaño Correa, Stephanie", cursos: { "Ética del A.T.": { t1: 100, t2: null, ex: 69, notaFinal: 89 }, "Ética del Nuevo Testamento": { t1: 100, t2: null, ex: 72, notaFinal: 84 } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "17.853.309-6": { nombre: "Cerda Quintana, Valeska", cursos: { "Ética del A.T.": { t1: 100, t2: null, ex: 92, notaFinal: 91 } } },
-  "12.182.346-2": { nombre: "Córdova Cáceres, Cristián", cursos: { "Ética del A.T.": { t1: 100, t2: null, ex: 97, notaFinal: 96 } } },
-  "12.703.841-4": { nombre: "Flores Cabrera, Carlos", cursos: { "Ética del A.T.": { t1: 100, t2: null, ex: 89, notaFinal: 96 } } },
-  "21.216.524-7": { nombre: "Foreman Higuera, Jaime", cursos: { "Ética del A.T.": { t1: 0, t2: null, ex: null, notaFinal: 0 } } },
-  "14.051.047-5": { nombre: "Gonzalez Alfaro, Oscar", cursos: { "Ética del A.T.": { t1: 0, t2: null, ex: null, notaFinal: 0 } } },
-  "14.272.037-K": { nombre: "Gutiérrez Zapata, Marcela", cursos: { "Ética del A.T.": { t1: 100, t2: null, ex: 92, notaFinal: 97 } } },
-  "13.601.474-9": { nombre: "Jimenez Riquelme, Lisset", cursos: { "Ética del A.T.": { t1: 100, t2: null, ex: 83, notaFinal: 94 } } },
-  "16.513.840-6": { nombre: "Lepe Delgado, Esteban", cursos: { "Ética del A.T.": { t1: 100, t2: null, ex: 97, notaFinal: 99 } } },
-  "9.781.940-8": { nombre: "Líbano Escobar, Sonia", cursos: { "Ética del A.T.": { t1: 100, t2: null, ex: 72, notaFinal: 90 } } },
-  "20.116.717-5": { nombre: "López Novoa, Gerson", cursos: { "Ética del A.T.": { t1: 100, t2: null, ex: 92, notaFinal: 97 } } },
-  "28.474.255-9": { nombre: "Martinez Vera, Carlos", cursos: { "Ética del A.T.": { t1: 0, t2: null, ex: 0, notaFinal: 3 } } },
-  "21.165.197-0": { nombre: "Morales Concha, Gerald", cursos: { "Ética del A.T.": { t1: 100, t2: null, ex: 80, notaFinal: 93 } } },
-  "16.012.222-6": { nombre: "Nova Palma, Claudio", cursos: { "Ética del A.T.": { t1: 100, t2: null, ex: 85, notaFinal: 95 } } },
-  "15.193.496-K": { nombre: "Quinchavil Cid, Noemí", cursos: { "Ética del A.T.": { t1: 100, t2: null, ex: 92, notaFinal: 91 }, "Ética del Nuevo Testamento": { t1: 100, t2: null, ex: 88, notaFinal: 90 } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "14.341.897-9": { nombre: "Ramirez Yañe, Valeria", cursos: { "Ética del A.T.": { t1: 100, t2: null, ex: 92, notaFinal: 97 } } },
-  "20.020.152-3": { nombre: "Ramírez Vergara, Juan", cursos: { "Ética del A.T.": { t1: 100, t2: null, ex: 83, notaFinal: 94 } } },
-  "18.804.372-0": { nombre: "Riquelme Valenzuela, Gerson", cursos: { "Ética del A.T.": { t1: 100, t2: null, ex: 88, notaFinal: 96 } } },
-  "17.182.577-6": { nombre: "Ruminot Muñoz, Elizabeth", cursos: { "Ética del A.T.": { t1: 100, t2: null, ex: 98, notaFinal: 99 } } },
-  "9.950.138-3": { nombre: "Sagredo Leon, Eliana", cursos: { "Ética del A.T.": { t1: 100, t2: null, ex: 85, notaFinal: 95 } } },
-  "22.616.202-K": { nombre: "Segura Muñoz, Dante", cursos: { "Ética del A.T.": { t1: 100, t2: null, ex: 94, notaFinal: 98 } } },
-  "11.708.911-8": { nombre: "Vidal Shaw, Gerly", cursos: { "Ética del A.T.": { t1: 100, t2: null, ex: 100, notaFinal: 97 } } },
-  "16.965.915-K": { nombre: "Yañez Vasquez, Alvaro", cursos: { "Ética del A.T.": { t1: 100, t2: null, ex: 88, notaFinal: 96 } } },
-  "17.444.999-6": { nombre: "Barra Hernandez, Luis Aaron", cursos: { "Ética del Nuevo Testamento": { t1: 100, t2: null, ex: 96, notaFinal: 99 } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "18.684.727-K": { nombre: "Manriquez Inzunza, Félix David", cursos: { "Ética del Nuevo Testamento": { t1: 0, t2: null, ex: 95, notaFinal: 48 } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "18.147.137-9": { nombre: "Molina Faundez, Camila Verónica", cursos: { "Ética del Nuevo Testamento": { t1: 100, t2: null, ex: 80, notaFinal: 93 } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "16.482.093-9": { nombre: "Novoa Puentes, Paulina Ivonne", cursos: { "Ética del Nuevo Testamento": { t1: 100, t2: null, ex: 87, notaFinal: 95 } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "14.062.185-4": { nombre: "Reyes Caro, Alex Mauricio", cursos: { "Ética del Nuevo Testamento": { t1: 100, t2: null, ex: 74, notaFinal: 91 } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "13.069.994-4": { nombre: "Rodriguez Castillo, Gonzalo Rene", cursos: { "Ética del Nuevo Testamento": { t1: 100, t2: null, ex: 70, notaFinal: 90 } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "19.335.856-K": { nombre: "Salas Brenet, Scarlet Ariela", cursos: { "Ética del Nuevo Testamento": { t1: 100, t2: null, ex: 70, notaFinal: 90 } , "Filosofía Antigua y Medieval": { t1: null, t2: null, ex: null } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "17.215.962-1": { nombre: "Sanhueza Alveal, Angela", cursos: { "Ética del Nuevo Testamento": { t1: 100, t2: null, ex: 90, notaFinal: 97 } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "16.846.945-4": { nombre: "Faundez Becerra, Priscila Elizabeth", cursos: { "Ética del Nuevo Testamento": { t1: 100, t2: null, ex: 85, notaFinal: 95 } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "18.286.594-K": { nombre: "Jaidar Herrera, Ingrid Beatriz", cursos: { "Ética del Nuevo Testamento": { t1: 100, t2: null, ex: 84, notaFinal: 94 } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "13.374.492-4": { nombre: "Herrera Candia, Fernando Eliseo", cursos: { "Ética del Nuevo Testamento": { t1: 100, t2: null, ex: 94, notaFinal: 98 } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "11.956.591-K": { nombre: "Burboa Torres, Gloria María", cursos: { "Ética del Nuevo Testamento": { t1: 100, t2: null, ex: 75, notaFinal: 91 } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "10.796.551-3": { nombre: "Ramirez Hernandez, Juan Antonio", cursos: { "Ética del Nuevo Testamento": { t1: 100, t2: null, ex: 74, notaFinal: 91 } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "15.519.768-4": { nombre: "Cisterna Concha, Pamela Luisa", cursos: { "Ética del Nuevo Testamento": { t1: 100, t2: null, ex: 82, notaFinal: 94 } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "16.769.032-7": { nombre: "Salas Canales, Claudio Gabriel", bloqueado: true, cursos: { "Ética del Nuevo Testamento": { t1: 0, t2: null, ex: 0, notaFinal: 0 } } },
-  "13.133.863-5": { nombre: "Rojas Nuñez, Amada Jenny", cursos: { "Ética del Nuevo Testamento": { t1: 100, t2: null, ex: 89, notaFinal: 96 } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "12.090.242-3": { nombre: "Gonzalez de la Barra, Teresa del Pilar", cursos: { "Ética del Nuevo Testamento": { t1: 100, t2: null, ex: 82, notaFinal: 94 } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "15.954.682-9": { nombre: "Flores Aguilera, Cristian Marcelo", cursos: { "Ética del Nuevo Testamento": { t1: 100, t2: null, ex: 85, notaFinal: 89 } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "16.807.217-1": { nombre: "Espinoza Sanhueza, Manuel Aaron", cursos: { "Ética del Nuevo Testamento": { t1: 100, t2: null, ex: 70, notaFinal: 90 } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "18.143.676-K": { nombre: "Severino Novoa, Alejandro Esteban", cursos: { "Ética del Nuevo Testamento": { t1: 100, t2: null, ex: 82, notaFinal: 88 } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "18.707.109-7": { nombre: "Muñoz Zúñiga, Camila Francisca", bloqueado: true, cursos: { "Ética del Nuevo Testamento": { t1: 0, t2: null, ex: 87, notaFinal: 55 } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "19.815.246-3": { nombre: "Villanueva Faundez, Vaitiare Constanza", cursos: { "Ética del Nuevo Testamento": { t1: 100, t2: null, ex: 84, notaFinal: 94 } , "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "20.527.658-0": { nombre: "Varela Miranda, Emmanuel Fernando", cursos: { "Evangelio de Lucas": { t1: null, t2: null, ex: null } } },
-  "16.863.871-K": { nombre: "Vidal Viviana", cursos: { "Introducción A.T.": { t1: 100, t2: 100, ex: 100, notaFinal: 100 } , "Contexto del Antiguo Testamento": { t1: null, t2: null, ex: null } } },
-  "15.517.222-3": { nombre: "Andrades, Manuel", cursos: { "Filosofía Antigua y Medieval": { t1: null, t2: null, ex: null } } },
-  "12.920.008-1": { nombre: "Cerna Roa, Emilio", cursos: { "Filosofía Antigua y Medieval": { t1: null, t2: null, ex: null } } },
-  "14.207.267-K": { nombre: "Cifuentes Valdebenito, Nasly", cursos: { "Filosofía Antigua y Medieval": { t1: null, t2: null, ex: null } } },
-  "15.671.292-2": { nombre: "Cisterna Concha, Katharine", cursos: { "Filosofía Antigua y Medieval": { t1: null, t2: null, ex: null } } },
-  "15.196.923-2": { nombre: "Lagos Bazán, Héctor Rolando", cursos: { "Filosofía Antigua y Medieval": { t1: null, t2: null, ex: null } } },
-  "21.960.777-6": { nombre: "Navarro Quiñimil, Abigail", cursos: { "Filosofía Antigua y Medieval": { t1: null, t2: null, ex: null } } },
-  "20.196.663-9": { nombre: "Pinto Rivas, Carolina", cursos: { "Filosofía Antigua y Medieval": { t1: null, t2: null, ex: null } } },
-  "17.900.057-1": { nombre: "Pulgar Ulloa, Daniela", cursos: { "Filosofía Antigua y Medieval": { t1: null, t2: null, ex: null } } },
-  "16.348.512-5": { nombre: "Rivera Gutierrez, Alberto", cursos: { "Filosofía Antigua y Medieval": { t1: null, t2: null, ex: null } } },
-  "16.167.344-7": { nombre: "Sánchez Alarcón, Carolina", cursos: { "Filosofía Antigua y Medieval": { t1: null, t2: null, ex: null } } },
-  "20.643.197-0": { nombre: "Segura Muñoz, Catalina", cursos: { "Filosofía Antigua y Medieval": { t1: null, t2: null, ex: null } } },
-  "6.894.778-2": { nombre: "Steffens Aburto, María", cursos: { "Filosofía Antigua y Medieval": { t1: null, t2: null, ex: null } } },
-  "16.222.374-7": { nombre: "Valencia Pereira, Christopher", cursos: { "Filosofía Antigua y Medieval": { t1: null, t2: null, ex: null } } },
-  "17.483.788-0": { nombre: "Zenteno Bravo, Cristian", cursos: { "Filosofía Antigua y Medieval": { t1: null, t2: null, ex: null } } },
-  "13.622.701-7": { nombre: "Suazo Ruiz, Juan Carlos", cursos: { "Filosofía Antigua y Medieval": { t1: null, t2: null, ex: null } } },
-  "16.807.324-0": { nombre: "Canario Vergara, Jorge Esteban", cursos: { "Filosofía Antigua y Medieval": { t1: null, t2: null, ex: null } } },
-  "11.985.808-9": { nombre: "Arroyo, Isabel", cursos: { "Filosofía Antigua y Medieval": { t1: null, t2: null, ex: null } } }
-};
+let alumnos = {};
 
 /* =====================================================================
-   3b) ASISTENCIA  (agrega o edita aquí)
+   3b) ASISTENCIA
    Formato: "RUT": { "Nombre curso": [ {fecha:"DD-MM-AAAA", estado:"Presente"|"Ausente"|"Atraso"|"Media clase"}, ... ] }
    En el porcentaje de asistencia: "Presente" vale 1, "Media clase" vale 0,5 y
    "Ausente"/"Atraso" valen 0.
@@ -826,366 +738,39 @@ let alumnos = {
    última declaración borra en silencio a la anterior. Para un alumno con varios
    cursos, agrégalos dentro de la misma entrada.
    ===================================================================== */
-let asistencia = {
-  "17.615.853-0": { "Introducción A.T.": [
-    { fecha: "06-05-2026", estado: "Presente" },
-    { fecha: "13-05-2026", estado: "Presente" },
-    { fecha: "20-05-2026", estado: "Presente" },
-    { fecha: "27-05-2026", estado: "Presente" },
-    { fecha: "03-06-2026", estado: "Presente" },
-    { fecha: "10-06-2026", estado: "Presente" },
-    { fecha: "17-06-2026", estado: "Presente" },
-    { fecha: "24-06-2026", estado: "Presente" }
-  ] , "Contexto del Antiguo Testamento": [ { fecha: "05-08-2026", estado: "Presente" }, { fecha: "12-08-2026", estado: "Presente" }, { fecha: "19-08-2026", estado: "Presente" }, { fecha: "26-08-2026", estado: "Presente" }, { fecha: "02-09-2026", estado: "Presente" }, { fecha: "09-09-2026", estado: "Presente" }, { fecha: "16-09-2026", estado: "Presente" }, { fecha: "23-09-2026", estado: "Presente" } ] },
-  "16.767.543-3": { "Introducción A.T.": [
-    { fecha: "06-05-2026", estado: "Presente" },
-    { fecha: "13-05-2026", estado: "Ausente" },
-    { fecha: "20-05-2026", estado: "Ausente" },
-    { fecha: "27-05-2026", estado: "Ausente" },
-    { fecha: "03-06-2026", estado: "Ausente" },
-    { fecha: "10-06-2026", estado: "Ausente" },
-    { fecha: "17-06-2026", estado: "Ausente" }
-  ] },
-  "20.759.687-6": { "Introducción A.T.": [
-    { fecha: "06-05-2026", estado: "Presente" },
-    { fecha: "13-05-2026", estado: "Presente" },
-    { fecha: "20-05-2026", estado: "Ausente" },
-    { fecha: "27-05-2026", estado: "Ausente" },
-    { fecha: "03-06-2026", estado: "Ausente" },
-    { fecha: "10-06-2026", estado: "Ausente" },
-    { fecha: "17-06-2026", estado: "Ausente" }
-  ] },
-  "11.984.351-0": { "Introducción A.T.": [
-    { fecha: "06-05-2026", estado: "Presente" },
-    { fecha: "13-05-2026", estado: "Presente" },
-    { fecha: "20-05-2026", estado: "Presente" },
-    { fecha: "27-05-2026", estado: "Presente" },
-    { fecha: "03-06-2026", estado: "Presente" },
-    { fecha: "10-06-2026", estado: "Presente" },
-    { fecha: "17-06-2026", estado: "Presente" },
-    { fecha: "24-06-2026", estado: "Presente" }
-  ] , "Contexto del Antiguo Testamento": [ { fecha: "05-08-2026", estado: "Presente" }, { fecha: "12-08-2026", estado: "Presente" }, { fecha: "19-08-2026", estado: "Media clase" }, { fecha: "26-08-2026", estado: "Presente" }, { fecha: "02-09-2026", estado: "Presente" }, { fecha: "09-09-2026", estado: "Presente" }, { fecha: "16-09-2026", estado: "Presente" }, { fecha: "23-09-2026", estado: "Presente" } ] },
-  "13.788.829-7": { "Introducción A.T.": [
-    { fecha: "06-05-2026", estado: "Presente" },
-    { fecha: "13-05-2026", estado: "Ausente" },
-    { fecha: "20-05-2026", estado: "Ausente" },
-    { fecha: "27-05-2026", estado: "Ausente" },
-    { fecha: "03-06-2026", estado: "Ausente" },
-    { fecha: "10-06-2026", estado: "Ausente" },
-    { fecha: "17-06-2026", estado: "Ausente" }
-  ] },
-  "9.718.696-0": { "Introducción A.T.": [
-    { fecha: "06-05-2026", estado: "Presente" },
-    { fecha: "13-05-2026", estado: "Presente" },
-    { fecha: "20-05-2026", estado: "Presente" },
-    { fecha: "27-05-2026", estado: "Presente" },
-    { fecha: "03-06-2026", estado: "Presente" },
-    { fecha: "10-06-2026", estado: "Presente" },
-    { fecha: "17-06-2026", estado: "Presente" },
-    { fecha: "24-06-2026", estado: "Presente" }
-  ] , "Contexto del Antiguo Testamento": [ { fecha: "05-08-2026", estado: "Presente" }, { fecha: "12-08-2026", estado: "Presente" }, { fecha: "19-08-2026", estado: "Ausente" }, { fecha: "26-08-2026", estado: "Presente" }, { fecha: "02-09-2026", estado: "Presente" }, { fecha: "09-09-2026", estado: "Presente" }, { fecha: "16-09-2026", estado: "Presente" }, { fecha: "23-09-2026", estado: "Presente" } ] },
-  "10.458.204-4": { "Introducción A.T.": [
-    { fecha: "06-05-2026", estado: "Presente" },
-    { fecha: "13-05-2026", estado: "Presente" },
-    { fecha: "20-05-2026", estado: "Presente" },
-    { fecha: "27-05-2026", estado: "Presente" },
-    { fecha: "03-06-2026", estado: "Presente" },
-    { fecha: "10-06-2026", estado: "Presente" },
-    { fecha: "17-06-2026", estado: "Presente" },
-    { fecha: "24-06-2026", estado: "Presente" }
-  ] , "Contexto del Antiguo Testamento": [ { fecha: "05-08-2026", estado: "Presente" }, { fecha: "12-08-2026", estado: "Presente" }, { fecha: "19-08-2026", estado: "Presente" }, { fecha: "26-08-2026", estado: "Presente" }, { fecha: "02-09-2026", estado: "Media clase" }, { fecha: "09-09-2026", estado: "Presente" }, { fecha: "16-09-2026", estado: "Presente" }, { fecha: "23-09-2026", estado: "Ausente" } ] },
-  "16.416.923-5": { "Introducción A.T.": [
-    { fecha: "06-05-2026", estado: "Presente" },
-    { fecha: "13-05-2026", estado: "Presente" },
-    { fecha: "20-05-2026", estado: "Presente" },
-    { fecha: "27-05-2026", estado: "Presente" },
-    { fecha: "03-06-2026", estado: "Presente" },
-    { fecha: "10-06-2026", estado: "Presente" },
-    { fecha: "17-06-2026", estado: "Presente" },
-    { fecha: "24-06-2026", estado: "Presente" }
-  ] , "Contexto del Antiguo Testamento": [ { fecha: "05-08-2026", estado: "Presente" }, { fecha: "12-08-2026", estado: "Presente" }, { fecha: "19-08-2026", estado: "Presente" }, { fecha: "26-08-2026", estado: "Presente" }, { fecha: "02-09-2026", estado: "Presente" }, { fecha: "09-09-2026", estado: "Ausente" }, { fecha: "16-09-2026", estado: "Presente" }, { fecha: "23-09-2026", estado: "Presente" } ] },
-  "17.614.372-K": { "Introducción A.T.": [
-    { fecha: "06-05-2026", estado: "Presente" },
-    { fecha: "13-05-2026", estado: "Presente" },
-    { fecha: "20-05-2026", estado: "Presente" },
-    { fecha: "27-05-2026", estado: "Presente" },
-    { fecha: "03-06-2026", estado: "Presente" },
-    { fecha: "10-06-2026", estado: "Presente" },
-    { fecha: "17-06-2026", estado: "Presente" },
-    { fecha: "24-06-2026", estado: "Presente" }
-  ] , "Contexto del Antiguo Testamento": [ { fecha: "05-08-2026", estado: "Presente" }, { fecha: "12-08-2026", estado: "Presente" }, { fecha: "19-08-2026", estado: "Presente" }, { fecha: "26-08-2026", estado: "Presente" }, { fecha: "02-09-2026", estado: "Presente" }, { fecha: "09-09-2026", estado: "Presente" }, { fecha: "16-09-2026", estado: "Ausente" }, { fecha: "23-09-2026", estado: "Ausente" } ] },
-  "12.526.537-5": { "Introducción A.T.": [
-    { fecha: "06-05-2026", estado: "Presente" },
-    { fecha: "13-05-2026", estado: "Presente" },
-    { fecha: "20-05-2026", estado: "Presente" },
-    { fecha: "27-05-2026", estado: "Presente" },
-    { fecha: "03-06-2026", estado: "Presente" },
-    { fecha: "10-06-2026", estado: "Presente" },
-    { fecha: "17-06-2026", estado: "Presente" },
-    { fecha: "24-06-2026", estado: "Presente" }
-  ], "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Presente" }, { fecha: "07-07-2026", estado: "Presente" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Presente" } ], "Contexto del Antiguo Testamento": [ { fecha: "05-08-2026", estado: "Ausente" }, { fecha: "12-08-2026", estado: "Ausente" }, { fecha: "19-08-2026", estado: "Ausente" }, { fecha: "26-08-2026", estado: "Ausente" }, { fecha: "02-09-2026", estado: "Ausente" }, { fecha: "09-09-2026", estado: "Ausente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Presente" } ] },
-  "15.157.909-4": { "Introducción A.T.": [
-    { fecha: "06-05-2026", estado: "Presente" },
-    { fecha: "13-05-2026", estado: "Presente" },
-    { fecha: "20-05-2026", estado: "Presente" },
-    { fecha: "27-05-2026", estado: "Presente" },
-    { fecha: "03-06-2026", estado: "Presente" },
-    { fecha: "10-06-2026", estado: "Presente" },
-    { fecha: "17-06-2026", estado: "Presente" },
-    { fecha: "24-06-2026", estado: "Presente" }
-  ], "Contexto del Antiguo Testamento": [ { fecha: "05-08-2026", estado: "Media clase" }, { fecha: "12-08-2026", estado: "Presente" }, { fecha: "19-08-2026", estado: "Presente" }, { fecha: "26-08-2026", estado: "Presente" }, { fecha: "02-09-2026", estado: "Presente" }, { fecha: "09-09-2026", estado: "Presente" }, { fecha: "16-09-2026", estado: "Presente" }, { fecha: "23-09-2026", estado: "Presente" } ] },
-  "6.688.590-9": { "Introducción A.T.": [
-    { fecha: "06-05-2026", estado: "Presente" },
-    { fecha: "13-05-2026", estado: "Presente" },
-    { fecha: "20-05-2026", estado: "Presente" },
-    { fecha: "27-05-2026", estado: "Presente" },
-    { fecha: "03-06-2026", estado: "Presente" },
-    { fecha: "10-06-2026", estado: "Presente" },
-    { fecha: "17-06-2026", estado: "Ausente" },
-    { fecha: "24-06-2026", estado: "Presente" }
-  ] , "Contexto del Antiguo Testamento": [ { fecha: "05-08-2026", estado: "Presente" }, { fecha: "12-08-2026", estado: "Ausente" }, { fecha: "19-08-2026", estado: "Presente" }, { fecha: "26-08-2026", estado: "Presente" }, { fecha: "02-09-2026", estado: "Presente" }, { fecha: "09-09-2026", estado: "Presente" }, { fecha: "16-09-2026", estado: "Ausente" }, { fecha: "23-09-2026", estado: "Presente" } ] },
-  "16.690.272-K": { "Introducción A.T.": [
-    { fecha: "06-05-2026", estado: "Presente" },
-    { fecha: "13-05-2026", estado: "Presente" },
-    { fecha: "20-05-2026", estado: "Presente" },
-    { fecha: "27-05-2026", estado: "Presente" },
-    { fecha: "03-06-2026", estado: "Presente" },
-    { fecha: "10-06-2026", estado: "Presente" },
-    { fecha: "17-06-2026", estado: "Presente" },
-    { fecha: "24-06-2026", estado: "Presente" }
-  ] , "Contexto del Antiguo Testamento": [ { fecha: "05-08-2026", estado: "Presente" }, { fecha: "12-08-2026", estado: "Presente" }, { fecha: "19-08-2026", estado: "Presente" }, { fecha: "26-08-2026", estado: "Presente" }, { fecha: "02-09-2026", estado: "Presente" }, { fecha: "09-09-2026", estado: "Presente" }, { fecha: "16-09-2026", estado: "Presente" }, { fecha: "23-09-2026", estado: "Presente" } ] },
-  "16.863.871-K": { "Introducción A.T.": [
-    { fecha: "06-05-2026", estado: "Presente" },
-    { fecha: "13-05-2026", estado: "Presente" },
-    { fecha: "20-05-2026", estado: "Presente" },
-    { fecha: "27-05-2026", estado: "Presente" },
-    { fecha: "03-06-2026", estado: "Presente" },
-    { fecha: "10-06-2026", estado: "Presente" },
-    { fecha: "17-06-2026", estado: "Presente" },
-    { fecha: "24-06-2026", estado: "Presente" }
-  ] , "Contexto del Antiguo Testamento": [ { fecha: "05-08-2026", estado: "Presente" }, { fecha: "12-08-2026", estado: "Presente" }, { fecha: "19-08-2026", estado: "Presente" }, { fecha: "26-08-2026", estado: "Presente" }, { fecha: "02-09-2026", estado: "Presente" }, { fecha: "09-09-2026", estado: "Presente" }, { fecha: "16-09-2026", estado: "Presente" }, { fecha: "23-09-2026", estado: "Presente" } ] },
-  "15.865.472-5": { "Filosofía Moderna": [
-    { fecha: "08-04-2026", estado: "Presente" },
-    { fecha: "15-04-2026", estado: "Presente" },
-    { fecha: "22-04-2026", estado: "Presente" },
-    { fecha: "05-05-2026", estado: "Presente" },
-    { fecha: "12-05-2026", estado: "Presente" },
-    { fecha: "19-05-2026", estado: "Presente" },
-    { fecha: "26-05-2026", estado: "Presente" },
-    { fecha: "02-06-2026", estado: "Presente" },
-    { fecha: "09-06-2026", estado: "Presente" },
-    { fecha: "16-06-2026", estado: "Presente" },
-    { fecha: "23-06-2026", estado: "Presente" }
-  ] , "Eclesiología y Pneumatología": [ { fecha: "04-08-2026", estado: "Presente" }, { fecha: "11-08-2026", estado: "Presente" }, { fecha: "18-08-2026", estado: "Presente" }, { fecha: "25-08-2026", estado: "Presente" }, { fecha: "01-09-2026", estado: "Presente" }, { fecha: "08-09-2026", estado: "Presente" }, { fecha: "15-09-2026", estado: "Presente" }, { fecha: "22-09-2026", estado: "Presente" } ] },
-  "20.194.247-0": { "Filosofía Moderna": [
-    { fecha: "05-05-2026", estado: "Presente" },
-    { fecha: "12-05-2026", estado: "Presente" },
-    { fecha: "19-05-2026", estado: "Ausente" },
-    { fecha: "26-05-2026", estado: "Presente" },
-    { fecha: "02-06-2026", estado: "Presente" },
-    { fecha: "09-06-2026", estado: "Presente" },
-    { fecha: "16-06-2026", estado: "Presente" },
-    { fecha: "23-06-2026", estado: "Presente" }
-  ] , "Eclesiología y Pneumatología": [ { fecha: "04-08-2026", estado: "Presente" }, { fecha: "11-08-2026", estado: "Presente" }, { fecha: "18-08-2026", estado: "Ausente" }, { fecha: "25-08-2026", estado: "Presente" }, { fecha: "01-09-2026", estado: "Presente" }, { fecha: "08-09-2026", estado: "Media clase" }, { fecha: "15-09-2026", estado: "Ausente" }, { fecha: "22-09-2026", estado: "Media clase" } ] },
-  "15.180.128-5": { "Filosofía Moderna": [
-    { fecha: "05-05-2026", estado: "Presente" },
-    { fecha: "12-05-2026", estado: "Presente" },
-    { fecha: "19-05-2026", estado: "Presente" },
-    { fecha: "26-05-2026", estado: "Presente" },
-    { fecha: "02-06-2026", estado: "Presente" },
-    { fecha: "09-06-2026", estado: "Presente" },
-    { fecha: "16-06-2026", estado: "Presente" },
-    { fecha: "23-06-2026", estado: "Presente" }
-  ] , "Eclesiología y Pneumatología": [ { fecha: "04-08-2026", estado: "Presente" }, { fecha: "11-08-2026", estado: "Presente" }, { fecha: "18-08-2026", estado: "Presente" }, { fecha: "25-08-2026", estado: "Presente" }, { fecha: "01-09-2026", estado: "Presente" }, { fecha: "08-09-2026", estado: "Presente" }, { fecha: "15-09-2026", estado: "Presente" }, { fecha: "22-09-2026", estado: "Presente" } ] },
-  "16.155.833-8": { "Filosofía Moderna": [
-    { fecha: "05-05-2026", estado: "Presente" },
-    { fecha: "12-05-2026", estado: "Presente" },
-    { fecha: "19-05-2026", estado: "Presente" },
-    { fecha: "26-05-2026", estado: "Presente" },
-    { fecha: "02-06-2026", estado: "Presente" },
-    { fecha: "09-06-2026", estado: "Presente" },
-    { fecha: "16-06-2026", estado: "Presente" },
-    { fecha: "23-06-2026", estado: "Presente" }
-  ] , "Eclesiología y Pneumatología": [ { fecha: "04-08-2026", estado: "Presente" }, { fecha: "11-08-2026", estado: "Ausente" }, { fecha: "18-08-2026", estado: "Presente" }, { fecha: "25-08-2026", estado: "Presente" }, { fecha: "01-09-2026", estado: "Ausente" }, { fecha: "08-09-2026", estado: "Presente" }, { fecha: "15-09-2026", estado: "Presente" }, { fecha: "22-09-2026", estado: "Presente" } ] },
-  "18.131.401-K": { "Filosofía Moderna": [
-    { fecha: "05-05-2026", estado: "Presente" },
-    { fecha: "12-05-2026", estado: "Presente" },
-    { fecha: "19-05-2026", estado: "Ausente" },
-    { fecha: "26-05-2026", estado: "Presente" },
-    { fecha: "02-06-2026", estado: "Presente" },
-    { fecha: "09-06-2026", estado: "Presente" },
-    { fecha: "16-06-2026", estado: "Presente" },
-    { fecha: "23-06-2026", estado: "Presente" }
-  ] , "Eclesiología y Pneumatología": [ { fecha: "04-08-2026", estado: "Presente" }, { fecha: "11-08-2026", estado: "Presente" }, { fecha: "18-08-2026", estado: "Presente" }, { fecha: "25-08-2026", estado: "Presente" }, { fecha: "01-09-2026", estado: "Presente" }, { fecha: "08-09-2026", estado: "Presente" }, { fecha: "15-09-2026", estado: "Presente" }, { fecha: "22-09-2026", estado: "Presente" } ] },
-  "8.188.445-5": { "Filosofía Moderna": [
-    { fecha: "05-05-2026", estado: "Presente" },
-    { fecha: "12-05-2026", estado: "Presente" },
-    { fecha: "19-05-2026", estado: "Presente" },
-    { fecha: "26-05-2026", estado: "Presente" },
-    { fecha: "02-06-2026", estado: "Presente" },
-    { fecha: "09-06-2026", estado: "Presente" },
-    { fecha: "16-06-2026", estado: "Presente" },
-    { fecha: "23-06-2026", estado: "Presente" }
-  ] , "Eclesiología y Pneumatología": [ { fecha: "04-08-2026", estado: "Presente" }, { fecha: "11-08-2026", estado: "Presente" }, { fecha: "18-08-2026", estado: "Presente" }, { fecha: "25-08-2026", estado: "Presente" }, { fecha: "01-09-2026", estado: "Presente" }, { fecha: "08-09-2026", estado: "Presente" }, { fecha: "15-09-2026", estado: "Presente" }, { fecha: "22-09-2026", estado: "Presente" } ] },
-  "10.040.390-0": { "Filosofía Moderna": [
-    { fecha: "05-05-2026", estado: "Presente" },
-    { fecha: "12-05-2026", estado: "Presente" },
-    { fecha: "19-05-2026", estado: "Presente" },
-    { fecha: "26-05-2026", estado: "Presente" },
-    { fecha: "02-06-2026", estado: "Presente" },
-    { fecha: "09-06-2026", estado: "Presente" },
-    { fecha: "16-06-2026", estado: "Presente" },
-    { fecha: "23-06-2026", estado: "Presente" }
-  ] , "Eclesiología y Pneumatología": [ { fecha: "04-08-2026", estado: "Presente" }, { fecha: "11-08-2026", estado: "Presente" }, { fecha: "18-08-2026", estado: "Presente" }, { fecha: "25-08-2026", estado: "Presente" }, { fecha: "01-09-2026", estado: "Presente" }, { fecha: "08-09-2026", estado: "Presente" }, { fecha: "15-09-2026", estado: "Presente" }, { fecha: "22-09-2026", estado: "Presente" } ] },
-  "11.986.425-9": { "Filosofía Moderna": [
-    { fecha: "05-05-2026", estado: "Ausente" },
-    { fecha: "12-05-2026", estado: "Presente" },
-    { fecha: "19-05-2026", estado: "Presente" },
-    { fecha: "26-05-2026", estado: "Presente" },
-    { fecha: "02-06-2026", estado: "Presente" },
-    { fecha: "09-06-2026", estado: "Presente" },
-    { fecha: "16-06-2026", estado: "Presente" },
-    { fecha: "23-06-2026", estado: "Presente" }
-  ] , "Eclesiología y Pneumatología": [ { fecha: "04-08-2026", estado: "Presente" }, { fecha: "11-08-2026", estado: "Presente" }, { fecha: "18-08-2026", estado: "Media clase" }, { fecha: "25-08-2026", estado: "Presente" }, { fecha: "01-09-2026", estado: "Presente" }, { fecha: "08-09-2026", estado: "Presente" }, { fecha: "15-09-2026", estado: "Presente" }, { fecha: "22-09-2026", estado: "Presente" } ] },
-  "10.544.296-3": { "Filosofía Moderna": [
-    { fecha: "05-05-2026", estado: "Presente" },
-    { fecha: "12-05-2026", estado: "Ausente" },
-    { fecha: "19-05-2026", estado: "Presente" },
-    { fecha: "26-05-2026", estado: "Presente" },
-    { fecha: "02-06-2026", estado: "Presente" },
-    { fecha: "09-06-2026", estado: "Presente" },
-    { fecha: "16-06-2026", estado: "Presente" },
-    { fecha: "23-06-2026", estado: "Presente" }
-  ] , "Eclesiología y Pneumatología": [ { fecha: "04-08-2026", estado: "Presente" }, { fecha: "11-08-2026", estado: "Presente" }, { fecha: "18-08-2026", estado: "Media clase" }, { fecha: "25-08-2026", estado: "Presente" }, { fecha: "01-09-2026", estado: "Presente" }, { fecha: "08-09-2026", estado: "Presente" }, { fecha: "15-09-2026", estado: "Presente" }, { fecha: "22-09-2026", estado: "Presente" } ] },
-  "23.502.993-6": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Presente" }, { fecha: "06-07-2026", estado: "Presente" }, { fecha: "13-07-2026", estado: "Presente" }, { fecha: "20-07-2026", estado: "Ausente" } ] },
-  "11.452.141-8": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Presente" }, { fecha: "06-07-2026", estado: "Presente" }, { fecha: "13-07-2026", estado: "Presente" }, { fecha: "20-07-2026", estado: "Presente" } ] , "Contexto del Antiguo Testamento": [ { fecha: "05-08-2026", estado: "Presente" }, { fecha: "12-08-2026", estado: "Presente" }, { fecha: "19-08-2026", estado: "Presente" }, { fecha: "26-08-2026", estado: "Presente" }, { fecha: "02-09-2026", estado: "Presente" }, { fecha: "09-09-2026", estado: "Presente" }, { fecha: "16-09-2026", estado: "Presente" }, { fecha: "23-09-2026", estado: "Presente" } ] },
-  "16.038.613-4": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Presente" }, { fecha: "06-07-2026", estado: "Presente" }, { fecha: "13-07-2026", estado: "Presente" }, { fecha: "20-07-2026", estado: "Presente" } ], "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Presente" }, { fecha: "07-07-2026", estado: "Ausente" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Presente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Ausente" } ] },
-  "17.853.309-6": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Ausente" }, { fecha: "06-07-2026", estado: "Presente" }, { fecha: "13-07-2026", estado: "Presente" }, { fecha: "20-07-2026", estado: "Ausente" } ] },
-  "12.182.346-2": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Media clase" }, { fecha: "06-07-2026", estado: "Presente" }, { fecha: "13-07-2026", estado: "Presente" }, { fecha: "20-07-2026", estado: "Presente" } ] },
-  "12.703.841-4": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Presente" }, { fecha: "06-07-2026", estado: "Presente" }, { fecha: "13-07-2026", estado: "Presente" }, { fecha: "20-07-2026", estado: "Presente" } ] },
-  "21.216.524-7": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Ausente" }, { fecha: "06-07-2026", estado: "Ausente" }, { fecha: "13-07-2026", estado: "Ausente" }, { fecha: "20-07-2026", estado: "Ausente" } ] },
-  "14.051.047-5": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Ausente" }, { fecha: "06-07-2026", estado: "Ausente" }, { fecha: "13-07-2026", estado: "Ausente" }, { fecha: "20-07-2026", estado: "Ausente" } ] },
-  "14.272.037-K": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Presente" }, { fecha: "06-07-2026", estado: "Presente" }, { fecha: "13-07-2026", estado: "Presente" }, { fecha: "20-07-2026", estado: "Presente" } ] },
-  "13.601.474-9": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Presente" }, { fecha: "06-07-2026", estado: "Presente" }, { fecha: "13-07-2026", estado: "Presente" }, { fecha: "20-07-2026", estado: "Presente" } ] },
-  "16.513.840-6": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Ausente" }, { fecha: "06-07-2026", estado: "Presente" }, { fecha: "13-07-2026", estado: "Presente" }, { fecha: "20-07-2026", estado: "Ausente" } ] },
-  "9.781.940-8": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Presente" }, { fecha: "06-07-2026", estado: "Presente" }, { fecha: "13-07-2026", estado: "Presente" }, { fecha: "20-07-2026", estado: "Presente" } ] },
-  "20.116.717-5": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Presente" }, { fecha: "06-07-2026", estado: "Presente" }, { fecha: "13-07-2026", estado: "Presente" }, { fecha: "20-07-2026", estado: "Presente" } ] },
-  "28.474.255-9": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Ausente" }, { fecha: "06-07-2026", estado: "Ausente" }, { fecha: "13-07-2026", estado: "Ausente" }, { fecha: "20-07-2026", estado: "Ausente" } ] },
-  "21.165.197-0": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Presente" }, { fecha: "06-07-2026", estado: "Presente" }, { fecha: "13-07-2026", estado: "Presente" }, { fecha: "20-07-2026", estado: "Presente" } ] },
-  "16.012.222-6": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Presente" }, { fecha: "06-07-2026", estado: "Presente" }, { fecha: "13-07-2026", estado: "Presente" }, { fecha: "20-07-2026", estado: "Presente" } ] },
-  "15.193.496-K": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Ausente" }, { fecha: "06-07-2026", estado: "Ausente" }, { fecha: "13-07-2026", estado: "Presente" }, { fecha: "20-07-2026", estado: "Ausente" } ], "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Ausente" }, { fecha: "07-07-2026", estado: "Media clase" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Presente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Presente" } ] },
-  "14.341.897-9": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Presente" }, { fecha: "06-07-2026", estado: "Presente" }, { fecha: "13-07-2026", estado: "Presente" }, { fecha: "20-07-2026", estado: "Presente" } ] },
-  "20.020.152-3": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Presente" }, { fecha: "06-07-2026", estado: "Presente" }, { fecha: "13-07-2026", estado: "Presente" }, { fecha: "20-07-2026", estado: "Presente" } ] },
-  "18.804.372-0": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Presente" }, { fecha: "06-07-2026", estado: "Presente" }, { fecha: "13-07-2026", estado: "Presente" }, { fecha: "20-07-2026", estado: "Presente" } ] },
-  "17.182.577-6": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Presente" }, { fecha: "06-07-2026", estado: "Presente" }, { fecha: "13-07-2026", estado: "Presente" }, { fecha: "20-07-2026", estado: "Presente" } ] },
-  "9.950.138-3": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Ausente" }, { fecha: "06-07-2026", estado: "Ausente" }, { fecha: "13-07-2026", estado: "Ausente" }, { fecha: "20-07-2026", estado: "Ausente" } ] },
-  "22.616.202-K": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Presente" }, { fecha: "06-07-2026", estado: "Presente" }, { fecha: "13-07-2026", estado: "Presente" }, { fecha: "20-07-2026", estado: "Presente" } ] },
-  "11.708.911-8": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Media clase" }, { fecha: "06-07-2026", estado: "Presente" }, { fecha: "13-07-2026", estado: "Presente" }, { fecha: "20-07-2026", estado: "Presente" } ] },
-  "16.965.915-K": { "Ética del A.T.": [ { fecha: "01-07-2026", estado: "Presente" }, { fecha: "06-07-2026", estado: "Presente" }, { fecha: "13-07-2026", estado: "Presente" }, { fecha: "20-07-2026", estado: "Presente" } ] },
-  "17.444.999-6": { "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Presente" }, { fecha: "07-07-2026", estado: "Presente" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Presente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Presente" } ] },
-  "18.684.727-K": { "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Presente" }, { fecha: "07-07-2026", estado: "Media clase" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Ausente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Presente" } ] },
-  "18.147.137-9": { "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Presente" }, { fecha: "07-07-2026", estado: "Presente" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Presente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Presente" } ] },
-  "16.482.093-9": { "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Presente" }, { fecha: "07-07-2026", estado: "Presente" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Presente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Presente" } ] },
-  "14.062.185-4": { "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Presente" }, { fecha: "07-07-2026", estado: "Presente" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Presente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Presente" } ] },
-  "13.069.994-4": { "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Presente" }, { fecha: "07-07-2026", estado: "Presente" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Presente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Presente" } ] },
-  "19.335.856-K": { "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Presente" }, { fecha: "07-07-2026", estado: "Presente" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Presente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Presente" } ] },
-  "17.215.962-1": { "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Presente" }, { fecha: "07-07-2026", estado: "Presente" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Presente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Presente" } ] },
-  "16.846.945-4": { "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Presente" }, { fecha: "07-07-2026", estado: "Presente" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Presente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Presente" } ] },
-  "18.286.594-K": { "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Presente" }, { fecha: "07-07-2026", estado: "Media clase" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Presente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Media clase" } ] },
-  "13.374.492-4": { "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Presente" }, { fecha: "07-07-2026", estado: "Presente" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Presente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Presente" } ] },
-  "11.956.591-K": { "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Presente" }, { fecha: "07-07-2026", estado: "Presente" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Presente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Presente" } ] },
-  "10.796.551-3": { "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Presente" }, { fecha: "07-07-2026", estado: "Presente" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Presente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Presente" } ] },
-  "15.519.768-4": { "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Presente" }, { fecha: "07-07-2026", estado: "Presente" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Presente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Presente" } ] },
-  "16.769.032-7": { "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Ausente" }, { fecha: "07-07-2026", estado: "Ausente" }, { fecha: "14-07-2026", estado: "Ausente" }, { fecha: "21-07-2026", estado: "Ausente" } ] },
-  "13.133.863-5": { "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Presente" }, { fecha: "07-07-2026", estado: "Presente" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Presente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Presente" } ] },
-  "12.090.242-3": { "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Presente" }, { fecha: "07-07-2026", estado: "Presente" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Presente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Presente" } ] },
-  "15.954.682-9": { "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Presente" }, { fecha: "07-07-2026", estado: "Presente" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Ausente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Presente" } ] },
-  "16.807.217-1": { "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Presente" }, { fecha: "07-07-2026", estado: "Presente" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Presente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Presente" } ] },
-  "18.143.676-K": { "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Ausente" }, { fecha: "07-07-2026", estado: "Presente" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Presente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Presente" } ] },
-  "18.707.109-7": { "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Presente" }, { fecha: "07-07-2026", estado: "Presente" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Ausente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Ausente" } ] },
-  "19.815.246-3": { "Ética del Nuevo Testamento": [ { fecha: "30-06-2026", estado: "Presente" }, { fecha: "07-07-2026", estado: "Presente" }, { fecha: "14-07-2026", estado: "Presente" }, { fecha: "21-07-2026", estado: "Presente" } ], "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Presente" } ] },
-  "20.022.133-8": { "Contexto del Antiguo Testamento": [ { fecha: "05-08-2026", estado: "Presente" }, { fecha: "12-08-2026", estado: "Presente" }, { fecha: "19-08-2026", estado: "Presente" }, { fecha: "26-08-2026", estado: "Presente" }, { fecha: "02-09-2026", estado: "Presente" }, { fecha: "09-09-2026", estado: "Presente" }, { fecha: "16-09-2026", estado: "Presente" }, { fecha: "23-09-2026", estado: "Presente" } ] },
-  "19.511.582-6": { "Contexto del Antiguo Testamento": [ { fecha: "26-08-2026", estado: "Presente" }, { fecha: "02-09-2026", estado: "Presente" }, { fecha: "09-09-2026", estado: "Media clase" }, { fecha: "16-09-2026", estado: "Ausente" }, { fecha: "23-09-2026", estado: "Ausente" } ] },
-  "20.527.658-0": { "Evangelio de Lucas": [ { fecha: "29-09-2026", estado: "Media clase" } ] }
-};
+let asistencia = {};
 
 /* =====================================================================
    3c) OBSERVACIONES  (individuales por alumno)
    Formato: "RUT": [ { fecha: "DD-MM-AAAA", texto: "..." }, ... ]
    ===================================================================== */
-let observaciones = {
-  "15.865.472-5": [ { fecha: "09-07-2026", texto: "La nota del examen corresponde de igual manera a la nota 2." } ],
-  "20.194.247-0": [ { fecha: "09-07-2026", texto: "La nota del examen corresponde de igual manera a la nota 2." } ],
-  "15.180.128-5": [ { fecha: "09-07-2026", texto: "La nota del examen corresponde de igual manera a la nota 2." } ],
-  "16.155.833-8": [ { fecha: "09-07-2026", texto: "La nota del examen corresponde de igual manera a la nota 2." } ],
-  "18.131.401-K": [ { fecha: "09-07-2026", texto: "La nota del examen corresponde de igual manera a la nota 2." } ],
-  "8.188.445-5": [ { fecha: "09-07-2026", texto: "La nota del examen corresponde de igual manera a la nota 2." } ],
-  "10.040.390-0": [ { fecha: "09-07-2026", texto: "La nota del examen corresponde de igual manera a la nota 2." } ],
-  "11.986.425-9": [ { fecha: "09-07-2026", texto: "La nota del examen corresponde de igual manera a la nota 2." } ],
-  "10.544.296-3": [ { fecha: "09-07-2026", texto: "La nota del examen corresponde de igual manera a la nota 2." } ]
-};
+let observaciones = {};
 
 /* =====================================================================
    3c-bis) OBSERVACIONES POR CURSO (se muestran a todos los alumnos del curso)
    Formato: "Nombre curso": [ { fecha:"DD-MM-AAAA", texto:"..." }, ... ]
    ===================================================================== */
-let observacionesCurso = {
-  "Ética del A.T.": [
-    { fecha: "01-08-2026", texto: "Ponderación del Promedio Final: Trabajo 1 = 35% · Examen = 35% · Asistencia = 30%." }
-  ],
-  "Ética del Nuevo Testamento": [
-    { fecha: "01-08-2026", texto: "Ponderación del Promedio Final: Trabajo 1 = 35% · Examen = 35% · Asistencia = 30%." }
-  ],
-  "Eclesiología y Pneumatología": [
-    { fecha: "02-08-2026", texto: "Ciclo II (Ago–Sep) · Profesor: Rudy Fuentes. Clases los martes de 19:30 a 22:00 hrs, con receso de 30 minutos, en modalidad híbrida. Calendario: 04-08, 11-08, 18-08, 25-08, 01-09, 08-09, 15-09 y 22-09 de 2026 (8 clases)." }
-  ],
-  "Contexto del Antiguo Testamento": [
-    { fecha: "02-08-2026", texto: "Ciclo II (Ago–Sep) · Profesor: Rudy Fuentes. Clases los miércoles en modalidad online, vía Zoom. Calendario: 05-08, 12-08, 19-08, 26-08, 02-09, 09-09, 16-09 y 23-09 de 2026 (8 clases)." }
-  ],
-  "Filosofía Antigua y Medieval": [
-    { fecha: "27-09-2026", texto: "Profesor: Rudy Fuentes. Clases los lunes de 19:30 a 22:00 hrs, con break de 20:30 a 21:00, en modalidad híbrida (Sala 1 · también vía Zoom). Calendario: 28-09, 05-10, 12-10, 19-10, 26-10, 02-11, 09-11 y 16-11 de 2026 (8 clases)." }
-  ],
-  "Evangelio de Lucas": [
-    { fecha: "27-09-2026", texto: "Profesor: Rudy Fuentes. Clases los martes de 19:30 a 22:00 hrs, con break de 20:30 a 21:00, en modalidad híbrida (Sala 1 · también vía Zoom). Calendario: 29-09, 06-10, 13-10, 20-10, 27-10, 03-11, 10-11 y 17-11 de 2026 (8 clases)." }
-  ]
-};
+let observacionesCurso = {};
 
 /* =====================================================================
    3d) AVISOS GENERALES
    Agrega "curso: '<nombre del curso>'" para que un aviso solo lo vean los
    alumnos de ese curso. Sin ese campo, el aviso se muestra a todos.
    ===================================================================== */
-let avisos = [
-];
+let avisos = [];
 
 /* =====================================================================
-   3e-bis) TAREAS A REALIZAR POR CURSO  (agrega o edita aquí)
+   3e-bis) TAREAS A REALIZAR POR CURSO
    Formato: "Nombre curso": [ { titulo:"...", desc:"...", fecha:"DD-MM-AAAA" (fecha de entrega) }, ... ]
    ===================================================================== */
-let tareas = {
-  "Contexto del Antiguo Testamento": [
-    { titulo: "Tarea Documental: Dioses y Demonios de Egipto", desc: "Ver el documental \"Dioses y Demonios del Antiguo Egipto\" (47 min) y responder por escrito: 1) Describa cómo surge la creación y el ciclo de vida de Re. 2) ¿Cómo era el parto de una mujer egipcia? 3) ¿Qué pensamiento tenían los egipcios con respecto a la muerte? Video: https://www.youtube.com/watch?v=KM6pBk6YQKo", fecha: "02-09-2026", url: "materiales/contexto-at/tarea-documental-dioses-demonios-egipto.docx" },
-    { titulo: "Trabajo final: La cultura religiosa de las mujeres", desc: "Leer el documento \"La cultura religiosa de las mujeres\" (Aportes Bíblicos) y responder por escrito: 1) La autora dice que el Antiguo Testamento entrega poca información sobre la vida diaria de las mujeres; según la lectura, ¿por qué ocurre eso? Mencione tres razones que da el texto, explíquelas con sus palabras, y señale cuál le parece la más importante y por qué. 2) El texto cita Jeremías 7:17-18, donde el profeta se enoja porque las mujeres preparan tortas para «la reina del cielo»: ábralo en su Biblia y léalo completo, luego responda ¿qué nos permite saber ese enojo del profeta sobre lo que la gente realmente hacía en Israel? Explique con sus palabras por qué, según la autora, una crítica puede servirnos como prueba.", fecha: "04-10-2026", url: "materiales/contexto-at/trabajo-final-cultura-religiosa-mujeres.pdf" }
-  ],
-  "Eclesiología y Pneumatología": [
-    { titulo: "Guía de trabajo Clase 3: Vocabulario y exégesis (Gobierno, ministerio y ministerios)", desc: "Responder en hoja aparte, en prosa continua y con extensión máxima de dos páginas: 1) Vocabulario técnico (diakonía, chárisma, presbýteros, epískopos, diákonos, laós/laikós, ephápax, ius divinum/ius humanum). 2) Ejercicios de exégesis sobre Hch 20:17-28, Tit 1:5-7, 1 P 5:1-2 (¿anciano y obispo son la misma persona?); 1 P 2:4-10 y Éx 19:5-6 (sacerdocio de todos los creyentes); y 1 Co 11-14 (el argumento del silencio). Citar sigla y página en toda afirmación tomada de las lecturas (NDT: \"Ministerio\" pp. 635-639, \"Iglesia, gobierno de la\" pp. 496-500, \"Sacerdocio de todos los creyentes\" pp. 837-839, \"Laicos\" pp. 559-560).", fecha: "08-09-2026", url: "materiales/eclesiologia/clase-3-guia-breve.docx" },
-    { titulo: "Trabajo final: Las herejías sobre el Espíritu Santo", desc: "Investigar siete desviaciones doctrinales sobre el Espíritu Santo (Montanismo, Macedonianismo, Sabelianismo, Arrianismo, Subordinacionismo, Unitarismo, Unicitarismo) y completar el cuadro usando solo los tres diccionarios del curso (NDT, GDEB, DMT), citando sigla y página. No se aceptan fuentes de internet, apuntes ni videos; si un diccionario no trae el dato, se escribe «no lo dice».", fecha: "02-10-2026", url: "materiales/eclesiologia/trabajo-final-herejias-espiritu-santo.docx" }
-  ]
-};
+let tareas = {};
 
 /* =====================================================================
-   3e-ter) TRABAJO EN GRUPO POR CURSO  (agrega o edita aquí)
+   3e-ter) TRABAJO EN GRUPO POR CURSO
    Lecturas y material de apoyo para actividades grupales.
    Formato: "Nombre curso": [ { titulo:"...", desc:"...", tipo:"pdf"|"doc"|..., url:"..." }, ... ]
    ===================================================================== */
-let trabajoGrupo = {
-  "Contexto del Antiguo Testamento": [
-    { titulo: "Una tierra que mana leche y miel: Asentamiento en Canaán", desc: "John Drane, Introducción al Antiguo Testamento · Lectura para trabajo en grupo sobre la llegada de Israel a Canaán y las teorías arqueológicas de su asentamiento", tipo: "pdf", url: "materiales/contexto-at/trabajo-grupo-israel-en-canaan.pdf" }
-  ],
-  "Eclesiología y Pneumatología": [
-    { titulo: "Trabajo en grupo Clase 6: Bautismo y Santa Cena en Silva y Heward-Mills", desc: "Entrega: domingo 13-09-2026. En grupo: unos integrantes leen a Kittim Silva (bautismo y Santa Cena) y otros a Dag Heward-Mills, y completan el cuadro comparativo citando la página de cada manual (o «no lo dice» si corresponde). Luego responden en conjunto dos preguntas finales: 1) qué fila muestra la mayor diferencia y qué convicción teológica la explica; 2) a la luz de 1 Co 11:27-32, si la ausencia de condiciones para participar de la cena en uno de los manuales es un acierto o un descuido.", tipo: "doc", url: "materiales/eclesiologia/trabajo-grupal-silva-heward-mills.docx" }
-  ]
-};
+let trabajoGrupo = {};
 
 /* =====================================================================
    3e-00) ENTREGA DE TRABAJOS
@@ -1213,22 +798,13 @@ const profesor = {
 };
 
 /* =====================================================================
-   3e) HORARIO Y MODALIDAD POR CURSO  (agrega o edita aquí)
+   3e) HORARIO Y MODALIDAD POR CURSO
    modalidad: "Presencial", "Online" o "Híbrido"
    ===================================================================== */
-let horarios = {
-  "Introducción A.T.": { dia: "Miércoles", hora: "19:30 – 22:00", modalidad: "Online", lugar: "Vía Zoom" },
-  "Filosofía Moderna": { dia: "Miércoles", hora: "19:00 – 20:30", modalidad: "Híbrido", lugar: "Sala 2 · también vía Zoom" },
-  "Ética del A.T.": { dia: "Lunes", hora: "19:30 – 22:00 (break 20:30 – 21:00)", modalidad: "Híbrido", lugar: "Sala 1" },
-  "Ética del Nuevo Testamento": { dia: "Martes", hora: "19:30 – 22:00 (break 20:30 – 21:00)", modalidad: "Híbrido", lugar: "Sala 1 · también vía Zoom" },
-  "Eclesiología y Pneumatología": { dia: "Martes", hora: "19:30 – 22:00 (receso de 30 min)", modalidad: "Híbrido", lugar: "Presencial · también vía Zoom" },
-  "Contexto del Antiguo Testamento": { dia: "Miércoles", hora: "19:30 – 22:00", modalidad: "Online", lugar: "Vía Zoom" },
-  "Filosofía Antigua y Medieval": { dia: "Lunes", hora: "19:30 – 22:00 (break 20:30 – 21:00)", modalidad: "Híbrido", lugar: "Sala 1 · también vía Zoom" },
-  "Evangelio de Lucas": { dia: "Martes", hora: "19:30 – 22:00 (break 20:30 – 21:00)", modalidad: "Híbrido", lugar: "Sala 1 · también vía Zoom" }
-};
+let horarios = {};
 
 /* =====================================================================
-   3) MATERIALES POR CURSO  (agrega o edita aquí)
+   3) MATERIALES POR CURSO
    - Sube tus archivos a una carpeta "materiales" dentro del repositorio
      de GitHub y usa la ruta relativa, por ejemplo:
      url: "materiales/introduccion-at/guia-1.pdf"
@@ -1236,52 +812,7 @@ let horarios = {
      url: "https://drive.google.com/..."
    - tipo: "pdf", "doc", "ppt", "video" o "link" (solo cambia el ícono)
    ===================================================================== */
-let materiales = {
-  "Introducción A.T.": [
-    { titulo: "Programa del curso", desc: "Contenidos y calendario del semestre", tipo: "pdf", url: "materiales/introduccion-at/programa.pdf" },
-    { titulo: "Apuntes: El Pentateuco", desc: "Material de estudio · Unidad 1", tipo: "pdf", url: "materiales/introduccion-at/pentateuco.pdf" }
-  ],
-  "Filosofía Moderna": [
-    { titulo: "Programa del curso", desc: "Contenidos y calendario del semestre", tipo: "pdf", url: "materiales/filosofia-moderna/programa.pdf" },
-    { titulo: "Guía de lectura: Descartes", desc: "Meditaciones Metafísicas · Unidad 1", tipo: "pdf", url: "materiales/filosofia-moderna/descartes.pdf" }
-  ],
-  "Contexto del Antiguo Testamento": [
-    { titulo: "Plan de Curso", desc: "Descripción, evaluación, cronograma y bibliografía · Programa Biblia 2026", tipo: "doc", url: "materiales/contexto-at/plan-de-curso.docx" },
-    { titulo: "Clase 1: Historia y Geografía Bíblicas", desc: "Israel en el mundo antiguo, la Media Luna Fértil y del henoteísmo al monoteísmo · Diapositivas de la sesión", tipo: "pdf", url: "materiales/contexto-at/clase-1.pdf" },
-    { titulo: "Clase 2: Historia, Cronología y Arqueología del A.T.", desc: "Panorama histórico, épocas arqueológicas y vida diaria en Israel · Diapositivas de la sesión", tipo: "pdf", url: "materiales/contexto-at/clase-2.pdf" },
-    { titulo: "Clase 4: Religiones del antiguo Cercano Oriente", desc: "Los cultos y deidades de los pueblos vecinos de Israel y su contraste con la fe bíblica · Diapositivas de la sesión", tipo: "pdf", url: "materiales/contexto-at/clase-4.pdf" },
-    { titulo: "Clases 5 y 6: Egipto, Asiria y Babilonia", desc: "Los tres gigantes que rodearon a Israel: geografía, historia y su influencia en el pueblo hebreo · Diapositivas de la sesión", tipo: "pdf", url: "materiales/contexto-at/clase-5-y-6.pdf" },
-    { titulo: "Clase 7: Organización de las tribus y divinidades del A.T.", desc: "Cómo llegaron y se organizaron las tribus de Israel en Canaán (conquista, infiltración, rebelión interna o migración) y las divinidades de los pueblos vecinos · Diapositivas de la sesión", tipo: "pdf", url: "materiales/contexto-at/clase-7.pdf" },
-    { titulo: "Clase 8: Aspectos sociales del A.T.", desc: "Demografía y evolución social del antiguo Israel, los notables (zeqenim y sarim) y el 'am ha'ares, oficios, artesanos y comerciantes, y las relaciones familiares (la casa, el matrimonio y la condición de la mujer) · Diapositivas de la sesión", tipo: "pdf", url: "materiales/contexto-at/clase-8.pdf" },
-    { titulo: "El mundo del Antiguo Testamento (Texto guía)", desc: "J. I. Packer, M. C. Tenney y W. White Jr. · Editorial Vida", tipo: "pdf", url: "materiales/contexto-at/el-mundo-del-antiguo-testamento-packer.pdf" },
-    { titulo: "Atlas Bíblico Conciso Holman", desc: "Mapas y contexto geográfico del mundo bíblico · Editorial Holman", tipo: "pdf", url: "materiales/contexto-at/atlas-biblico-conciso-holman.pdf" }
-  ],
-  "Eclesiología y Pneumatología": [
-    { titulo: "Plan de Curso", desc: "Descripción, evaluación, cronograma y bibliografía · Teología 2º año, Semestre II", tipo: "doc", url: "materiales/eclesiologia/plan-de-curso.docx" },
-    { titulo: "Clase 1: Naturaleza y origen de la iglesia", desc: "Del qahal de Israel a la ekklesía del Nuevo Testamento · Diapositivas de la sesión", tipo: "pdf", url: "materiales/eclesiologia/clase-1.pdf" },
-    { titulo: "Clase 2: Las notas de la iglesia", desc: "Una, Santa, Católica y Apostólica: el debate histórico sobre cómo reconocer a la iglesia verdadera · Diapositivas de la sesión", tipo: "pdf", url: "materiales/eclesiologia/clase-2.pdf" },
-    { titulo: "Clase 3: Gobierno, ministerio y ministerios", desc: "Los modelos de gobierno eclesiástico y los oficios y dones al servicio de la iglesia · Diapositivas de la sesión", tipo: "pdf", url: "materiales/eclesiologia/clase-3.pdf" },
-    { titulo: "Clase 4: Medios de gracia, disciplina y misión", desc: "Sacramentos, bautismo, la Cena del Señor, la disciplina eclesial y la adoración como servicio · Diapositivas de la sesión", tipo: "pdf", url: "materiales/eclesiologia/clase-4.pdf" },
-    { titulo: "Clase 5: El Espíritu Santo en la Escritura", desc: "Del viento de Dios en la creación al Espíritu derramado sobre la iglesia · Diapositivas de la sesión", tipo: "pdf", url: "materiales/eclesiologia/clase-5.pdf" },
-    { titulo: "Clase 6: La persona y la deidad del Espíritu", desc: "Trinidad y filioque: cómo la iglesia aprendió a decir «Dios» sin dejar de ser monoteísta (homoousios, hipóstasis, perijóresis) · Diapositivas de la sesión", tipo: "pdf", url: "materiales/eclesiologia/clase-6.pdf" },
-    { titulo: "El Filioque y el cisma de 1054", desc: "Guía complementaria a la Clase 6, sin conocimientos previos: qué es un credo, qué significa Filioque, las posturas de Oriente y Occidente, y la línea de tiempo del cisma (589-1965)", tipo: "doc", url: "materiales/eclesiologia/filioque-cisma-1054.docx" },
-    { titulo: "Clase 8: El Espíritu en la Iglesia", desc: "Pentecostés y la era del Espíritu, el bautismo del Espíritu Santo y sus símbolos (viento, fuego, agua) · Diapositivas de la sesión", tipo: "pdf", url: "materiales/eclesiologia/clase-8.pdf" },
-    { titulo: "NDT · Nuevo Diccionario de Teología", desc: "Ferguson, Wright y Packer (Eds.) · Casa Bautista de Publicaciones · Texto guía", tipo: "pdf", url: "materiales/eclesiologia/nuevo-diccionario-teologia-ferguson.pdf" },
-    { titulo: "GDEB · Gran Diccionario Enciclopédico de la Biblia", desc: "Alfonso Ropero (Ed.) · Editorial CLIE · Texto guía", tipo: "pdf", url: "materiales/eclesiologia/gran-diccionario-enciclopedico-biblia-ropero.pdf" },
-    { titulo: "DMT · Diccionario manual teológico", desc: "Justo L. González · Editorial CLIE · Texto guía", tipo: "pdf", url: "materiales/eclesiologia/diccionario-manual-teologico-gonzalez.pdf" }
-  ],
-  "Filosofía Antigua y Medieval": [
-    { titulo: "Plan de Curso", desc: "Descripción, evaluación, contenidos, cronograma y referencias · Teología 1º año, Semestre II", tipo: "pdf", url: "materiales/filosofia-antigua-medieval/plan-de-curso.pdf" },
-    { titulo: "Clase 1: Origen de la filosofía", desc: "¿De dónde nace la filosofía? Del mito al logos, la verdad como alétheia, las ramas de la filosofía y la relación entre filosofía y fe · Diapositivas de la sesión · Lectura: Giannini, pp. 13–18", tipo: "pdf", url: "materiales/filosofia-antigua-medieval/clase-1.pdf" },
-    { titulo: "Breve historia de la filosofía (Texto guía)", desc: "Humberto Giannini · Editorial Catalonia · Lecturas de cada clase según el cronograma del Plan de Curso", tipo: "pdf", url: "materiales/filosofia-antigua-medieval/giannini-breve-historia-filosofia.pdf" }
-  ],
-  "Evangelio de Lucas": [
-    { titulo: "Plan de Curso", desc: "Descripción, evaluación, texto guía y contenidos de las 8 clases · Programa Biblia 2º año, Semestre II", tipo: "pdf", url: "materiales/evangelio-lucas/plan-de-curso.pdf" },
-    { titulo: "Clase 1: Cuestiones preliminares", desc: "Ubicación del tercer evangelio en el Nuevo Testamento y entre los sinópticos, particularidades de Lucas, la obra lucana en dos volúmenes (Lucas–Hechos) y el autor · Diapositivas de la sesión · Lecturas: Aguirre pp. 13–56 · Rodríguez Carmona pp. 277–287 · Carson & Moo pp. 143–148", tipo: "pdf", url: "materiales/evangelio-lucas/clase-1.pdf" },
-    { titulo: "Evangelios sinópticos y Hechos de los Apóstoles (Texto guía)", desc: "Rafael Aguirre Monasterio y Antonio Rodríguez Carmona · Editorial Verbo Divino · Lecturas de las clases 2 a 8 según el cronograma del Plan de Curso", tipo: "pdf", url: "materiales/evangelio-lucas/aguirre-evangelios-sinopticos-hechos.pdf" },
-    { titulo: "Una introducción al Nuevo Testamento (Texto guía)", desc: "D. A. Carson y Douglas J. Moo · Editorial CLIE · Lectura de la Clase 1: pp. 144–157 (Lucas)", tipo: "pdf", url: "materiales/evangelio-lucas/carson-moo-introduccion-nt.pdf" }
-  ]
-};
+let materiales = {};
 
 const iconos = { pdf: ICONS.filePdf, doc: ICONS.fileDoc, ppt: ICONS.filePpt, video: ICONS.video, link: ICONS.link, audio: ICONS.audio };
 
@@ -1352,9 +883,8 @@ function ingresar() {
    DATOS DESDE LA PLANILLA DE GOOGLE
    Con USAR_PLANILLA, el portal pide al script de Google los datos del alumno
    (validando RUT y clave) en vez de usar los que están escritos en este archivo.
-   Mientras se prueba, se activa agregando ?planilla a la dirección.
    ===================================================================== */
-const USAR_PLANILLA = !!ENTREGAS_URL && new URLSearchParams(location.search).has('planilla');
+const USAR_PLANILLA = !!ENTREGAS_URL;
 let claveAlumno = '';
 
 async function ingresarConPlanilla(raw) {
@@ -1455,7 +985,7 @@ function sinCursos() { return Object.keys(alumnoActual.cursos).length === 0; }
 
 /* Cursos ya finalizados que solo deben verse en "Mis Calificaciones";
    desaparecen de Materiales, Tareas, Asistencia y Horario. */
-let CURSOS_SOLO_CALIFICACIONES = ["Introducción A.T.", "Filosofía Moderna", "Ética del Nuevo Testamento", "Ética del A.T."];
+let CURSOS_SOLO_CALIFICACIONES = [];
 const SIN_CURSOS_ACTIVOS = '<p class="sin-avisos">No tienes materias activas en este momento.<br>Revisa "Mis Calificaciones" para ver tus cursos finalizados.</p>';
 function cursosActivos() { return Object.keys(alumnoActual.cursos).filter(c => !CURSOS_SOLO_CALIFICACIONES.includes(c)); }
 
@@ -2240,7 +1770,6 @@ setInterval(actualizarReloj, 1000);
 document.getElementById('rut-input').addEventListener('keydown', e => { if (e.key === 'Enter') ingresar(); });
 document.getElementById('clave-input').addEventListener('keydown', e => { if (e.key === 'Enter') ingresarProfesor(); });
 document.getElementById('clave-alumno').addEventListener('keydown', e => { if (e.key === 'Enter') ingresar(); });
-if (USAR_PLANILLA) document.querySelector('#vista-login .hint').insertAdjacentHTML('afterend', '<p class="modo-prueba">Versión de prueba · datos desde la planilla de Google</p>');
 if (location.hash === '#profesor') abrirAccesoProfesor();
 document.getElementById('avatar-wrap').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); document.getElementById('foto-input').click(); } });
 document.getElementById('rut-input').addEventListener('input', (e) => {
