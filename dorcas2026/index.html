@@ -104,6 +104,7 @@ form.addEventListener('submit', async (e) => {
     document.getElementById('formulario').classList.add('oculto');
     document.getElementById('listo').classList.remove('oculto');
     form.reset();
+    form.iglesia.value = d.iglesia; // quien inscribe a su grupo no tiene que reescribir la iglesia
   } catch (err) {
     error.textContent = 'No pudimos enviar tu inscripción. Revisa tu conexión e inténtalo de nuevo. (' + err.message + ')';
     error.classList.remove('oculto');
@@ -117,6 +118,7 @@ document.getElementById('otra').addEventListener('click', () => {
   document.getElementById('listo').classList.add('oculto');
   document.getElementById('formulario').classList.remove('oculto');
   document.getElementById('nombre').focus();
+  window.scrollTo({ top: document.getElementById('formulario').offsetTop - 20, behavior: 'smooth' });
 });
 </script>
 </body>
