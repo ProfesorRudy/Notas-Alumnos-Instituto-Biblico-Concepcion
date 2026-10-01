@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="estilos.css">
 <style>
 .pestanas { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: 1rem; }
-.pestanas button { font: inherit; font-weight: 700; border: 1px solid var(--line); background: var(--surface);
+.pestanas button, .pestanas a { text-decoration: none; font: inherit; font-weight: 700; border: 1px solid var(--line); background: var(--surface);
   color: var(--ink-soft); padding: .55rem 1rem; border-radius: 999px; cursor: pointer; }
 .pestanas button.activa { background: var(--ink); color: #fff; border-color: var(--ink); }
 .resumen { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .7rem; margin-bottom: 1rem; }
@@ -67,6 +67,7 @@ td select { padding: .35rem .5rem; min-width: 170px; }
 <body>
 <main class="envoltura ancha">
   <header class="cabecera no-imprimir">
+    <p style="text-align:left;margin-bottom:.5rem"><a href="index.html" style="color:var(--accent-dark);font-weight:700">← Volver a la inscripción</a></p>
     <span class="sello" id="ev-organiza"></span>
     <h1 id="ev-nombre"></h1>
     <p>Panel de administración · inscripciones y hospedaje</p>
@@ -80,7 +81,7 @@ td select { padding: .35rem .5rem; min-width: 170px; }
       <div id="login-error" class="aviso mal oculto" role="alert"></div>
       <button class="boton bloque" type="submit" id="btn-login">Entrar</button>
     </form>
-    <div id="prueba" class="aviso info oculto">Modo de prueba: la clave es <b>prueba</b>. <a href="index.html">Volver al formulario</a>.</div>
+    <div id="prueba" class="aviso info oculto">Modo de prueba: la clave es <b>prueba</b>.</div>
   </section>
 
   <!-- Panel -->
@@ -92,6 +93,7 @@ td select { padding: .35rem .5rem; min-width: 170px; }
       <button data-p="tarjetas">Tarjetas</button>
       <span style="flex:1"></span>
       <button id="recargar" type="button">↻ Actualizar</button>
+      <button id="salir" type="button">Salir</button>
     </nav>
     <div id="mensaje" class="aviso oculto no-imprimir" role="status"></div>
 
@@ -106,7 +108,7 @@ td select { padding: .35rem .5rem; min-width: 170px; }
         </select>
         <button class="boton suave peque" id="csv" type="button">Descargar Excel (CSV)</button>
       </div>
-      <div class="barra" id="masivo" hidden>
+      <div class="barra oculto" id="masivo">
         <span><b id="n-sel">0</b> seleccionadas →</span>
         <select id="masivo-hosp"></select>
         <button class="boton peque" id="masivo-btn" type="button">Asignar</button>
@@ -212,6 +214,11 @@ function aviso(t, tipo) {
 }
 $('recargar').addEventListener('click', async () => { aviso('Actualizando…', 'info'); if (await cargar(clave)) aviso('Datos actualizados.', 'ok'); });
 
+$('salir').addEventListener('click', () => {
+  try { sessionStorage.removeItem('dorcas-clave'); } catch (e) {}
+  location.href = 'index.html';
+});
+
 /* ---------- Pestañas ---------- */
 document.querySelectorAll('.pestanas button[data-p]').forEach(b => b.addEventListener('click', () => {
   document.querySelectorAll('.pestanas button[data-p]').forEach(x => x.classList.toggle('activa', x === b));
@@ -280,7 +287,7 @@ function pintarInscritos() {
 
 function actualizarMasivo() {
   $('n-sel').textContent = seleccion.size;
-  $('masivo').hidden = seleccion.size === 0;
+  $('masivo').classList.toggle('oculto', seleccion.size === 0);
   const visibles = filtradas();
   $('sel-todas').checked = visibles.length > 0 && visibles.every(i => seleccion.has(i.codigo));
 }
