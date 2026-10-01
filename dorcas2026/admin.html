@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Administración · Convención de Dorcas 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Nunito+Sans:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilos.css">
+<style>
+.pestanas { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.pestanas button { font: inherit; font-weight: 700; border: 1px solid var(--line); background: var(--surface);
+  color: var(--ink-soft); padding: .55rem 1rem; border-radius: 999px; cursor: pointer; }
+.pestanas button.activa { background: var(--ink); color: #fff; border-color: var(--ink); }
+.resumen { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .7rem; margin-bottom: 1rem; }
+.cifra { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: .8rem 1rem; }
+.cifra b { display: block; font-size: 1.6rem; font-family: 'Fraunces', Georgia, serif; }
+.cifra span { color: var(--ink-soft); font-size: .85rem; }
+.barra { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; margin-bottom: .8rem; }
+.barra input, .barra select { width: auto; flex: 1 1 180px; padding: .5rem .7rem; }
+.tabla { width: 100%; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+th, td { text-align: left; padding: .55rem .5rem; border-bottom: 1px solid var(--line); vertical-align: middle; }
+th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); }
+td select { padding: .35rem .5rem; min-width: 170px; }
+.chip { display: inline-block; font-size: .78rem; font-weight: 700; padding: .15rem .55rem; border-radius: 999px; }
+.chip.si { background: var(--ok-bg); color: var(--ok); }
+.chip.no { background: var(--accent-soft); color: var(--accent-dark); }
+.chip.lleno { background: var(--bad-bg); color: var(--bad); }
+.hosp-grid { display: grid; grid-template-columns: minmax(260px, 340px) 1fr; gap: 1rem; align-items: start; }
+@media (max-width: 800px) { .hosp-grid { grid-template-columns: 1fr; } }
+.hosp { border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem; background: var(--surface); margin-bottom: .7rem; }
+.hosp header { display: flex; justify-content: space-between; gap: .5rem; align-items: start; }
+.hosp h3 { font-size: 1.1rem; }
+.hosp .meta { color: var(--ink-soft); font-size: .88rem; }
+.hosp ul { margin: .5rem 0 0 1.1rem; font-size: .9rem; }
+.vacio { color: var(--ink-soft); text-align: center; padding: 1.5rem; }
+
+/* ----- Tarjetas (vouchers) ----- */
+.vouchers { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+.voucher { background: #fff; border: 2px solid var(--accent); border-radius: 16px; overflow: hidden; break-inside: avoid; page-break-inside: avoid; }
+.voucher .top { background: var(--accent); color: #fff; padding: .8rem 1rem; display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+.voucher .top small { display: block; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; opacity: .85; }
+.voucher .top strong { font-family: 'Fraunces', Georgia, serif; font-size: 1.15rem; line-height: 1.2; }
+.voucher .top .cod { font-weight: 700; background: rgba(255,255,255,.18); border-radius: 8px; padding: .2rem .5rem; white-space: nowrap; }
+.voucher .cuerpo { padding: .9rem 1rem 1rem; }
+.voucher .bloque { margin-bottom: .75rem; }
+.voucher .bloque:last-child { margin-bottom: 0; }
+.voucher .tit { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.voucher .nom { font-size: 1.15rem; font-weight: 700; }
+.voucher .dato { font-size: .9rem; color: var(--ink-soft); }
+.voucher .sep { border-top: 1px dashed var(--line); margin: .75rem 0; }
+.voucher .pie-v { font-size: .78rem; color: var(--ink-soft); text-align: center; padding: .5rem; background: var(--bg); }
+
+@media print {
+  body { background: #fff; }
+  .no-imprimir { display: none !important; }
+  .envoltura { max-width: none; padding: 0; }
+  .vouchers { grid-template-columns: 1fr 1fr; gap: 8mm; }
+  .voucher { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  @page { margin: 10mm; }
+}
+</style>
+</head>
+<body>
+<main class="envoltura ancha">
+  <header class="cabecera no-imprimir">
+    <span class="sello" id="ev-organiza"></span>
+    <h1 id="ev-nombre"></h1>
+    <p>Panel de administración · inscripciones y hospedaje</p>
+  </header>
+
+  <!-- Ingreso -->
+  <section class="tarjeta" id="login" style="max-width:420px;margin:0 auto">
+    <form id="form-login">
+      <label for="clave" style="margin-top:0">Clave de administración</label>
+      <input id="clave" type="password" autocomplete="current-password" required>
+      <div id="login-error" class="aviso mal oculto" role="alert"></div>
+      <button class="boton bloque" type="submit" id="btn-login">Entrar</button>
+    </form>
+    <div id="prueba" class="aviso info oculto">Modo de prueba: la clave es <b>prueba</b>.</div>
+  </section>
+
+  <!-- Panel -->
+  <section id="panel" class="oculto">
+    <div class="resumen no-imprimir" id="resumen"></div>
+    <nav class="pestanas no-imprimir">
+      <button data-p="inscritos" class="activa">Inscritas</button>
+      <button data-p="hospedadores">Hospedadores</button>
+      <button data-p="tarjetas">Tarjetas</button>
+      <span style="flex:1"></span>
+      <button id="recargar" type="button">↻ Actualizar</button>
+    </nav>
+    <div id="mensaje" class="aviso oculto no-imprimir" role="status"></div>
+
+    <!-- Inscritas -->
+    <div data-vista="inscritos" class="tarjeta">
+      <div class="barra">
+        <input id="buscar" type="search" placeholder="Buscar por nombre, iglesia o código">
+        <select id="filtro">
+          <option value="">Todas</option>
+          <option value="sin">Sin hospedaje</option>
+          <option value="con">Con hospedaje</option>
+        </select>
+        <button class="boton suave peque" id="csv" type="button">Descargar Excel (CSV)</button>
+      </div>
+      <div class="barra" id="masivo" hidden>
+        <span><b id="n-sel">0</b> seleccionadas →</span>
+        <select id="masivo-hosp"></select>
+        <button class="boton peque" id="masivo-btn" type="button">Asignar</button>
+      </div>
+      <div class="tabla"><table>
+        <thead><tr>
+          <th><input type="checkbox" id="sel-todas" aria-label="Seleccionar todas"></th>
+          <th>Código</th><th>Nombre</th><th>Edad</th><th>Iglesia</th><th>Teléfono</th><th>Hospedaje</th><th></th>
+        </tr></thead>
+        <tbody id="tbody-ins"></tbody>
+      </table></div>
+    </div>
+
+    <!-- Hospedadores -->
+    <div data-vista="hospedadores" class="hosp-grid oculto">
+      <form class="tarjeta" id="form-hosp">
+        <h2 id="hosp-titulo" style="font-size:1.2rem">Nuevo hospedador</h2>
+        <input type="hidden" id="h-codigo">
+        <label for="h-nombre">Nombre (familia o hermano/a)</label>
+        <input id="h-nombre" required maxlength="80">
+        <label for="h-direccion">Dirección</label>
+        <input id="h-direccion" maxlength="150">
+        <div class="fila2">
+          <div><label for="h-telefono">Teléfono</label><input id="h-telefono" type="tel" maxlength="30"></div>
+          <div><label for="h-capacidad">Camas / cupos</label><input id="h-capacidad" type="number" min="0" max="50" value="2"></div>
+        </div>
+        <label for="h-notas">Notas <span class="opc">(se imprimen en la tarjeta)</span></label>
+        <textarea id="h-notas" rows="2" maxlength="200" placeholder="Ej.: Locomoción: micro 10, bajarse en..."></textarea>
+        <button class="boton bloque" type="submit" id="h-guardar">Guardar hospedador</button>
+        <button class="boton suave bloque oculto" type="button" id="h-cancelar" style="margin-top:.5rem">Cancelar edición</button>
+      </form>
+      <div id="lista-hosp"></div>
+    </div>
+
+    <!-- Tarjetas -->
+    <div data-vista="tarjetas" class="oculto">
+      <div class="barra no-imprimir tarjeta" style="padding:1rem">
+        <select id="t-hosp"></select>
+        <button class="boton" type="button" onclick="window.print()">🖨 Imprimir / guardar PDF</button>
+      </div>
+      <div class="vouchers" id="vouchers"></div>
+    </div>
+  </section>
+</main>
+
+<script src="comun.js"></script>
+<script>
+let clave = '';
+let datos = { inscritos: [], hospedadores: [] };
+const $ = (id) => document.getElementById(id);
+
+$('ev-organiza').textContent = EVENTO.organiza;
+$('ev-nombre').textContent = EVENTO.nombre;
+if (MODO_PRUEBA) $('prueba').classList.remove('oculto');
+
+/* ---------- Ingreso ---------- */
+$('form-login').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  $('btn-login').disabled = true;
+  const ok = await cargar($('clave').value);
+  $('btn-login').disabled = false;
+  if (ok) try { sessionStorage.setItem('dorcas-clave', clave); } catch (e) {}
+});
+
+async function cargar(c) {
+  try {
+    const r = await api('panel', { clave: c });
+    if (!r.ok) { mostrarLoginError(r.mensaje); return false; }
+    clave = c;
+    datos = r.datos;
+    $('login').classList.add('oculto');
+    $('panel').classList.remove('oculto');
+    pintar();
+    return true;
+  } catch (err) {
+    mostrarLoginError('No se pudo conectar: ' + err.message);
+    return false;
+  }
+}
+function mostrarLoginError(m) { $('login-error').textContent = m; $('login-error').classList.remove('oculto'); }
+
+try { const c = sessionStorage.getItem('dorcas-clave'); if (c) cargar(c); } catch (e) {}
+
+/* ---------- Llamadas que modifican datos ---------- */
+async function accion(nombre, extra, textoOk) {
+  aviso('Guardando…', 'info');
+  try {
+    const r = await api(nombre, Object.assign({ clave }, extra));
+    if (!r.ok) throw new Error(r.mensaje);
+    datos = r.datos;
+    pintar();
+    aviso(textoOk, 'ok');
+  } catch (err) {
+    aviso('No se pudo guardar: ' + err.message, 'mal');
+  }
+}
+let avisoTimer;
+function aviso(t, tipo) {
+  const m = $('mensaje');
+  m.textContent = t; m.className = 'aviso ' + tipo + ' no-imprimir';
+  clearTimeout(avisoTimer);
+  if (tipo !== 'info') avisoTimer = setTimeout(() => m.classList.add('oculto'), 3500);
+}
+$('recargar').addEventListener('click', async () => { aviso('Actualizando…', 'info'); if (await cargar(clave)) aviso('Datos actualizados.', 'ok'); });
+
+/* ---------- Pestañas ---------- */
+document.querySelectorAll('.pestanas button[data-p]').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.pestanas button[data-p]').forEach(x => x.classList.toggle('activa', x === b));
+  document.querySelectorAll('[data-vista]').forEach(v => v.classList.toggle('oculto', v.dataset.vista !== b.dataset.p));
+}));
+
+/* ---------- Pintado general ---------- */
+const hospPorCodigo = () => Object.fromEntries(datos.hospedadores.map(h => [h.codigo, h]));
+const ocupacion = (cod) => datos.inscritos.filter(i => i.hospedador === cod).length;
+
+function pintar() {
+  const asignadas = datos.inscritos.filter(i => i.hospedador).length;
+  const cupos = datos.hospedadores.reduce((s, h) => s + (Number(h.capacidad) || 0), 0);
+  $('resumen').innerHTML = [
+    [datos.inscritos.length, 'Inscritas'],
+    [asignadas, 'Con hospedaje'],
+    [datos.inscritos.length - asignadas, 'Sin hospedaje'],
+    [datos.hospedadores.length, 'Hospedadores'],
+    [Math.max(0, cupos - asignadas), 'Cupos libres']
+  ].map(([n, t]) => `<div class="cifra"><b>${n}</b><span>${t}</span></div>`).join('');
+  pintarInscritos();
+  pintarHospedadores();
+  pintarTarjetas();
+}
+
+function opcionesHosp(seleccionado, textoVacio) {
+  return `<option value="">${textoVacio}</option>` + datos.hospedadores.map(h => {
+    const oc = ocupacion(h.codigo);
+    return `<option value="${esc(h.codigo)}" ${h.codigo === seleccionado ? 'selected' : ''}>${esc(h.nombre)} (${oc}/${h.capacidad})</option>`;
+  }).join('');
+}
+
+/* ---------- Inscritas ---------- */
+const seleccion = new Set();
+
+function filtradas() {
+  const q = $('buscar').value.trim().toLowerCase();
+  const f = $('filtro').value;
+  return datos.inscritos.filter(i => {
+    if (f === 'sin' && i.hospedador) return false;
+    if (f === 'con' && !i.hospedador) return false;
+    if (!q) return true;
+    return [i.codigo, i.nombre, i.apellido, i.iglesia].join(' ').toLowerCase().includes(q);
+  });
+}
+
+function pintarInscritos() {
+  const lista = filtradas();
+  const hp = hospPorCodigo();
+  [...seleccion].forEach(c => { if (!datos.inscritos.some(i => i.codigo === c)) seleccion.delete(c); });
+  $('tbody-ins').innerHTML = lista.length ? lista.map(i => `
+    <tr>
+      <td><input type="checkbox" data-sel="${esc(i.codigo)}" ${seleccion.has(i.codigo) ? 'checked' : ''} aria-label="Seleccionar"></td>
+      <td>${esc(i.codigo)}</td>
+      <td><b>${esc(i.nombre)} ${esc(i.apellido)}</b></td>
+      <td>${esc(i.edad)}</td>
+      <td>${esc(i.iglesia)}</td>
+      <td>${esc(i.telefono)}</td>
+      <td><select data-asig="${esc(i.codigo)}">${opcionesHosp(i.hospedador, '— Sin hospedaje —')}</select>
+        ${i.hospedador && !hp[i.hospedador] ? '<span class="chip lleno">código inválido</span>' : ''}</td>
+      <td><button class="boton peligro peque" data-borrar-ins="${esc(i.codigo)}" title="Eliminar inscripción">✕</button></td>
+    </tr>`).join('') : `<tr><td colspan="8" class="vacio">No hay inscripciones${$('buscar').value || $('filtro').value ? ' con ese filtro' : ' todavía'}.</td></tr>`;
+  $('masivo-hosp').innerHTML = opcionesHosp('', 'Quitar hospedaje');
+  actualizarMasivo();
+}
+
+function actualizarMasivo() {
+  $('n-sel').textContent = seleccion.size;
+  $('masivo').hidden = seleccion.size === 0;
+  const visibles = filtradas();
+  $('sel-todas').checked = visibles.length > 0 && visibles.every(i => seleccion.has(i.codigo));
+}
+
+$('buscar').addEventListener('input', pintarInscritos);
+$('filtro').addEventListener('change', pintarInscritos);
+$('sel-todas').addEventListener('change', (e) => {
+  filtradas().forEach(i => e.target.checked ? seleccion.add(i.codigo) : seleccion.delete(i.codigo));
+  pintarInscritos();
+});
+$('tbody-ins').addEventListener('change', (e) => {
+  const t = e.target;
+  if (t.dataset.sel) { t.checked ? seleccion.add(t.dataset.sel) : seleccion.delete(t.dataset.sel); actualizarMasivo(); }
+  if (t.dataset.asig !== undefined) asignar([t.dataset.asig], t.value);
+});
+$('tbody-ins').addEventListener('click', (e) => {
+  const c = e.target.dataset.borrarIns;
+  if (!c) return;
+  const i = datos.inscritos.find(x => x.codigo === c);
+  if (confirm(`¿Eliminar la inscripción de ${i.nombre} ${i.apellido} (${c})?`)) accion('borrarInscrito', { codigo: c }, 'Inscripción eliminada.');
+});
+$('masivo-btn').addEventListener('click', () => {
+  if (asignar([...seleccion], $('masivo-hosp').value)) seleccion.clear();
+});
+
+function asignar(codigos, hosp) {
+  if (hosp) {
+    const h = hospPorCodigo()[hosp];
+    const nuevas = codigos.filter(c => datos.inscritos.find(i => i.codigo === c).hospedador !== hosp).length;
+    const libres = h.capacidad - ocupacion(hosp);
+    if (nuevas > libres && !confirm(`${h.nombre} tiene ${Math.max(0, libres)} cupo(s) libre(s) y vas a asignar ${nuevas}. ¿Asignar de todas formas?`)) {
+      pintarInscritos();
+      return false;
+    }
+  }
+  accion('asignar', { codigos, hospedador: hosp }, hosp ? 'Hospedaje asignado.' : 'Hospedaje quitado.');
+  return true;
+}
+
+$('csv').addEventListener('click', () => {
+  const hp = hospPorCodigo();
+  const filas = [['Código', 'Fecha', 'Nombre', 'Apellido', 'Edad', 'Iglesia', 'Teléfono', 'Hospedador', 'Dirección hospedaje', 'Teléfono hospedador']];
+  datos.inscritos.forEach(i => {
+    const h = hp[i.hospedador] || {};
+    filas.push([i.codigo, (i.fecha || '').slice(0, 10), i.nombre, i.apellido, i.edad, i.iglesia, i.telefono, h.nombre || '', h.direccion || '', h.telefono || '']);
+  });
+  const csv = '﻿' + filas.map(f => f.map(v => '"' + String(v ?? '').replace(/"/g, '""') + '"').join(';')).join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+  a.download = 'inscritas-dorcas-2026.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+/* ---------- Hospedadores ---------- */
+function pintarHospedadores() {
+  $('lista-hosp').innerHTML = datos.hospedadores.length ? datos.hospedadores.map(h => {
+    const huespedes = datos.inscritos.filter(i => i.hospedador === h.codigo);
+    const oc = huespedes.length;
+    const chip = oc > h.capacidad ? 'lleno' : oc === h.capacidad ? 'si' : 'no';
+    return `<article class="hosp">
+      <header>
+        <div>
+          <h3>${esc(h.nombre)} <span class="chip ${chip}">${oc}/${esc(h.capacidad)}</span></h3>
+          <div class="meta">${esc(h.codigo)}${h.direccion ? ' · ' + esc(h.direccion) : ''}${h.telefono ? ' · ' + esc(h.telefono) : ''}</div>
+          ${h.notas ? `<div class="meta">${esc(h.notas)}</div>` : ''}
+        </div>
+        <div style="white-space:nowrap">
+          <button class="boton suave peque" data-editar="${esc(h.codigo)}">Editar</button>
+          <button class="boton peligro peque" data-borrar-h="${esc(h.codigo)}" title="Eliminar">✕</button>
+        </div>
+      </header>
+      ${oc ? `<ul>${huespedes.map(i => `<li>${esc(i.nombre)} ${esc(i.apellido)} · ${esc(i.iglesia)}</li>`).join('')}</ul>` : '<p class="meta" style="margin-top:.4rem">Sin huéspedes asignadas.</p>'}
+    </article>`;
+  }).join('') : '<div class="tarjeta vacio">Aún no hay hospedadores. Agrega a los miembros de la iglesia que recibirán hermanas.</div>';
+}
+
+function limpiarFormHosp() {
+  $('form-hosp').reset();
+  $('h-codigo').value = '';
+  $('hosp-titulo').textContent = 'Nuevo hospedador';
+  $('h-cancelar').classList.add('oculto');
+}
+$('h-cancelar').addEventListener('click', limpiarFormHosp);
+$('form-hosp').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const hospedador = {
+    codigo: $('h-codigo').value, nombre: $('h-nombre').value.trim(), direccion: $('h-direccion').value.trim(),
+    telefono: $('h-telefono').value.trim(), capacidad: $('h-capacidad').value, notas: $('h-notas').value.trim()
+  };
+  if (!hospedador.nombre) return;
+  $('h-guardar').disabled = true;
+  await accion('guardarHospedador', { hospedador }, 'Hospedador guardado.');
+  $('h-guardar').disabled = false;
+  limpiarFormHosp();
+});
+$('lista-hosp').addEventListener('click', (e) => {
+  const ed = e.target.dataset.editar, br = e.target.dataset.borrarH;
+  if (ed) {
+    const h = hospPorCodigo()[ed];
+    $('h-codigo').value = h.codigo; $('h-nombre').value = h.nombre; $('h-direccion').value = h.direccion;
+    $('h-telefono').value = h.telefono; $('h-capacidad').value = h.capacidad; $('h-notas').value = h.notas;
+    $('hosp-titulo').textContent = 'Editar ' + h.codigo;
+    $('h-cancelar').classList.remove('oculto');
+    $('h-nombre').focus();
+  }
+  if (br) {
+    const h = hospPorCodigo()[br];
+    const oc = ocupacion(br);
+    if (confirm(`¿Eliminar a ${h.nombre}?${oc ? ` Sus ${oc} huésped(es) quedarán sin hospedaje.` : ''}`)) accion('borrarHospedador', { codigo: br }, 'Hospedador eliminado.');
+  }
+});
+
+/* ---------- Tarjetas ---------- */
+$('t-hosp').addEventListener('change', pintarTarjetas);
+
+function pintarTarjetas() {
+  const actual = $('t-hosp').value;
+  $('t-hosp').innerHTML = '<option value="">Todas las tarjetas</option>' +
+    datos.hospedadores.map(h => `<option value="${esc(h.codigo)}" ${h.codigo === actual ? 'selected' : ''}>Solo huéspedes de ${esc(h.nombre)}</option>`).join('');
+  const hp = hospPorCodigo();
+  const lista = datos.inscritos.filter(i => hp[i.hospedador] && (!actual || i.hospedador === actual));
+  const detalle = [EVENTO.fechas, EVENTO.lugar].filter(Boolean).join(' · ');
+  $('vouchers').innerHTML = lista.length ? lista.map(i => {
+    const h = hp[i.hospedador];
+    return `<article class="voucher">
+      <div class="top">
+        <div><small>${esc(EVENTO.organiza)}</small><strong>${esc(EVENTO.nombre)}</strong></div>
+        <span class="cod">${esc(i.codigo)}</span>
+      </div>
+      <div class="cuerpo">
+        <div class="bloque">
+          <div class="tit">Huésped</div>
+          <div class="nom">${esc(i.nombre)} ${esc(i.apellido)}</div>
+          <div class="dato">${esc(i.edad)} años · ${esc(i.iglesia)}</div>
+          ${i.telefono ? `<div class="dato">Tel.: ${esc(i.telefono)}</div>` : ''}
+        </div>
+        <div class="sep"></div>
+        <div class="bloque">
+          <div class="tit">Hospedaje</div>
+          <div class="nom">${esc(h.nombre)}</div>
+          ${h.direccion ? `<div class="dato">📍 ${esc(h.direccion)}</div>` : ''}
+          ${h.telefono ? `<div class="dato">📞 ${esc(h.telefono)}</div>` : ''}
+          ${h.notas ? `<div class="dato">${esc(h.notas)}</div>` : ''}
+        </div>
+      </div>
+      ${detalle || EVENTO.contacto ? `<div class="pie-v">${esc(detalle)}${detalle && EVENTO.contacto ? ' · ' : ''}${EVENTO.contacto ? 'Contacto: ' + esc(EVENTO.contacto) : ''}</div>` : ''}
+    </article>`;
+  }).join('') : '<div class="tarjeta vacio">Las tarjetas aparecen aquí cuando asignas hospedaje a las inscritas.</div>';
+}
+</script>
+</body>
+</html>

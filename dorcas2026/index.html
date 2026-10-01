@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Convención de Dorcas 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Nunito+Sans:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+<main class="envoltura">
+  <header class="cabecera">
+    <span class="sello" id="ev-organiza"></span>
+    <h1 id="ev-nombre"></h1>
+    <p id="ev-detalle"></p>
+  </header>
+
+  <section class="tarjeta" id="formulario">
+    <p>Completa tus datos para inscribirte. Si vienes desde otra ciudad, nosotros te asignaremos un hogar donde hospedarte.</p>
+    <form id="form" novalidate>
+      <div class="fila2">
+        <div>
+          <label for="nombre">Nombre</label>
+          <input id="nombre" name="nombre" autocomplete="given-name" required maxlength="60">
+        </div>
+        <div>
+          <label for="apellido">Apellido</label>
+          <input id="apellido" name="apellido" autocomplete="family-name" required maxlength="60">
+        </div>
+      </div>
+      <div class="fila2">
+        <div>
+          <label for="edad">Edad</label>
+          <input id="edad" name="edad" type="number" inputmode="numeric" min="0" max="120" required>
+        </div>
+        <div>
+          <label for="telefono">Teléfono <span class="opc">(opcional)</span></label>
+          <input id="telefono" name="telefono" type="tel" autocomplete="tel" maxlength="30">
+        </div>
+      </div>
+      <label for="iglesia">Iglesia a la que perteneces</label>
+      <input id="iglesia" name="iglesia" required maxlength="100" placeholder="Nombre de la iglesia y ciudad">
+      <div id="error" class="aviso mal oculto" role="alert"></div>
+      <button class="boton bloque" id="enviar" type="submit">Inscribirme</button>
+    </form>
+  </section>
+
+  <section class="tarjeta oculto" id="listo">
+    <h2>¡Inscripción recibida!</h2>
+    <p style="margin-top:.5rem">Gracias, <strong id="listo-nombre"></strong>. Tu código de inscripción es:</p>
+    <p style="font-size:2rem;font-weight:700;color:var(--accent);margin:.4rem 0" id="listo-codigo"></p>
+    <p>Guárdalo. Cuando tengamos tu hospedaje listo te entregaremos una tarjeta con los datos de tu hospedador.</p>
+    <button class="boton suave bloque" id="otra" type="button">Inscribir a otra persona</button>
+  </section>
+
+  <p class="pie" id="ev-contacto"></p>
+  <div id="prueba" class="aviso info oculto">Modo de prueba: las inscripciones se guardan solo en este navegador.</div>
+</main>
+
+<script src="comun.js"></script>
+<script>
+document.getElementById('ev-organiza').textContent = EVENTO.organiza + ' · Inscripción';
+document.getElementById('ev-nombre').textContent = EVENTO.nombre;
+document.getElementById('ev-detalle').textContent = [EVENTO.fechas, EVENTO.lugar].filter(Boolean).join(' · ');
+document.title = 'Inscripción · ' + EVENTO.nombre;
+if (EVENTO.contacto) document.getElementById('ev-contacto').textContent = '¿Dudas? Escríbenos: ' + EVENTO.contacto;
+if (MODO_PRUEBA) document.getElementById('prueba').classList.remove('oculto');
+
+const form = document.getElementById('form');
+const error = document.getElementById('error');
+const boton = document.getElementById('enviar');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  error.classList.add('oculto');
+  const d = Object.fromEntries(new FormData(form).entries());
+  Object.keys(d).forEach(k => d[k] = d[k].trim());
+  const edad = Number(d.edad);
+  let falta = '';
+  if (!d.nombre) falta = 'Escribe tu nombre.';
+  else if (!d.apellido) falta = 'Escribe tu apellido.';
+  else if (d.edad === '' || !Number.isInteger(edad) || edad < 0 || edad > 120) falta = 'Escribe una edad válida.';
+  else if (!d.iglesia) falta = 'Escribe la iglesia a la que perteneces.';
+  if (falta) { error.textContent = falta; error.classList.remove('oculto'); return; }
+
+  boton.disabled = true;
+  boton.textContent = 'Enviando…';
+  try {
+    const r = await api('inscribir', d);
+    if (!r.ok) throw new Error(r.mensaje || 'No se pudo guardar.');
+    document.getElementById('listo-nombre').textContent = d.nombre + ' ' + d.apellido;
+    document.getElementById('listo-codigo').textContent = r.codigo;
+    document.getElementById('formulario').classList.add('oculto');
+    document.getElementById('listo').classList.remove('oculto');
+    form.reset();
+  } catch (err) {
+    error.textContent = 'No pudimos enviar tu inscripción. Revisa tu conexión e inténtalo de nuevo. (' + err.message + ')';
+    error.classList.remove('oculto');
+  } finally {
+    boton.disabled = false;
+    boton.textContent = 'Inscribirme';
+  }
+});
+
+document.getElementById('otra').addEventListener('click', () => {
+  document.getElementById('listo').classList.add('oculto');
+  document.getElementById('formulario').classList.remove('oculto');
+  document.getElementById('nombre').focus();
+});
+</script>
+</body>
+</html>
