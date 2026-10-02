@@ -1,24 +1,26 @@
 /* =====================================================================
    Panel de administración y tarjetas · Convención de Dorcas 2026
    Mismo lenguaje visual que la inscripción (inscripcion.css):
-   azul noche / azul marino, Playfair Display para títulos e Inter para la interfaz.
+   morado y ciruela con detalles dorados, Playfair Display para títulos e Inter para la interfaz.
    ===================================================================== */
 :root {
-  --bg: #f3f5fa;
+  --bg: #f8f4f8;
   --surface: #ffffff;
   --ink: #0f172a;
   --ink-soft: #475569;
   --ink-mute: #94a3b8;
   --line: #e2e8f0;
   --campo: #f8fafc;
-  --accent: #1e3a78;          /* azul marino: botones, foco, detalles */
-  --accent-dark: #17306a;
-  --accent-soft: #eef2fb;
-  --noche: linear-gradient(160deg, #15295a 0%, #0b1a3a 55%, #050d1f 100%);
+  --accent: #5a2d73;          /* morado: botones, foco, detalles */
+  --accent-dark: #4a2361;
+  --accent-soft: #f5edf8;
+  --ciruela: #6a2c5e;         /* cifras y títulos de las tarjetas */
+  --oro: #b8975a;             /* líneas doradas finas */
+  --profundo: linear-gradient(160deg, #5a2d73 0%, #3f1f55 55%, #2a1338 100%);
   --ok: #157f4f; --ok-bg: #e7f6ee;
   --bad: #b42318; --bad-bg: #fef3f2;
   --radius: 16px;
-  --sombra: 0 1px 2px rgba(5, 13, 31, .05), 0 12px 32px -16px rgba(5, 13, 31, .22);
+  --sombra: 0 1px 2px rgba(42, 19, 56, .05), 0 12px 32px -16px rgba(42, 19, 56, .22);
   --serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
   --sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
@@ -34,11 +36,12 @@ body {
 h1, h2, h3 { font-family: var(--serif); font-weight: 600; letter-spacing: -0.01em; }
 .oculto { display: none !important; }
 
-/* ---------- Banda superior azul noche ---------- */
+/* ---------- Banda superior morado profundo ---------- */
 .banda {
   background:
-    radial-gradient(700px 300px at 50% -20%, rgba(70, 110, 200, .3), transparent 70%),
-    var(--noche);
+    radial-gradient(700px 300px at 50% -20%, rgba(214, 170, 230, .3), transparent 70%),
+    var(--profundo);
+  border-bottom: 1px solid var(--oro);
   color: #fff;
   padding: 1.25rem 0 4.5rem;
 }
@@ -50,7 +53,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; letter-spacing: -0.01e
   position: relative; display: inline-grid; place-items: center; flex-shrink: 0;
   width: 76px; height: 76px; border-radius: 50%;
   background: rgba(255, 255, 255, .06);
-  border: 1px solid rgba(255, 255, 255, .14);
+  border: 1px solid rgba(184, 151, 90, .6);
   box-shadow: 0 0 0 6px rgba(255, 255, 255, .025), 0 14px 34px -12px rgba(0, 0, 0, .6);
 }
 .logo-halo img { width: 62px; height: 62px; border-radius: 50%; object-fit: cover; display: block; }
@@ -79,7 +82,7 @@ input::placeholder, textarea::placeholder { color: var(--ink-mute); }
 input:hover, select:hover, textarea:hover { border-color: #cbd5e1; }
 input:focus, select:focus, textarea:focus {
   outline: none; background: #fff; border-color: var(--accent);
-  box-shadow: 0 0 0 4px rgba(30, 58, 120, .14);
+  box-shadow: 0 0 0 4px rgba(90, 45, 115, .14);
 }
 .fila2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 .9rem; }
 @media (max-width: 480px) { .fila2 { grid-template-columns: 1fr; } }
@@ -89,16 +92,16 @@ input:focus, select:focus, textarea:focus {
   display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
   font: inherit; font-weight: 600; font-size: .95rem;
   border: 0; border-radius: 12px; padding: .75rem 1.2rem; cursor: pointer;
-  color: #fff; background: linear-gradient(180deg, #24448a, var(--accent));
-  box-shadow: 0 8px 20px -12px rgba(30, 58, 120, .8);
+  color: #fff; background: linear-gradient(180deg, #6e3d86, var(--accent));
+  box-shadow: 0 8px 20px -12px rgba(90, 45, 115, .8);
   transition: transform .15s, background .15s, box-shadow .15s;
 }
 .boton:hover { background: var(--accent-dark); transform: translateY(-1px); }
-.boton:focus-visible { outline: 3px solid rgba(30, 58, 120, .35); outline-offset: 2px; }
+.boton:focus-visible { outline: 3px solid rgba(90, 45, 115, .35); outline-offset: 2px; }
 .boton:disabled { opacity: .6; cursor: wait; transform: none; }
 .boton.bloque { width: 100%; margin-top: 1.4rem; }
 .boton.suave { background: var(--accent-soft); color: var(--accent); box-shadow: none; }
-.boton.suave:hover { background: #e2e9f8; }
+.boton.suave:hover { background: #ecdff2; }
 .boton.peligro { background: transparent; color: var(--bad); box-shadow: none; padding: .35rem .6rem; }
 .boton.peligro:hover { background: var(--bad-bg); }
 .boton.peque { padding: .4rem .75rem; font-size: .82rem; border-radius: 10px; }
