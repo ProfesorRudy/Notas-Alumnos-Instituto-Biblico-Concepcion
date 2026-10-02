@@ -3,98 +3,159 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b1a3a">
 <title>Convención de Dorcas 2026</title>
+<!-- Tipografías: Playfair Display (títulos y cita) e Inter (interfaz) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Nunito+Sans:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="estilos.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="inscripcion.css">
 </head>
 <body>
-<header class="portada">
-  <img class="logo" src="logo.jpg" alt="Logo Iglesia Evangélica Pentecostés Internacional LAN-C">
-  <span class="sello" id="ev-organiza"></span>
-  <h1 id="ev-nombre"></h1>
-  <div class="chips" id="ev-detalle"></div>
-  <blockquote>“Había entonces en Jope una discípula llamada Tabita, que traducido quiere decir, Dorcas. Esta abundaba en buenas obras y en limosnas que hacía.”<cite>Hechos 9:36</cite></blockquote>
-</header>
+<main class="pagina">
 
-<main class="envoltura sube">
-  <section class="tarjeta destacada" id="formulario">
-    <h2 style="font-size:1.4rem;text-align:center;margin-bottom:1rem">Inscríbete</h2>
-    <div class="pasos">
-      <div><b>1</b>Completa tus datos</div>
-      <div><b>2</b>Te asignamos un hogar</div>
-      <div><b>3</b>Recibe tu tarjeta</div>
+  <!-- =============================== CABECERA =============================== -->
+  <header class="cabecera">
+    <!-- LOGO: reemplaza logo.jpg por otra imagen (cuadrada) para cambiarlo -->
+    <div class="logo-halo">
+      <img src="logo.jpg" alt="Logo Iglesia Evangélica Pentecostés Internacional LAN-C" width="122" height="122">
     </div>
+
+    <!-- El nombre del evento, quién organiza, fechas y lugar se cambian en comun.js (objeto EVENTO) -->
+    <p class="organiza" id="ev-organiza">IEPI LAN-C</p>
+    <h1 class="titulo" id="ev-nombre">Convención de Dorcas 2026</h1>
+    <div class="detalles" id="ev-detalle"></div>
+
+    <!-- CITA BÍBLICA: cambia el texto y la referencia aquí -->
+    <blockquote class="cita">
+      “Había entonces en Jope una discípula llamada Tabita, que traducido quiere decir, Dorcas.
+      Esta abundaba en buenas obras y en limosnas que hacía.”
+      <cite>Hechos 9:36</cite>
+    </blockquote>
+  </header>
+
+  <!-- ============================ TARJETA / FORMULARIO ============================ -->
+  <section class="tarjeta" id="tarjeta" aria-labelledby="titulo-form">
+    <h2 id="titulo-form">Inscríbete</h2>
+    <p class="subtitulo" id="subtitulo-form">Te tomará menos de un minuto.</p>
+
+    <!-- Pasos del proceso -->
+    <ol class="pasos" id="pasos">
+      <li class="activo">Completa tus datos</li>
+      <li>Te asignamos un hogar</li>
+      <li>Recibe tu tarjeta</li>
+    </ol>
+
+    <!-- Formulario -->
     <form id="form" novalidate>
-      <div class="fila2">
-        <div>
+      <div class="fila dos">
+        <div class="campo">
           <label for="nombre">Nombre</label>
-          <input id="nombre" name="nombre" autocomplete="given-name" required maxlength="60">
+          <input id="nombre" name="nombre" autocomplete="given-name" maxlength="60" placeholder="Ej.: María" required>
         </div>
-        <div>
+        <div class="campo">
           <label for="apellido">Apellido</label>
-          <input id="apellido" name="apellido" autocomplete="family-name" required maxlength="60">
+          <input id="apellido" name="apellido" autocomplete="family-name" maxlength="60" placeholder="Ej.: González" required>
         </div>
       </div>
-      <div class="fila2">
-        <div>
+
+      <div class="fila dos">
+        <div class="campo">
           <label for="edad">Edad</label>
-          <input id="edad" name="edad" type="number" inputmode="numeric" min="0" max="120" required>
+          <input id="edad" name="edad" type="number" inputmode="numeric" min="0" max="120" placeholder="Ej.: 45" required>
         </div>
-        <div>
-          <label for="telefono">Teléfono <span class="opc">(opcional)</span></label>
-          <input id="telefono" name="telefono" type="tel" autocomplete="tel" maxlength="30">
+        <div class="campo">
+          <label for="telefono">Teléfono <small>(opcional)</small></label>
+          <input id="telefono" name="telefono" type="tel" autocomplete="tel" maxlength="30" placeholder="+56 9 1234 5678">
         </div>
       </div>
-      <label for="iglesia">Iglesia a la que perteneces</label>
-      <input id="iglesia" name="iglesia" required maxlength="100" placeholder="Nombre de la iglesia y ciudad">
+
+      <div class="campo">
+        <label for="iglesia">Iglesia a la que perteneces</label>
+        <input id="iglesia" name="iglesia" maxlength="100" placeholder="Nombre de la iglesia y ciudad" required>
+      </div>
+
+      <!-- Necesidades para el hospedaje (opcionales) -->
       <div class="necesidades" role="group" aria-labelledby="nec-titulo">
-        <p class="nec-titulo" id="nec-titulo">Para buscarte el hogar adecuado</p>
+        <p class="necesidades-titulo" id="nec-titulo">Para buscarte el hogar adecuado</p>
+        <p class="necesidades-ayuda">Opcional. Responde solo si aplica.</p>
         <div class="pregunta">
           <span>¿Tienes dificultad para caminar?</span>
-          <span class="sino"><label><input type="radio" name="movilidad" value="Sí">Sí</label><label><input type="radio" name="movilidad" value="No">No</label></span>
+          <span class="sino">
+            <label><input type="radio" name="movilidad" value="Sí"><span>Sí</span></label>
+            <label><input type="radio" name="movilidad" value="No"><span>No</span></label>
+          </span>
         </div>
         <div class="pregunta">
           <span>¿Necesitas cama individual?</span>
-          <span class="sino"><label><input type="radio" name="camaIndividual" value="Sí">Sí</label><label><input type="radio" name="camaIndividual" value="No">No</label></span>
+          <span class="sino">
+            <label><input type="radio" name="camaIndividual" value="Sí"><span>Sí</span></label>
+            <label><input type="radio" name="camaIndividual" value="No"><span>No</span></label>
+          </span>
         </div>
         <div class="pregunta">
           <span>¿Necesitas ayuda con el traslado?</span>
-          <span class="sino"><label><input type="radio" name="traslado" value="Sí">Sí</label><label><input type="radio" name="traslado" value="No">No</label></span>
+          <span class="sino">
+            <label><input type="radio" name="traslado" value="Sí"><span>Sí</span></label>
+            <label><input type="radio" name="traslado" value="No"><span>No</span></label>
+          </span>
         </div>
       </div>
-      <div id="error" class="aviso mal oculto" role="alert"></div>
-      <button class="boton marino bloque" id="enviar" type="submit">Inscribirme</button>
-    </form>
-  </section>
 
-  <section class="tarjeta destacada oculto" id="listo" style="text-align:center">
-    <div class="listo-icono">✓</div>
-    <h2>¡Inscripción recibida!</h2>
-    <p style="margin-top:.5rem">Gracias, <strong id="listo-nombre"></strong>. Tu código de inscripción es:</p>
-    <p class="codigo-grande" id="listo-codigo"></p>
-    <p>Guárdalo. Cuando tengamos tu hospedaje listo te entregaremos una tarjeta con los datos de tu hospedador.</p>
-    <button class="boton suave bloque" id="otra" type="button">Inscribir a otra persona</button>
+      <div id="error" class="error oculto" role="alert"></div>
+      <button class="boton" id="enviar" type="submit">Inscribirme</button>
+    </form>
+
+    <!-- Confirmación (aparece después de enviar) -->
+    <div class="listo oculto" id="listo" aria-live="polite">
+      <div class="listo-icono" aria-hidden="true">✓</div>
+      <h2>¡Inscripción recibida!</h2>
+      <p>Gracias, <strong id="listo-nombre"></strong>. Tu código de inscripción es:</p>
+      <div class="codigo" id="listo-codigo"></div>
+      <p>Guárdalo. Cuando tengamos tu hospedaje listo, te entregaremos una tarjeta con los datos de tu hospedador.</p>
+      <button class="boton secundario" id="otra" type="button">Inscribir a otra persona</button>
+    </div>
   </section>
 
   <p class="pie" id="ev-contacto"></p>
-  <div id="prueba" class="aviso info oculto">Modo de prueba: las inscripciones se guardan solo en este navegador. <a href="admin.html">Abrir el panel de administración</a> (clave: <b>prueba</b>).</div>
+  <div id="prueba" class="prueba oculto">Modo de prueba: las inscripciones se guardan solo en este navegador.
+    <a href="admin.html">Abrir el panel</a> (clave: <b>prueba</b>)</div>
 </main>
 
 <script src="comun.js"></script>
 <script>
-document.getElementById('ev-organiza').textContent = EVENTO.organiza;
-document.getElementById('ev-nombre').textContent = EVENTO.nombre;
-document.getElementById('ev-detalle').innerHTML = [EVENTO.fechas && '📅 ' + esc(EVENTO.fechas), EVENTO.lugar && '📍 ' + esc(EVENTO.lugar)]
+const $ = (id) => document.getElementById(id);
+
+/* ---------- Textos del evento (desde comun.js) ---------- */
+$('ev-organiza').textContent = EVENTO.organiza;
+// El año del título va en su propia línea: "Convención de Dorcas" / "2026"
+const m = EVENTO.nombre.match(/^(.*\S)\s+(\d{4})$/);
+$('ev-nombre').innerHTML = m ? esc(m[1]) + ' <span>' + esc(m[2]) + '</span>' : esc(EVENTO.nombre);
+$('ev-detalle').innerHTML = [EVENTO.fechas && '📅 ' + esc(EVENTO.fechas), EVENTO.lugar && '📍 ' + esc(EVENTO.lugar)]
   .filter(Boolean).map(t => '<span>' + t + '</span>').join('');
 document.title = 'Inscripción · ' + EVENTO.nombre;
-if (EVENTO.contacto) document.getElementById('ev-contacto').textContent = '¿Dudas? Escríbenos: ' + EVENTO.contacto;
-if (MODO_PRUEBA) document.getElementById('prueba').classList.remove('oculto');
+if (EVENTO.contacto) $('ev-contacto').textContent = '¿Dudas? Escríbenos: ' + EVENTO.contacto;
+if (MODO_PRUEBA) $('prueba').classList.remove('oculto');
 
-const form = document.getElementById('form');
-const error = document.getElementById('error');
-const boton = document.getElementById('enviar');
+/* ---------- Pasos ---------- */
+function marcarPaso(n) {   // n = paso activo (1, 2 o 3)
+  document.querySelectorAll('#pasos li').forEach((li, i) => {
+    li.classList.toggle('hecho', i < n - 1);
+    li.classList.toggle('activo', i === n - 1);
+  });
+}
+
+/* ---------- Envío ---------- */
+const form = $('form');
+const error = $('error');
+const boton = $('enviar');
+
+function mostrarError(texto, campo) {
+  error.textContent = texto;
+  error.classList.remove('oculto');
+  if (campo) { campo.setAttribute('aria-invalid', 'true'); campo.focus(); }
+}
+form.addEventListener('input', (e) => e.target.removeAttribute('aria-invalid'));
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -102,38 +163,41 @@ form.addEventListener('submit', async (e) => {
   const d = Object.fromEntries(new FormData(form).entries());
   Object.keys(d).forEach(k => d[k] = d[k].trim());
   const edad = Number(d.edad);
-  let falta = '';
-  if (!d.nombre) falta = 'Escribe tu nombre.';
-  else if (!d.apellido) falta = 'Escribe tu apellido.';
-  else if (d.edad === '' || !Number.isInteger(edad) || edad < 0 || edad > 120) falta = 'Escribe una edad válida.';
-  else if (!d.iglesia) falta = 'Escribe la iglesia a la que perteneces.';
-  if (falta) { error.textContent = falta; error.classList.remove('oculto'); return; }
+  if (!d.nombre) return mostrarError('Escribe tu nombre.', form.nombre);
+  if (!d.apellido) return mostrarError('Escribe tu apellido.', form.apellido);
+  if (d.edad === '' || !Number.isInteger(edad) || edad < 0 || edad > 120) return mostrarError('Escribe una edad válida.', form.edad);
+  if (!d.iglesia) return mostrarError('Escribe la iglesia a la que perteneces.', form.iglesia);
 
   boton.disabled = true;
   boton.textContent = 'Enviando…';
   try {
     const r = await api('inscribir', d);
     if (!r.ok) throw new Error(r.mensaje || 'No se pudo guardar.');
-    document.getElementById('listo-nombre').textContent = d.nombre + ' ' + d.apellido;
-    document.getElementById('listo-codigo').textContent = r.codigo;
-    document.getElementById('formulario').classList.add('oculto');
-    document.getElementById('listo').classList.remove('oculto');
+    $('listo-nombre').textContent = d.nombre + ' ' + d.apellido;
+    $('listo-codigo').textContent = r.codigo;
+    form.classList.add('oculto');
+    $('titulo-form').classList.add('oculto');
+    $('subtitulo-form').classList.add('oculto');
+    $('listo').classList.remove('oculto');
+    marcarPaso(2);
     form.reset();
     form.iglesia.value = d.iglesia; // quien inscribe a su grupo no tiene que reescribir la iglesia
   } catch (err) {
-    error.textContent = 'No pudimos enviar tu inscripción. Revisa tu conexión e inténtalo de nuevo. (' + err.message + ')';
-    error.classList.remove('oculto');
+    mostrarError('No pudimos enviar tu inscripción. Revisa tu conexión e inténtalo de nuevo. (' + err.message + ')');
   } finally {
     boton.disabled = false;
     boton.textContent = 'Inscribirme';
   }
 });
 
-document.getElementById('otra').addEventListener('click', () => {
-  document.getElementById('listo').classList.add('oculto');
-  document.getElementById('formulario').classList.remove('oculto');
-  document.getElementById('nombre').focus();
-  window.scrollTo({ top: document.getElementById('formulario').offsetTop - 20, behavior: 'smooth' });
+$('otra').addEventListener('click', () => {
+  $('listo').classList.add('oculto');
+  form.classList.remove('oculto');
+  $('titulo-form').classList.remove('oculto');
+  $('subtitulo-form').classList.remove('oculto');
+  marcarPaso(1);
+  $('tarjeta').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  $('nombre').focus({ preventScroll: true });
 });
 </script>
 </body>
