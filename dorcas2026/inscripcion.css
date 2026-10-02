@@ -4,13 +4,11 @@
    Para cambiar los colores, edita las variables de :root.
    ===================================================================== */
 :root {
-  /* Azul noche / azul marino */
-  --noche-1: #050d1f;
-  --noche-2: #0b1a3a;
-  --noche-3: #15295a;
-  --marino: #1e3a78;        /* color principal: botones, foco, pasos */
-  --marino-hover: #17306a;
-  --marino-suave: #eef2fb;
+  /* Acentos: morado (botones, foco, pasos) y ciruela (código de inscripción) */
+  --acento: #5a2d73;
+  --acento-hover: #4a2361;
+  --acento-suave: #f5edf8;
+  --acento-ciruela: #6a2c5e;
 
   /* Neutros */
   --tinta: #0f172a;
@@ -241,9 +239,9 @@ body {
   border-radius: 50%;
   font-weight: 600;
   font-size: .85rem;
-  color: var(--marino);
+  color: var(--acento);
   background: var(--blanco);
-  border: 1.5px solid #c7d2e8;
+  border: 1.5px solid #dccbe6;
 }
 .pasos li:not(:last-child)::after {   /* línea fina que conecta los pasos */
   content: '';
@@ -252,13 +250,13 @@ body {
   left: calc(50% + 22px);
   right: calc(-50% + 22px);
   height: 1.5px;
-  background: linear-gradient(90deg, #c7d2e8, #e2e8f0);
+  background: linear-gradient(90deg, #dccbe6, #e2e8f0);
 }
 .pasos li.activo { color: var(--tinta); font-weight: 600; }
-.pasos li.activo::before { background: var(--marino); border-color: var(--marino); color: var(--blanco);
-  box-shadow: 0 0 0 5px var(--marino-suave); }
-.pasos li.hecho::before { content: '✓'; background: var(--marino-suave); border-color: var(--marino-suave); }
-.pasos li.hecho::after { background: var(--marino); }
+.pasos li.activo::before { background: var(--acento); border-color: var(--acento); color: var(--blanco);
+  box-shadow: 0 0 0 5px var(--acento-suave); }
+.pasos li.hecho::before { content: '✓'; background: var(--acento-suave); border-color: var(--acento-suave); }
+.pasos li.hecho::after { background: var(--acento); }
 
 /* ---------- Campos ---------- */
 .fila { display: grid; gap: 0 .9rem; }
@@ -286,8 +284,8 @@ body {
 .campo input:focus {
   outline: none;
   background: var(--blanco);
-  border-color: var(--marino);
-  box-shadow: 0 0 0 4px rgba(30, 58, 120, .14);
+  border-color: var(--acento);
+  box-shadow: 0 0 0 4px rgba(90, 45, 115, .14);
 }
 .campo input[aria-invalid="true"] { border-color: var(--error); box-shadow: 0 0 0 4px rgba(180, 35, 24, .1); }
 
@@ -328,8 +326,8 @@ body {
   color: var(--tinta-2);
   transition: background .15s, color .15s;
 }
-.sino input:checked + span { background: var(--marino); color: var(--blanco); }
-.sino input:focus-visible + span { outline: 2px solid var(--marino); outline-offset: 2px; }
+.sino input:checked + span { background: var(--acento); color: var(--blanco); }
+.sino input:focus-visible + span { outline: 2px solid var(--acento); outline-offset: 2px; }
 
 /* ---------- Botones y mensajes ---------- */
 .boton {
@@ -339,18 +337,18 @@ body {
   padding: .95rem 1.2rem;
   font: inherit; font-size: 1rem; font-weight: 600;
   color: var(--blanco);
-  background: linear-gradient(180deg, #24448a, var(--marino));
+  background: linear-gradient(180deg, #6e3d86, var(--acento));
   border: 0;
   border-radius: 12px;
   cursor: pointer;
-  box-shadow: 0 10px 24px -12px rgba(30, 58, 120, .85);
+  box-shadow: 0 10px 24px -12px rgba(90, 45, 115, .85);
   transition: transform .15s, box-shadow .15s, background .15s;
 }
-.boton:hover { background: var(--marino-hover); transform: translateY(-1px); }
-.boton:focus-visible { outline: 3px solid rgba(30, 58, 120, .35); outline-offset: 3px; }
+.boton:hover { background: var(--acento-hover); transform: translateY(-1px); }
+.boton:focus-visible { outline: 3px solid rgba(90, 45, 115, .35); outline-offset: 3px; }
 .boton:disabled { opacity: .65; cursor: wait; transform: none; }
-.boton.secundario { background: var(--marino-suave); color: var(--marino); box-shadow: none; }
-.boton.secundario:hover { background: #e2e9f8; }
+.boton.secundario { background: var(--acento-suave); color: var(--acento); box-shadow: none; }
+.boton.secundario:hover { background: #ecdff2; }
 
 .error {
   margin-top: 1rem;
@@ -370,8 +368,8 @@ body {
   border-radius: 50%;
   font-size: 1.8rem;
   color: var(--blanco);
-  background: var(--marino);
-  box-shadow: 0 0 0 8px var(--marino-suave);
+  background: var(--acento);
+  box-shadow: 0 0 0 8px var(--acento-suave);
 }
 .listo p { color: var(--tinta-2); margin-top: .5rem; }
 .codigo {
@@ -379,13 +377,13 @@ body {
   margin: .9rem 0 .4rem;
   padding: .5rem 1.2rem;
   border-radius: 12px;
-  border: 1px dashed #b8c4de;
-  background: var(--marino-suave);
+  border: 1px dashed #d3bfe0;
+  background: var(--acento-suave);
   font-family: var(--serif);
   font-size: 2rem;
   font-weight: 600;
   letter-spacing: .05em;
-  color: var(--marino);
+  color: var(--acento-ciruela);
 }
 
 /* ---------- Pie ---------- */

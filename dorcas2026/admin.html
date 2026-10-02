@@ -15,10 +15,10 @@
   background: var(--surface); color: var(--ink-soft); padding: .55rem 1.05rem; border-radius: 999px; cursor: pointer;
   transition: background .15s, color .15s, border-color .15s; }
 .pestanas button:hover { border-color: #cbd5e1; color: var(--ink); }
-.pestanas button.activa { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 6px 16px -10px rgba(30,58,120,.9); }
+.pestanas button.activa { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 6px 16px -10px rgba(90,45,115,.9); }
 .resumen { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .75rem; margin-bottom: 1.25rem; }
 .cifra { background: var(--surface); border-radius: var(--radius); padding: .95rem 1.1rem; box-shadow: var(--sombra); }
-.cifra b { display: block; font-family: var(--serif); font-size: 1.9rem; font-weight: 600; line-height: 1.1; color: var(--accent); }
+.cifra b { display: block; font-family: var(--serif); font-size: 1.9rem; font-weight: 600; line-height: 1.1; color: var(--ciruela); }
 .cifra span { color: var(--ink-soft); font-size: .8rem; }
 .barra { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
 .barra input, .barra select { width: auto; flex: 1 1 180px; padding: .6rem .8rem; font-size: .92rem; }
@@ -26,7 +26,7 @@
 table { width: 100%; border-collapse: collapse; font-size: .9rem; }
 th, td { text-align: left; padding: .65rem .55rem; border-bottom: 1px solid var(--line); vertical-align: middle; }
 th { font-size: .7rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-mute); }
-tbody tr:hover td { background: #fafbfd; }
+tbody tr:hover td { background: #fcf8fc; }
 td select { padding: .4rem .6rem; min-width: 170px; font-size: .88rem; }
 .chip { display: inline-block; font-family: var(--sans); font-size: .74rem; font-weight: 600; padding: .15rem .55rem; border-radius: 999px; vertical-align: middle; }
 .chip.si { background: var(--ok-bg); color: var(--ok); }
@@ -47,12 +47,13 @@ td select { padding: .4rem .6rem; min-width: 170px; font-size: .88rem; }
 
 /* ----- Tarjetas (vouchers) ----- */
 .vouchers { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
-.voucher { background: #fff; border: 1px solid #d5dcea; border-radius: 16px; overflow: hidden; box-shadow: var(--sombra);
+.voucher { background: #fff; border: 1px solid #e3d4ea; border-radius: 16px; overflow: hidden; box-shadow: var(--sombra);
   break-inside: avoid; page-break-inside: avoid; }
 .voucher .top { display: flex; align-items: center; gap: .8rem; padding: .9rem 1.1rem; color: #fff;
-  background: radial-gradient(320px 140px at 20% -30%, rgba(90, 130, 220, .35), transparent 70%), var(--noche); }
+  background: radial-gradient(320px 140px at 20% -30%, rgba(214, 170, 230, .35), transparent 70%), var(--profundo);
+  border-bottom: 2px solid var(--oro); }
 .voucher .logo-v { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; flex-shrink: 0;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, .14); }
+  box-shadow: 0 0 0 2px rgba(184, 151, 90, .8); }
 .voucher .top small { display: block; font-size: .6rem; font-weight: 600; letter-spacing: .26em; text-transform: uppercase; color: rgba(255,255,255,.7); }
 .voucher .top strong { font-family: var(--serif); font-weight: 600; font-size: 1.12rem; line-height: 1.2; }
 .voucher .top .cod { font-size: .82rem; font-weight: 600; letter-spacing: .04em; white-space: nowrap; padding: .25rem .6rem;
@@ -60,7 +61,7 @@ td select { padding: .4rem .6rem; min-width: 170px; font-size: .88rem; }
 .voucher .cuerpo { padding: 1rem 1.1rem 1.1rem; }
 .voucher .bloque { margin-bottom: .8rem; }
 .voucher .bloque:last-child { margin-bottom: 0; }
-.voucher .tit { font-size: .64rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: .15rem; }
+.voucher .tit { font-size: .64rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--ciruela); margin-bottom: .15rem; }
 .voucher .nom { font-family: var(--serif); font-size: 1.22rem; font-weight: 600; line-height: 1.25; }
 .voucher .dato { font-size: .86rem; color: var(--ink-soft); margin-top: .1rem; }
 .voucher .sep { border-top: 1px solid var(--line); margin: .85rem 0; }
@@ -78,7 +79,7 @@ td select { padding: .4rem .6rem; min-width: 170px; font-size: .88rem; }
 </style>
 </head>
 <body>
-<!-- Banda superior azul noche (no se imprime) -->
+<!-- Banda superior morado profundo (no se imprime) -->
 <header class="banda no-imprimir">
   <div class="banda-in">
     <a class="volver" href="index.html">← Volver a la inscripción</a>
