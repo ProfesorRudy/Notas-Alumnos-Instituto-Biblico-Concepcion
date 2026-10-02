@@ -49,6 +49,21 @@
       </div>
       <label for="iglesia">Iglesia a la que perteneces</label>
       <input id="iglesia" name="iglesia" required maxlength="100" placeholder="Nombre de la iglesia y ciudad">
+      <div class="necesidades" role="group" aria-labelledby="nec-titulo">
+        <p class="nec-titulo" id="nec-titulo">Para buscarte el hogar adecuado</p>
+        <div class="pregunta">
+          <span>¿Tienes dificultad para caminar?</span>
+          <span class="sino"><label><input type="radio" name="movilidad" value="Sí">Sí</label><label><input type="radio" name="movilidad" value="No">No</label></span>
+        </div>
+        <div class="pregunta">
+          <span>¿Necesitas cama individual?</span>
+          <span class="sino"><label><input type="radio" name="camaIndividual" value="Sí">Sí</label><label><input type="radio" name="camaIndividual" value="No">No</label></span>
+        </div>
+        <div class="pregunta">
+          <span>¿Necesitas ayuda con el traslado?</span>
+          <span class="sino"><label><input type="radio" name="traslado" value="Sí">Sí</label><label><input type="radio" name="traslado" value="No">No</label></span>
+        </div>
+      </div>
       <div id="error" class="aviso mal oculto" role="alert"></div>
       <button class="boton marino bloque" id="enviar" type="submit">Inscribirme</button>
     </form>

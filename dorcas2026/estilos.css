@@ -68,6 +68,20 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); ou
 .aviso.mal { background: var(--bad-bg); color: var(--bad); }
 .aviso.info { background: var(--accent-soft); color: var(--accent-dark); }
 .oculto { display: none !important; }
+/* Preguntas Sí/No */
+.necesidades { margin-top: 1.4rem; padding: 1rem 1rem .2rem; background: var(--accent-soft); border-radius: 12px; }
+.nec-titulo { font-weight: 700; color: var(--accent-dark); font-size: .95rem; margin-bottom: .2rem; }
+.necesidades .pregunta { font-weight: 400; border-color: rgba(31,60,112,.12); }
+.necesidades .pregunta:last-child { border-bottom: 0; }
+.necesidades .sino { background: var(--surface); }
+.pregunta { display: flex; justify-content: space-between; align-items: center; gap: .8rem; padding: .6rem 0;
+  border-bottom: 1px solid var(--line); font-size: .9rem; font-weight: 700; }
+.pregunta:first-child { margin-top: .8rem; }
+.sino { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; flex-shrink: 0; }
+.sino label { margin: 0; padding: .3rem .8rem; font-size: .85rem; cursor: pointer; color: var(--ink-soft); }
+.sino input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.sino label:has(input:checked) { background: var(--accent); color: #fff; }
+.sino label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: -2px; }
 .pie { text-align: center; color: var(--ink-soft); font-size: .85rem; margin-top: 1.5rem; }
 
 /* ----- Portada de la inscripción ----- */
