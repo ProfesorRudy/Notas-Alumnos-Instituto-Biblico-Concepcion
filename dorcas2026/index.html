@@ -16,27 +16,28 @@
 
   <!-- =============================== CABECERA =============================== -->
   <header class="cabecera">
-    <!-- LOGO: reemplaza logo.jpg por otra imagen (cuadrada) para cambiarlo -->
-    <div class="logo-halo">
-      <img src="logo.jpg" alt="Logo Iglesia Evangélica Pentecostés Internacional LAN-C" width="122" height="122">
+    <!-- LOGOS a los costados: reemplaza logo-iepi.png o logo-dorcas.png (PNG con fondo transparente) para cambiarlos -->
+    <img class="logo-lado izq" src="logo-iepi.png" alt="Logo Iglesia Evangélica Pentecostés Internacional LAN-C" width="400" height="396">
+    <img class="logo-lado der" src="logo-dorcas.png" alt="Logo Organización Nacional de Dorcas" width="440" height="413">
+
+    <div class="cabecera-texto">
+      <!-- "IEPI LAN-C", el título, las fechas y el lugar se cambian en comun.js (objeto EVENTO) -->
+      <p class="organiza" id="ev-organiza">IEPI LAN-C</p>
+      <p class="institucion">Organización Nacional de Dorcas</p>
+      <h1 class="titulo" id="ev-nombre">XXIV Convención LAN-C 2026</h1>
+
+      <!-- LEMA de la convención -->
+      <p class="lema">Somos guerreras de Dios</p>
+      <div class="ornamento" aria-hidden="true"><span></span></div>
+
+      <!-- VERSÍCULO: cambia el texto y la referencia aquí -->
+      <blockquote class="cita">
+        “Fuerza y honor son su vestidura;<br>
+        y se ríe de lo por venir.”
+        <cite>Proverbios 31:25</cite>
+      </blockquote>
+      <div class="detalles" id="ev-detalle"></div>
     </div>
-
-    <!-- "IEPI LAN-C", el título, las fechas y el lugar se cambian en comun.js (objeto EVENTO) -->
-    <p class="organiza" id="ev-organiza">IEPI LAN-C</p>
-    <p class="institucion">Organización Nacional de Dorcas</p>
-    <h1 class="titulo" id="ev-nombre">XXIV Convención LAN-C 2026</h1>
-
-    <!-- LEMA de la convención -->
-    <p class="lema">Somos guerreras de Dios</p>
-    <div class="ornamento" aria-hidden="true"><span></span></div>
-
-    <!-- VERSÍCULO: cambia el texto y la referencia aquí -->
-    <blockquote class="cita">
-      “Fuerza y honor son su vestidura;<br>
-      y se ríe de lo por venir.”
-      <cite>Proverbios 31:25</cite>
-    </blockquote>
-    <div class="detalles" id="ev-detalle"></div>
   </header>
 
   <!-- ============================ TARJETA / FORMULARIO ============================ -->
