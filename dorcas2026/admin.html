@@ -37,11 +37,23 @@ td select { padding: .35rem .5rem; min-width: 170px; }
 .hosp .meta { color: var(--ink-soft); font-size: .88rem; }
 .hosp ul { margin: .5rem 0 0 1.1rem; font-size: .9rem; }
 .vacio { color: var(--ink-soft); text-align: center; padding: 1.5rem; }
+.pregunta { display: flex; justify-content: space-between; align-items: center; gap: .8rem; padding: .6rem 0;
+  border-bottom: 1px solid var(--line); font-size: .9rem; font-weight: 700; }
+.pregunta:first-child { margin-top: .8rem; }
+.sino { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; flex-shrink: 0; }
+.sino label { margin: 0; padding: .3rem .8rem; font-size: .85rem; cursor: pointer; color: var(--ink-soft); }
+.sino input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.sino label:has(input:checked) { background: var(--accent); color: #fff; }
+.sino label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: -2px; }
+.etiquetas { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .5rem; }
+.etiquetas span { font-size: .78rem; font-weight: 700; padding: .15rem .55rem; border-radius: 999px;
+  background: var(--accent-soft); color: var(--accent-dark); }
+.etiquetas span.no { background: var(--surface); color: var(--ink-soft); border: 1px solid var(--line); text-decoration: line-through; font-weight: 400; }
 
 /* ----- Tarjetas (vouchers) ----- */
 .vouchers { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
-.voucher { background: #fff; border: 2px solid #b48c2e; border-radius: 16px; overflow: hidden; break-inside: avoid; page-break-inside: avoid; }
-.voucher .top { background: var(--cepillado), var(--oro); color: #fff; text-shadow: 0 1px 2px rgba(60,40,0,.3); padding: .8rem 1rem; display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+.voucher { background: #fff; border: 2px solid #1a3566; border-radius: 16px; overflow: hidden; break-inside: avoid; page-break-inside: avoid; }
+.voucher .top { background: var(--cepillado), var(--marino); color: #fff; text-shadow: 0 1px 2px rgba(0,10,35,.3); padding: .8rem 1rem; display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
 .voucher .top small { display: block; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; opacity: .85; }
 .voucher .top strong { font-family: 'Fraunces', Georgia, serif; font-size: 1.15rem; line-height: 1.2; }
 .voucher .logo-v { width: 58px; height: 58px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
@@ -137,10 +149,22 @@ td select { padding: .35rem .5rem; min-width: 170px; }
         <input id="h-nombre" required maxlength="80">
         <label for="h-direccion">Dirección</label>
         <input id="h-direccion" maxlength="150">
-        <div class="fila2">
-          <div><label for="h-telefono">Teléfono</label><input id="h-telefono" type="tel" maxlength="30"></div>
-          <div><label for="h-capacidad">Camas / cupos</label><input id="h-capacidad" type="number" min="0" max="50" value="2"></div>
+        <label for="h-telefono">Teléfono</label>
+        <input id="h-telefono" type="tel" maxlength="30">
+        <label for="h-capacidad">¿Cuántas hermanas puede recibir?</label>
+        <input id="h-capacidad" type="number" min="0" max="50" value="2">
+        <div class="fila2" style="align-items:end">
+          <div><label for="h-camas">¿Cuántas camas disponibles?</label><input id="h-camas" type="number" min="0" max="50"></div>
+          <div><label for="h-habitaciones">¿Cuántas habitaciones disponibles?</label><input id="h-habitaciones" type="number" min="0" max="20"></div>
         </div>
+        <label for="h-tipoCamas">¿Las camas son individuales o matrimoniales?</label>
+        <select id="h-tipoCamas">
+          <option value="">— Sin responder —</option>
+          <option>Individuales</option>
+          <option>Matrimoniales</option>
+          <option>Ambas</option>
+        </select>
+        <div id="h-preguntas"></div>
         <label for="h-notas">Notas <span class="opc">(se imprimen en la tarjeta)</span></label>
         <textarea id="h-notas" rows="2" maxlength="200" placeholder="Ej.: Locomoción: micro 10, bajarse en..."></textarea>
         <button class="boton bloque" type="submit" id="h-guardar">Guardar hospedador</button>
@@ -153,7 +177,7 @@ td select { padding: .35rem .5rem; min-width: 170px; }
     <div data-vista="tarjetas" class="oculto">
       <div class="barra no-imprimir tarjeta" style="padding:1rem">
         <select id="t-hosp"></select>
-        <button class="boton dorado" type="button" onclick="window.print()">🖨 Imprimir / guardar PDF</button>
+        <button class="boton marino" type="button" onclick="window.print()">🖨 Imprimir / guardar PDF</button>
       </div>
       <div class="vouchers" id="vouchers"></div>
     </div>
@@ -253,7 +277,8 @@ function pintar() {
 function opcionesHosp(seleccionado, textoVacio) {
   return `<option value="">${textoVacio}</option>` + datos.hospedadores.map(h => {
     const oc = ocupacion(h.codigo);
-    return `<option value="${esc(h.codigo)}" ${h.codigo === seleccionado ? 'selected' : ''}>${esc(h.nombre)} (${oc}/${h.capacidad})</option>`;
+    const iconos = PREGUNTAS.filter(p => h[p.k] === 'Sí').map(p => p.ico).join('');
+    return `<option value="${esc(h.codigo)}" ${h.codigo === seleccionado ? 'selected' : ''}>${esc(h.nombre)} (${oc}/${h.capacidad})${iconos ? ' ' + iconos : ''}</option>`;
   }).join('');
 }
 
@@ -354,6 +379,33 @@ $('csv').addEventListener('click', () => {
 });
 
 /* ---------- Hospedadores ---------- */
+const PREGUNTAS = [
+  { k: 'adultasMayores', t: '¿Puede recibir adultas mayores?', corto: 'Adultas mayores', ico: '👵' },
+  { k: 'primerPiso', t: '¿La habitación está en primer piso?', corto: 'Primer piso', ico: '🏠' },
+  { k: 'banoMismoPiso', t: '¿El baño está en el mismo piso?', corto: 'Baño en el mismo piso', ico: '🚿' },
+  { k: 'movilidad', t: '¿Puede recibir hermanas con dificultad para caminar?', corto: 'Dificultad para caminar', ico: '🦯' },
+  { k: 'camaIndividual', t: '¿Puede recibir hermanas que necesiten cama individual?', corto: 'Cama individual', ico: '🛏️' },
+  { k: 'traslado', t: '¿Puede ayudar con traslado?', corto: 'Ayuda con traslado', ico: '🚗' }
+];
+$('h-preguntas').innerHTML = PREGUNTAS.map(p => `
+  <div class="pregunta" role="radiogroup" aria-label="${esc(p.t)}">
+    <span>${esc(p.t)}</span>
+    <span class="sino">
+      <label><input type="radio" name="h-${p.k}" value="Sí">Sí</label>
+      <label><input type="radio" name="h-${p.k}" value="No">No</label>
+    </span>
+  </div>`).join('');
+const respuesta = (k) => (document.querySelector(`input[name="h-${k}"]:checked`) || {}).value || '';
+
+// Resumen corto de las características de un hogar (para la lista y para elegir hospedaje).
+function etiquetasHosp(h) {
+  const datosCasa = [h.camas !== '' && h.camas != null ? h.camas + ' cama(s)' : '',
+    h.habitaciones !== '' && h.habitaciones != null ? h.habitaciones + ' habitación(es)' : '',
+    h.tipoCamas ? 'Camas ' + h.tipoCamas.toLowerCase() : ''].filter(Boolean);
+  return datosCasa.map(t => `<span>${esc(t)}</span>`).join('') +
+    PREGUNTAS.filter(p => h[p.k]).map(p => `<span class="${h[p.k] === 'No' ? 'no' : ''}" title="${esc(p.t)} ${esc(h[p.k])}">${p.ico} ${esc(p.corto)}</span>`).join('');
+}
+
 function pintarHospedadores() {
   $('lista-hosp').innerHTML = datos.hospedadores.length ? datos.hospedadores.map(h => {
     const huespedes = datos.inscritos.filter(i => i.hospedador === h.codigo);
@@ -365,6 +417,7 @@ function pintarHospedadores() {
           <h3>${esc(h.nombre)} <span class="chip ${chip}">${oc}/${esc(h.capacidad)}</span></h3>
           <div class="meta">${esc(h.codigo)}${h.direccion ? ' · ' + esc(h.direccion) : ''}${h.telefono ? ' · ' + esc(h.telefono) : ''}</div>
           ${h.notas ? `<div class="meta">${esc(h.notas)}</div>` : ''}
+          <div class="etiquetas">${etiquetasHosp(h)}</div>
         </div>
         <div style="white-space:nowrap">
           <button class="boton suave peque" data-editar="${esc(h.codigo)}">Editar</button>
@@ -387,8 +440,10 @@ $('form-hosp').addEventListener('submit', async (e) => {
   e.preventDefault();
   const hospedador = {
     codigo: $('h-codigo').value, nombre: $('h-nombre').value.trim(), direccion: $('h-direccion').value.trim(),
-    telefono: $('h-telefono').value.trim(), capacidad: $('h-capacidad').value, notas: $('h-notas').value.trim()
+    telefono: $('h-telefono').value.trim(), capacidad: $('h-capacidad').value, notas: $('h-notas').value.trim(),
+    camas: $('h-camas').value, habitaciones: $('h-habitaciones').value, tipoCamas: $('h-tipoCamas').value
   };
+  PREGUNTAS.forEach(p => hospedador[p.k] = respuesta(p.k));
   if (!hospedador.nombre) return;
   $('h-guardar').disabled = true;
   await accion('guardarHospedador', { hospedador }, 'Hospedador guardado.');
@@ -401,6 +456,8 @@ $('lista-hosp').addEventListener('click', (e) => {
     const h = hospPorCodigo()[ed];
     $('h-codigo').value = h.codigo; $('h-nombre').value = h.nombre; $('h-direccion').value = h.direccion;
     $('h-telefono').value = h.telefono; $('h-capacidad').value = h.capacidad; $('h-notas').value = h.notas;
+    $('h-camas').value = h.camas ?? ''; $('h-habitaciones').value = h.habitaciones ?? ''; $('h-tipoCamas').value = h.tipoCamas || '';
+    PREGUNTAS.forEach(p => document.querySelectorAll(`input[name="h-${p.k}"]`).forEach(r => r.checked = r.value === h[p.k]));
     $('hosp-titulo').textContent = 'Editar ' + h.codigo;
     $('h-cancelar').classList.remove('oculto');
     $('h-nombre').focus();
@@ -459,6 +516,7 @@ function pintarTarjetas() {
           <div class="nom">${esc(h.nombre)}</div>
           ${h.direccion ? `<div class="dato">📍 ${esc(h.direccion)}</div>` : ''}
           ${h.telefono ? `<div class="dato">📞 ${esc(h.telefono)}</div>` : ''}
+          ${h.traslado === 'Sí' ? '<div class="dato">🚗 Puede ayudarte con el traslado</div>' : ''}
           ${h.notas ? `<div class="dato">${esc(h.notas)}</div>` : ''}
         </div>
       </div>

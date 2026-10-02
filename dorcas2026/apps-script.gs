@@ -20,7 +20,9 @@
  *
  * La planilla tiene dos hojas que también puedes editar a mano:
  *   - Inscritos:     Código | Fecha | Nombre | Apellido | Edad | Iglesia | Teléfono | Hospedador
- *   - Hospedadores:  Código | Nombre | Dirección | Teléfono | Capacidad | Notas
+ *   - Hospedadores:  Código | Nombre | Dirección | Teléfono | Capacidad | Notas | Camas | Habitaciones |
+ *                    Tipo de camas | y seis columnas Sí/No (adultas mayores, primer piso, baño en el mismo
+ *                    piso, dificultad para caminar, cama individual, traslado)
  * La columna "Hospedador" de Inscritos guarda el código del hospedador (H-01, H-02...).
  *
  * Para actualizar el código: pega la versión nueva, guarda y luego
@@ -30,7 +32,11 @@
 
 const NOMBRE_PLANILLA = 'Convención Dorcas 2026 - Inscripciones';
 const COLS_INSCRITOS = ['Código', 'Fecha', 'Nombre', 'Apellido', 'Edad', 'Iglesia', 'Teléfono', 'Hospedador'];
-const COLS_HOSPEDADORES = ['Código', 'Nombre', 'Dirección', 'Teléfono', 'Capacidad', 'Notas'];
+const COLS_HOSPEDADORES = ['Código', 'Nombre', 'Dirección', 'Teléfono', 'Capacidad', 'Notas', 'Camas', 'Habitaciones',
+  'Tipo de camas', 'Adultas mayores', 'Primer piso', 'Baño en el mismo piso', 'Dificultad para caminar',
+  'Cama individual', 'Traslado'];
+// Preguntas Sí/No del hospedador, en el mismo orden que sus columnas.
+const SI_NO = ['adultasMayores', 'primerPiso', 'banoMismoPiso', 'movilidad', 'camaIndividual', 'traslado'];
 
 function doPost(e) {
   try {
@@ -82,16 +88,23 @@ function leerTodo() {
     codigo: f[0], fecha: f[1] instanceof Date ? f[1].toISOString() : String(f[1]),
     nombre: f[2], apellido: f[3], edad: f[4], iglesia: f[5], telefono: String(f[6]), hospedador: f[7]
   }));
-  const hospedadores = filas('Hospedadores').map(f => ({
-    codigo: f[0], nombre: f[1], direccion: f[2], telefono: String(f[3]), capacidad: Number(f[4]) || 0, notas: f[5]
-  }));
+  const hospedadores = filas('Hospedadores').map(f => {
+    const h = { codigo: f[0], nombre: f[1], direccion: f[2], telefono: String(f[3]), capacidad: Number(f[4]) || 0, notas: f[5],
+                camas: f[6] === '' || f[6] == null ? '' : Number(f[6]), habitaciones: f[7] === '' || f[7] == null ? '' : Number(f[7]),
+                tipoCamas: f[8] || '' };
+    SI_NO.forEach((k, i) => h[k] = siNo(f[9 + i]));
+    return h;
+  });
   return { inscritos: inscritos, hospedadores: hospedadores };
 }
 
 function guardarHospedador(d) {
   const h = d.hospedador || {};
   const fila = [texto(h.nombre, 80), texto(h.direccion, 150), texto(h.telefono, 30),
-                Math.max(0, parseInt(h.capacidad, 10) || 0), texto(h.notas, 200)];
+                Math.max(0, parseInt(h.capacidad, 10) || 0), texto(h.notas, 200),
+                numeroOpcional(h.camas), numeroOpcional(h.habitaciones),
+                ['Individuales', 'Matrimoniales', 'Ambas'].indexOf(h.tipoCamas) >= 0 ? h.tipoCamas : '']
+                .concat(SI_NO.map(k => siNo(h[k])));
   if (!fila[0]) return responder(false, 'El hospedador necesita un nombre.');
 
   const lock = LockService.getScriptLock();
@@ -169,7 +182,12 @@ function planilla() {
 }
 
 function hojaDe(nombre) {
-  return planilla().getSheetByName(nombre);
+  const hoja = planilla().getSheetByName(nombre);
+  // Una planilla creada con una versión anterior recibe aquí las columnas nuevas.
+  if (nombre === 'Hospedadores' && hoja.getLastColumn() < COLS_HOSPEDADORES.length) {
+    hoja.getRange(1, 1, 1, COLS_HOSPEDADORES.length).setValues([COLS_HOSPEDADORES]);
+  }
+  return hoja;
 }
 
 function filas(nombre) {
@@ -211,6 +229,13 @@ function claveValida(clave) {
 function texto(v, max) {
   const t = String(v == null ? '' : v).trim().slice(0, max);
   return /^[=+\-@]/.test(t) ? "'" + t : t;
+}
+
+function siNo(v) { return v === 'Sí' || v === 'No' ? v : ''; }
+
+function numeroOpcional(v) {
+  const n = parseInt(v, 10);
+  return n >= 0 ? n : '';
 }
 
 function responder(ok, mensaje, extra) {

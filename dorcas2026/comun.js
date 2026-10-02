@@ -46,7 +46,8 @@ function apiLocal(d) {
   if (d.accion === 'guardarHospedador') {
     const h = d.hospedador;
     const existente = db.hospedadores.find(x => x.codigo === h.codigo);
-    const datos = { nombre: h.nombre, direccion: h.direccion, telefono: h.telefono, capacidad: Number(h.capacidad) || 0, notas: h.notas };
+    const datos = Object.assign({}, h, { capacidad: Number(h.capacidad) || 0 });
+    delete datos.codigo;
     if (existente) Object.assign(existente, datos);
     else db.hospedadores.push(Object.assign({ codigo: siguiente(db.hospedadores, 'H-', 2) }, datos));
   } else if (d.accion === 'borrarHospedador') {
