@@ -4,65 +4,73 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
-<title>Administración · Convención de Dorcas 2026</title>
+<title>Administración · XXIV Convención LAN-C 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Nunito+Sans:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="estilos.css">
 <style>
-.pestanas { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: 1rem; }
-.pestanas button, .pestanas a { text-decoration: none; font: inherit; font-weight: 700; border: 1px solid var(--line); background: var(--surface);
-  color: var(--ink-soft); padding: .55rem 1rem; border-radius: 999px; cursor: pointer; }
-.pestanas button.activa { background: var(--ink); color: #fff; border-color: var(--ink); }
-.resumen { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .7rem; margin-bottom: 1rem; }
-.cifra { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: .8rem 1rem; }
-.cifra b { display: block; font-size: 1.6rem; font-family: 'Fraunces', Georgia, serif; }
-.cifra span { color: var(--ink-soft); font-size: .85rem; }
-.barra { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; margin-bottom: .8rem; }
-.barra input, .barra select { width: auto; flex: 1 1 180px; padding: .5rem .7rem; }
+.pestanas { display: flex; gap: .4rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
+.pestanas button, .pestanas a { text-decoration: none; font: inherit; font-size: .9rem; font-weight: 600; border: 1px solid var(--line);
+  background: var(--surface); color: var(--ink-soft); padding: .55rem 1.05rem; border-radius: 999px; cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s; }
+.pestanas button:hover { border-color: #cbd5e1; color: var(--ink); }
+.pestanas button.activa { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 6px 16px -10px rgba(30,58,120,.9); }
+.resumen { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .75rem; margin-bottom: 1.25rem; }
+.cifra { background: var(--surface); border-radius: var(--radius); padding: .95rem 1.1rem; box-shadow: var(--sombra); }
+.cifra b { display: block; font-family: var(--serif); font-size: 1.9rem; font-weight: 600; line-height: 1.1; color: var(--accent); }
+.cifra span { color: var(--ink-soft); font-size: .8rem; }
+.barra { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
+.barra input, .barra select { width: auto; flex: 1 1 180px; padding: .6rem .8rem; font-size: .92rem; }
 .tabla { width: 100%; overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; font-size: .92rem; }
-th, td { text-align: left; padding: .55rem .5rem; border-bottom: 1px solid var(--line); vertical-align: middle; }
-th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); }
-td select { padding: .35rem .5rem; min-width: 170px; }
-.chip { display: inline-block; font-size: .78rem; font-weight: 700; padding: .15rem .55rem; border-radius: 999px; }
+table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+th, td { text-align: left; padding: .65rem .55rem; border-bottom: 1px solid var(--line); vertical-align: middle; }
+th { font-size: .7rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-mute); }
+tbody tr:hover td { background: #fafbfd; }
+td select { padding: .4rem .6rem; min-width: 170px; font-size: .88rem; }
+.chip { display: inline-block; font-family: var(--sans); font-size: .74rem; font-weight: 600; padding: .15rem .55rem; border-radius: 999px; vertical-align: middle; }
 .chip.si { background: var(--ok-bg); color: var(--ok); }
-.chip.no { background: var(--accent-soft); color: var(--accent-dark); }
+.chip.no { background: var(--accent-soft); color: var(--accent); }
 .chip.lleno { background: var(--bad-bg); color: var(--bad); }
-.hosp-grid { display: grid; grid-template-columns: minmax(260px, 340px) 1fr; gap: 1rem; align-items: start; }
+.hosp-grid { display: grid; grid-template-columns: minmax(260px, 360px) 1fr; gap: 1rem; align-items: start; }
 @media (max-width: 800px) { .hosp-grid { grid-template-columns: 1fr; } }
-.hosp { border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem; background: var(--surface); margin-bottom: .7rem; }
+.hosp { border-radius: var(--radius); padding: 1.1rem 1.2rem; background: var(--surface); margin-bottom: .75rem; box-shadow: var(--sombra); }
 .hosp header { display: flex; justify-content: space-between; gap: .5rem; align-items: start; }
-.hosp h3 { font-size: 1.1rem; }
-.hosp .meta { color: var(--ink-soft); font-size: .88rem; }
-.hosp ul { margin: .5rem 0 0 1.1rem; font-size: .9rem; }
+.hosp h3 { font-size: 1.15rem; }
+.hosp .meta { color: var(--ink-soft); font-size: .85rem; }
+.hosp ul { margin: .6rem 0 0 1.1rem; font-size: .88rem; color: var(--ink-soft); }
 .vacio { color: var(--ink-soft); text-align: center; padding: 1.5rem; }
-.etiquetas { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .5rem; }
-.etiquetas span { font-size: .78rem; font-weight: 700; padding: .15rem .55rem; border-radius: 999px;
-  background: var(--accent-soft); color: var(--accent-dark); }
-.etiquetas span.no { background: var(--surface); color: var(--ink-soft); border: 1px solid var(--line); text-decoration: line-through; font-weight: 400; }
+.etiquetas { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .55rem; }
+.etiquetas span { font-size: .74rem; font-weight: 600; padding: .18rem .6rem; border-radius: 999px;
+  background: var(--accent-soft); color: var(--accent); }
+.etiquetas span.no { background: var(--surface); color: var(--ink-mute); border: 1px solid var(--line); text-decoration: line-through; font-weight: 400; }
 
 /* ----- Tarjetas (vouchers) ----- */
 .vouchers { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
-.voucher { background: #fff; border: 2px solid #1a3566; border-radius: 16px; overflow: hidden; break-inside: avoid; page-break-inside: avoid; }
-.voucher .top { background: var(--cepillado), var(--marino); color: #fff; text-shadow: 0 1px 2px rgba(0,10,35,.3); padding: .8rem 1rem; display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
-.voucher .top small { display: block; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; opacity: .85; }
-.voucher .top strong { font-family: 'Fraunces', Georgia, serif; font-size: 1.15rem; line-height: 1.2; }
-.voucher .logo-v { width: 58px; height: 58px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
-.voucher .top .cod { font-weight: 700; background: rgba(255,255,255,.18); border-radius: 8px; padding: .2rem .5rem; white-space: nowrap; }
-.voucher .cuerpo { padding: .9rem 1rem 1rem; }
-.voucher .bloque { margin-bottom: .75rem; }
+.voucher { background: #fff; border: 1px solid #d5dcea; border-radius: 16px; overflow: hidden; box-shadow: var(--sombra);
+  break-inside: avoid; page-break-inside: avoid; }
+.voucher .top { display: flex; align-items: center; gap: .8rem; padding: .9rem 1.1rem; color: #fff;
+  background: radial-gradient(320px 140px at 20% -30%, rgba(90, 130, 220, .35), transparent 70%), var(--noche); }
+.voucher .logo-v { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, .14); }
+.voucher .top small { display: block; font-size: .6rem; font-weight: 600; letter-spacing: .26em; text-transform: uppercase; color: rgba(255,255,255,.7); }
+.voucher .top strong { font-family: var(--serif); font-weight: 600; font-size: 1.12rem; line-height: 1.2; }
+.voucher .top .cod { font-size: .82rem; font-weight: 600; letter-spacing: .04em; white-space: nowrap; padding: .25rem .6rem;
+  border-radius: 999px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); }
+.voucher .cuerpo { padding: 1rem 1.1rem 1.1rem; }
+.voucher .bloque { margin-bottom: .8rem; }
 .voucher .bloque:last-child { margin-bottom: 0; }
-.voucher .tit { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
-.voucher .nom { font-size: 1.15rem; font-weight: 700; }
-.voucher .dato { font-size: .9rem; color: var(--ink-soft); }
-.voucher .sep { border-top: 1px dashed var(--line); margin: .75rem 0; }
-.voucher .pie-v { font-size: .78rem; color: var(--ink-soft); text-align: center; padding: .5rem; background: var(--bg); }
+.voucher .tit { font-size: .64rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: .15rem; }
+.voucher .nom { font-family: var(--serif); font-size: 1.22rem; font-weight: 600; line-height: 1.25; }
+.voucher .dato { font-size: .86rem; color: var(--ink-soft); margin-top: .1rem; }
+.voucher .sep { border-top: 1px solid var(--line); margin: .85rem 0; }
+.voucher .pie-v { font-size: .74rem; font-weight: 500; color: var(--accent); text-align: center; padding: .55rem; background: var(--accent-soft); }
 
 @media print {
   body { background: #fff; }
   .no-imprimir { display: none !important; }
-  .envoltura { max-width: none; padding: 0; }
+  .envoltura { max-width: none; padding: 0; margin: 0; }
+  .voucher { box-shadow: none; }
   .vouchers { grid-template-columns: 1fr 1fr; gap: 8mm; }
   .voucher { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   @page { margin: 10mm; }
@@ -70,23 +78,29 @@ td select { padding: .35rem .5rem; min-width: 170px; }
 </style>
 </head>
 <body>
-<main class="envoltura ancha">
-  <header class="cabecera no-imprimir">
-    <p style="text-align:left;margin-bottom:.5rem"><a href="index.html" style="color:var(--accent-dark);font-weight:700">← Volver a la inscripción</a></p>
-    <div class="con-logo">
-      <img class="logo" src="logo.jpg" alt="Logo Iglesia Evangélica Pentecostés Internacional LAN-C">
+<!-- Banda superior azul noche (no se imprime) -->
+<header class="banda no-imprimir">
+  <div class="banda-in">
+    <a class="volver" href="index.html">← Volver a la inscripción</a>
+    <div class="marca">
+      <!-- LOGO: reemplaza logo.jpg para cambiarlo (también se usa en las tarjetas) -->
+      <span class="logo-halo"><img src="logo.jpg" alt="Logo Iglesia Evangélica Pentecostés Internacional LAN-C"></span>
       <div>
-        <span class="sello" id="ev-organiza"></span>
+        <div class="sello" id="ev-organiza"></div>
         <h1 id="ev-nombre"></h1>
         <p>Panel de administración · inscripciones y hospedaje</p>
       </div>
     </div>
-  </header>
+  </div>
+</header>
+
+<main class="envoltura">
 
   <!-- Ingreso -->
   <section class="tarjeta" id="login" style="max-width:420px;margin:0 auto">
     <form id="form-login">
-      <label for="clave" style="margin-top:0">Clave de administración</label>
+      <h2 style="font-size:1.4rem;margin-bottom:.2rem">Ingresar</h2>
+      <label for="clave">Clave de administración</label>
       <input id="clave" type="password" autocomplete="current-password" required>
       <div id="login-error" class="aviso mal oculto" role="alert"></div>
       <button class="boton bloque" type="submit" id="btn-login">Entrar</button>
@@ -170,7 +184,7 @@ td select { padding: .35rem .5rem; min-width: 170px; }
     <div data-vista="tarjetas" class="oculto">
       <div class="barra no-imprimir tarjeta" style="padding:1rem">
         <select id="t-hosp"></select>
-        <button class="boton marino" type="button" onclick="window.print()">🖨 Imprimir / guardar PDF</button>
+        <button class="boton" type="button" onclick="window.print()">🖨 Imprimir / guardar PDF</button>
       </div>
       <div class="vouchers" id="vouchers"></div>
     </div>
