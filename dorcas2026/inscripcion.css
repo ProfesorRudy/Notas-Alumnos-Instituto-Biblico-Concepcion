@@ -21,8 +21,19 @@
   --blanco: #ffffff;
 
   --error: #b42318; --error-bg: #fef3f2;
+
+  /* Encabezado: lavanda → rosa pastel → crema/marfil, textos ciruela y detalles dorados */
+  --lavanda: #e3d0f1;
+  --rosa: #f5d5e3;
+  --crema: #fbefd9;
+  --marfil: #fffaf1;
+  --morado: #3b2150;          /* título */
+  --ciruela: #6a2c5e;         /* lema */
+  --morado-texto: #57406b;    /* textos secundarios */
+  --oro: #b8975a;             /* líneas y ornamentos */
+  --oro-texto: #7d6230;       /* referencia bíblica (dorado legible sobre fondo claro) */
   --radio: 16px;
-  --sombra-tarjeta: 0 1px 2px rgba(5, 13, 31, .06), 0 24px 60px -18px rgba(5, 13, 31, .55);
+  --sombra-tarjeta: 0 1px 2px rgba(60, 30, 80, .06), 0 24px 60px -22px rgba(90, 50, 110, .35);
   --serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
   --sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
@@ -35,11 +46,13 @@ body {
   color: var(--tinta);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
-  /* Degradado profundo y limpio, sin tramas */
+  /* Degradado pastel suave: lavanda → rosa pastel → crema/marfil, con una luz cálida arriba */
   background:
-    radial-gradient(900px 520px at 50% -8%, rgba(70, 110, 200, .28), transparent 65%),
-    linear-gradient(180deg, var(--noche-3) 0%, var(--noche-2) 38%, var(--noche-1) 100%);
-  background-color: var(--noche-1);
+    radial-gradient(60% 45% at 50% 0%, rgba(255, 255, 255, .55), transparent 70%),
+    radial-gradient(55% 60% at 0% 20%, rgba(214, 190, 238, .55), transparent 70%),
+    radial-gradient(60% 60% at 100% 85%, rgba(252, 236, 210, .7), transparent 70%),
+    linear-gradient(115deg, var(--lavanda) 0%, var(--rosa) 48%, var(--crema) 85%, var(--marfil) 100%);
+  background-color: var(--rosa);
 }
 
 .oculto { display: none !important; }
@@ -55,73 +68,108 @@ body {
 @media (min-width: 640px) { .pagina { padding: 3.5rem 1.5rem 4rem; } }
 
 /* ---------- Cabecera ---------- */
-.cabecera { text-align: center; color: var(--blanco); margin-bottom: 2rem; }
+.cabecera { text-align: center; color: var(--morado); margin-bottom: 2rem; }
 
-/* Logo con halo traslúcido */
+/* Logo con halo claro y anillo dorado fino (el logo no se altera) */
 .logo-halo {
   position: relative;
   display: inline-grid;
   place-items: center;
-  width: 132px; height: 132px;
+  width: 124px; height: 124px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, .06);
-  border: 1px solid rgba(255, 255, 255, .14);
-  box-shadow: 0 0 0 10px rgba(255, 255, 255, .025), 0 20px 50px -15px rgba(0, 0, 0, .6);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
+  background: rgba(255, 255, 255, .5);
+  border: 1px solid rgba(184, 151, 90, .55);
+  box-shadow: 0 0 0 7px rgba(255, 255, 255, .35), 0 18px 40px -18px rgba(90, 50, 110, .45);
 }
-.logo-halo::before {           /* resplandor suave detrás del logo */
+.logo-halo::before {           /* luz suave detrás del logo */
   content: '';
   position: absolute;
-  inset: -28px;
+  inset: -30px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(120, 160, 255, .22), transparent 70%);
+  background: radial-gradient(circle, rgba(255, 255, 255, .7), transparent 68%);
   z-index: -1;
 }
-.logo-halo img { width: 108px; height: 108px; border-radius: 50%; object-fit: cover; display: block; }
+.logo-halo img { width: 104px; height: 104px; border-radius: 50%; object-fit: cover; display: block; }
 @media (min-width: 640px) {
-  .logo-halo { width: 148px; height: 148px; }
-  .logo-halo img { width: 122px; height: 122px; }
+  .logo-halo { width: 136px; height: 136px; }
+  .logo-halo img { width: 114px; height: 114px; }
 }
 
+/* IEPI LAN-C: pequeño y discreto */
 .organiza {
-  margin-top: 1.4rem;
-  font-size: .72rem;
+  margin-top: 1.3rem;
+  font-size: .68rem;
   font-weight: 600;
-  letter-spacing: .32em;
+  letter-spacing: .34em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, .7);
+  color: var(--morado-texto);
+  opacity: .8;
 }
 
+/* ORGANIZACIÓN NACIONAL DE DORCAS: nombre institucional, separado por una línea dorada */
+.institucion {
+  margin-top: .55rem;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(.82rem, 2.6vw, 1rem);
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--morado);
+  text-wrap: balance;          /* si no cabe: "ORGANIZACIÓN NACIONAL" / "DE DORCAS" */
+}
+@media (max-width: 380px) { .institucion { letter-spacing: .18em; } }
+.institucion::before {
+  content: '';
+  display: block;
+  width: 36px; height: 1px;
+  margin: 0 auto .6rem;
+  background: var(--oro);
+}
+
+/* XXIV CONVENCIÓN LAN-C 2026: elemento principal */
 .titulo {
-  margin-top: .5rem;
+  margin-top: .9rem;
   font-family: var(--serif);
   font-weight: 600;
-  font-size: clamp(2.1rem, 8.5vw, 3.4rem);
-  line-height: 1.08;
-  letter-spacing: -.01em;
+  font-size: clamp(1.75rem, 6.4vw, 2.75rem);
+  line-height: 1.15;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: var(--morado);
+  text-wrap: balance;          /* en móvil: "XXIV CONVENCIÓN" / "LAN-C 2026" */
 }
-.titulo span { display: block; }   /* el año va en su propia línea */
+.titulo span { display: inline; white-space: nowrap; }
 
-.detalles { display: flex; justify-content: center; flex-wrap: wrap; gap: .5rem; margin-top: 1.1rem; }
-.detalles:empty { display: none; }
-.detalles span {
-  font-size: .82rem; font-weight: 500;
-  padding: .35rem .85rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, .08);
-  border: 1px solid rgba(255, 255, 255, .16);
+/* SOMOS GUERRERAS DE DIOS: lema */
+.lema {
+  margin-top: .7rem;
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(1.15rem, 4.4vw, 1.6rem);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ciruela);
+  text-wrap: balance;
 }
 
+/* Separador dorado fino con un rombo */
+.ornamento { display: flex; align-items: center; justify-content: center; gap: .6rem; margin: 1.1rem auto 0; }
+.ornamento::before, .ornamento::after { content: ''; width: 56px; height: 1px; }
+.ornamento::before { background: linear-gradient(90deg, transparent, var(--oro)); }
+.ornamento::after { background: linear-gradient(90deg, var(--oro), transparent); }
+.ornamento span { width: 6px; height: 6px; transform: rotate(45deg); border: 1px solid var(--oro); }
+
+/* Versículo */
 .cita {
-  max-width: 30rem;
-  margin: 1.6rem auto 0;
+  max-width: 28rem;
+  margin: 1rem auto 0;
   font-family: var(--serif);
   font-style: italic;
   font-weight: 400;
-  font-size: 1.02rem;
-  line-height: 1.75;
-  color: rgba(255, 255, 255, .85);
+  font-size: clamp(1rem, 3.6vw, 1.15rem);
+  line-height: 1.65;
+  color: var(--morado-texto);
 }
 .cita cite {
   display: block;
@@ -130,11 +178,22 @@ body {
   font-style: normal;
   font-size: .7rem;
   font-weight: 600;
-  letter-spacing: .24em;
+  letter-spacing: .26em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, .55);
+  color: var(--oro-texto);
 }
-.cita cite::before { content: ''; display: block; width: 28px; height: 1px; margin: 0 auto .55rem; background: rgba(255, 255, 255, .35); }
+
+/* Fechas y lugar (aparecen solo si están configurados en comun.js) */
+.detalles { display: flex; justify-content: center; flex-wrap: wrap; gap: .5rem; margin-top: 1.1rem; }
+.detalles:empty { display: none; }
+.detalles span {
+  font-size: .8rem; font-weight: 500;
+  padding: .35rem .85rem;
+  border-radius: 999px;
+  color: var(--morado-texto);
+  background: rgba(255, 255, 255, .55);
+  border: 1px solid rgba(184, 151, 90, .35);
+}
 
 /* ---------- Tarjeta ---------- */
 .tarjeta {
@@ -330,18 +389,18 @@ body {
 }
 
 /* ---------- Pie ---------- */
-.pie { margin-top: 1.5rem; text-align: center; font-size: .82rem; color: rgba(255, 255, 255, .6); }
-.pie a { color: rgba(255, 255, 255, .9); }
+.pie { margin-top: 1.5rem; text-align: center; font-size: .82rem; color: var(--morado-texto); }
+.pie a { color: var(--morado); }
 .prueba {
   margin-top: 1rem;
   padding: .7rem 1rem;
   border-radius: 12px;
   font-size: .8rem;
   text-align: center;
-  color: rgba(255, 255, 255, .78);
-  background: rgba(255, 255, 255, .06);
-  border: 1px solid rgba(255, 255, 255, .12);
+  color: var(--morado-texto);
+  background: rgba(255, 255, 255, .5);
+  border: 1px solid rgba(184, 151, 90, .3);
 }
-.prueba a { color: #fff; font-weight: 600; }
+.prueba a { color: var(--morado); font-weight: 600; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

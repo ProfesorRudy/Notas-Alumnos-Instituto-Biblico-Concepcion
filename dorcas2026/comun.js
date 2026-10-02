@@ -3,7 +3,7 @@
    Cambia estos datos para cada evento.
    ===================================================================== */
 const EVENTO = {
-  nombre: 'Convención de Dorcas 2026',
+  nombre: 'XXIV Convención LAN-C 2026',
   organiza: 'IEPI LAN-C',
   fechas: '',   // por ejemplo: '14 al 16 de noviembre de 2026'
   lugar: '',    // por ejemplo: 'Los Ángeles'
