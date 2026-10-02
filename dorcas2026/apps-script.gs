@@ -19,7 +19,8 @@
  *      EVENTO_URL dentro de dorcas2026/comun.js.
  *
  * La planilla tiene dos hojas que también puedes editar a mano:
- *   - Inscritos:     Código | Fecha | Nombre | Apellido | Edad | Iglesia | Teléfono | Hospedador
+ *   - Inscritos:     Código | Fecha | Nombre | Apellido | Edad | Iglesia | Teléfono | Hospedador |
+ *                    Dificultad para caminar | Cama individual | Traslado (Sí/No)
  *   - Hospedadores:  Código | Nombre | Dirección | Teléfono | Capacidad | Notas | Camas | Habitaciones |
  *                    Tipo de camas | y seis columnas Sí/No (adultas mayores, primer piso, baño en el mismo
  *                    piso, dificultad para caminar, cama individual, traslado)
@@ -31,7 +32,8 @@
  */
 
 const NOMBRE_PLANILLA = 'Convención Dorcas 2026 - Inscripciones';
-const COLS_INSCRITOS = ['Código', 'Fecha', 'Nombre', 'Apellido', 'Edad', 'Iglesia', 'Teléfono', 'Hospedador'];
+const COLS_INSCRITOS = ['Código', 'Fecha', 'Nombre', 'Apellido', 'Edad', 'Iglesia', 'Teléfono', 'Hospedador',
+  'Dificultad para caminar', 'Cama individual', 'Traslado'];
 const COLS_HOSPEDADORES = ['Código', 'Nombre', 'Dirección', 'Teléfono', 'Capacidad', 'Notas', 'Camas', 'Habitaciones',
   'Tipo de camas', 'Adultas mayores', 'Primer piso', 'Baño en el mismo piso', 'Dificultad para caminar',
   'Cama individual', 'Traslado'];
@@ -74,7 +76,8 @@ function inscribir(d) {
   try {
     const hoja = hojaDe('Inscritos');
     const codigo = siguienteCodigo(hoja, 'I-', 4);
-    hoja.appendRow([codigo, new Date(), nombre, apellido, edad, iglesia, telefono, '']);
+    hoja.appendRow([codigo, new Date(), nombre, apellido, edad, iglesia, telefono, '',
+                    siNo(d.movilidad), siNo(d.camaIndividual), siNo(d.traslado)]);
     return responder(true, 'Inscripción recibida.', { codigo: codigo });
   } finally {
     lock.releaseLock();
@@ -86,7 +89,8 @@ function inscribir(d) {
 function leerTodo() {
   const inscritos = filas('Inscritos').map(f => ({
     codigo: f[0], fecha: f[1] instanceof Date ? f[1].toISOString() : String(f[1]),
-    nombre: f[2], apellido: f[3], edad: f[4], iglesia: f[5], telefono: String(f[6]), hospedador: f[7]
+    nombre: f[2], apellido: f[3], edad: f[4], iglesia: f[5], telefono: String(f[6]), hospedador: f[7],
+    movilidad: siNo(f[8]), camaIndividual: siNo(f[9]), traslado: siNo(f[10])
   }));
   const hospedadores = filas('Hospedadores').map(f => {
     const h = { codigo: f[0], nombre: f[1], direccion: f[2], telefono: String(f[3]), capacidad: Number(f[4]) || 0, notas: f[5],
@@ -184,9 +188,8 @@ function planilla() {
 function hojaDe(nombre) {
   const hoja = planilla().getSheetByName(nombre);
   // Una planilla creada con una versión anterior recibe aquí las columnas nuevas.
-  if (nombre === 'Hospedadores' && hoja.getLastColumn() < COLS_HOSPEDADORES.length) {
-    hoja.getRange(1, 1, 1, COLS_HOSPEDADORES.length).setValues([COLS_HOSPEDADORES]);
-  }
+  const cols = nombre === 'Hospedadores' ? COLS_HOSPEDADORES : COLS_INSCRITOS;
+  if (hoja.getLastColumn() < cols.length) hoja.getRange(1, 1, 1, cols.length).setValues([cols]);
   return hoja;
 }
 

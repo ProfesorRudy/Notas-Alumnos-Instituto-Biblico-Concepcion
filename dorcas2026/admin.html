@@ -37,14 +37,6 @@ td select { padding: .35rem .5rem; min-width: 170px; }
 .hosp .meta { color: var(--ink-soft); font-size: .88rem; }
 .hosp ul { margin: .5rem 0 0 1.1rem; font-size: .9rem; }
 .vacio { color: var(--ink-soft); text-align: center; padding: 1.5rem; }
-.pregunta { display: flex; justify-content: space-between; align-items: center; gap: .8rem; padding: .6rem 0;
-  border-bottom: 1px solid var(--line); font-size: .9rem; font-weight: 700; }
-.pregunta:first-child { margin-top: .8rem; }
-.sino { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; flex-shrink: 0; }
-.sino label { margin: 0; padding: .3rem .8rem; font-size: .85rem; cursor: pointer; color: var(--ink-soft); }
-.sino input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.sino label:has(input:checked) { background: var(--accent); color: #fff; }
-.sino label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: -2px; }
 .etiquetas { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .5rem; }
 .etiquetas span { font-size: .78rem; font-weight: 700; padding: .15rem .55rem; border-radius: 999px;
   background: var(--accent-soft); color: var(--accent-dark); }
@@ -123,6 +115,7 @@ td select { padding: .35rem .5rem; min-width: 170px; }
           <option value="">Todas</option>
           <option value="sin">Sin hospedaje</option>
           <option value="con">Con hospedaje</option>
+          <option value="necesidades">Con necesidades especiales</option>
         </select>
         <button class="boton suave peque" id="csv" type="button">Descargar Excel (CSV)</button>
       </div>
@@ -294,6 +287,7 @@ function filtradas() {
   return datos.inscritos.filter(i => {
     if (f === 'sin' && i.hospedador) return false;
     if (f === 'con' && !i.hospedador) return false;
+    if (f === 'necesidades' && !necesidades(i).length) return false;
     if (!q) return true;
     return normalizar([i.codigo, i.nombre, i.apellido, i.iglesia, i.telefono].join(' ')).includes(q);
   });
@@ -307,7 +301,7 @@ function pintarInscritos() {
     <tr>
       <td><input type="checkbox" data-sel="${esc(i.codigo)}" ${seleccion.has(i.codigo) ? 'checked' : ''} aria-label="Seleccionar"></td>
       <td>${esc(i.codigo)}</td>
-      <td><b>${esc(i.nombre)} ${esc(i.apellido)}</b></td>
+      <td><b>${esc(i.nombre)} ${esc(i.apellido)}</b>${necesidades(i).length ? `<div class="etiquetas" style="margin-top:.25rem">${necesidades(i).map(n => `<span>${n.ico} ${esc(n.corto)}</span>`).join('')}</div>` : ''}</td>
       <td>${esc(i.edad)}</td>
       <td>${esc(i.iglesia)}</td>
       <td>${esc(i.telefono)}</td>
@@ -349,9 +343,30 @@ $('masivo-btn').addEventListener('click', () => {
   if (asignar([...seleccion], $('masivo-hosp').value)) seleccion.clear();
 });
 
+// Lo que necesita una inscrita, relacionado con la pregunta equivalente del hospedador.
+const EDAD_ADULTA_MAYOR = 60;
+function necesidades(i) {
+  const n = [];
+  if (Number(i.edad) >= EDAD_ADULTA_MAYOR) n.push({ k: 'adultasMayores', ico: '👵', corto: 'Adulta mayor', falta: 'recibir adultas mayores' });
+  if (i.movilidad === 'Sí') n.push({ k: 'movilidad', ico: '🦯', corto: 'Dificultad para caminar', falta: 'recibir hermanas con dificultad para caminar' });
+  if (i.camaIndividual === 'Sí') n.push({ k: 'camaIndividual', ico: '🛏️', corto: 'Cama individual', falta: 'dar cama individual' });
+  if (i.traslado === 'Sí') n.push({ k: 'traslado', ico: '🚗', corto: 'Necesita traslado', falta: 'ayudar con traslado' });
+  return n;
+}
+
 function asignar(codigos, hosp) {
   if (hosp) {
     const h = hospPorCodigo()[hosp];
+    const avisos = [];
+    codigos.forEach(c => {
+      const i = datos.inscritos.find(x => x.codigo === c);
+      const faltan = necesidades(i).filter(n => h[n.k] !== 'Sí').map(n => n.falta);
+      if (faltan.length) avisos.push(`• ${i.nombre} ${i.apellido}: ${h.nombre} no indicó que pueda ${faltan.join(', ')}.`);
+    });
+    if (avisos.length && !confirm(avisos.join('\n') + '\n\n¿Asignar de todas formas?')) {
+      pintarInscritos();
+      return false;
+    }
     const nuevas = codigos.filter(c => datos.inscritos.find(i => i.codigo === c).hospedador !== hosp).length;
     const libres = h.capacidad - ocupacion(hosp);
     if (nuevas > libres && !confirm(`${h.nombre} tiene ${Math.max(0, libres)} cupo(s) libre(s) y vas a asignar ${nuevas}. ¿Asignar de todas formas?`)) {
@@ -365,10 +380,12 @@ function asignar(codigos, hosp) {
 
 $('csv').addEventListener('click', () => {
   const hp = hospPorCodigo();
-  const filas = [['Código', 'Fecha', 'Nombre', 'Apellido', 'Edad', 'Iglesia', 'Teléfono', 'Hospedador', 'Dirección hospedaje', 'Teléfono hospedador']];
+  const filas = [['Código', 'Fecha', 'Nombre', 'Apellido', 'Edad', 'Iglesia', 'Teléfono', 'Dificultad para caminar', 'Cama individual', 'Traslado',
+    'Hospedador', 'Dirección hospedaje', 'Teléfono hospedador']];
   datos.inscritos.forEach(i => {
     const h = hp[i.hospedador] || {};
-    filas.push([i.codigo, (i.fecha || '').slice(0, 10), i.nombre, i.apellido, i.edad, i.iglesia, i.telefono, h.nombre || '', h.direccion || '', h.telefono || '']);
+    filas.push([i.codigo, (i.fecha || '').slice(0, 10), i.nombre, i.apellido, i.edad, i.iglesia, i.telefono,
+      i.movilidad || '', i.camaIndividual || '', i.traslado || '', h.nombre || '', h.direccion || '', h.telefono || '']);
   });
   const csv = '﻿' + filas.map(f => f.map(v => '"' + String(v ?? '').replace(/"/g, '""') + '"').join(';')).join('\r\n');
   const a = document.createElement('a');

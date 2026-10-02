@@ -38,7 +38,8 @@ function apiLocal(d) {
   if (d.accion === 'inscribir') {
     const codigo = siguiente(db.inscritos, 'I-', 4);
     db.inscritos.push({ codigo, fecha: new Date().toISOString(), nombre: d.nombre, apellido: d.apellido,
-      edad: Number(d.edad), iglesia: d.iglesia, telefono: d.telefono || '', hospedador: '' });
+      edad: Number(d.edad), iglesia: d.iglesia, telefono: d.telefono || '', hospedador: '',
+      movilidad: d.movilidad || '', camaIndividual: d.camaIndividual || '', traslado: d.traslado || '' });
     guardar();
     return ok({ codigo });
   }
