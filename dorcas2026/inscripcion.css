@@ -68,29 +68,40 @@ body {
 /* ---------- Cabecera ---------- */
 .cabecera { text-align: center; color: var(--morado); margin-bottom: 2rem; }
 
-/* Logo con halo claro y anillo dorado fino (el logo no se altera) */
-.logo-halo {
-  position: relative;
-  display: inline-grid;
-  place-items: center;
-  width: 124px; height: 124px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, .5);
-  border: 1px solid rgba(184, 151, 90, .55);
-  box-shadow: 0 0 0 7px rgba(255, 255, 255, .35), 0 18px 40px -18px rgba(90, 50, 110, .45);
+/* Logos institucionales a los costados (PNG transparentes, sin alterar)
+   Móvil y tablet: los dos logos arriba, uno junto al otro; texto debajo.
+   Escritorio: logo IEPI · texto · logo Dorcas. */
+.cabecera {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: "izq der" "texto texto";
+  column-gap: 1.25rem;
+  align-items: center;
 }
-.logo-halo::before {           /* luz suave detrás del logo */
-  content: '';
-  position: absolute;
-  inset: -30px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, .7), transparent 68%);
-  z-index: -1;
+.cabecera-texto { grid-area: texto; min-width: 0; }
+.logo-lado {
+  display: block;
+  width: 96px;
+  height: auto;
+  filter: drop-shadow(0 10px 18px rgba(90, 50, 110, .18));
 }
-.logo-halo img { width: 104px; height: 104px; border-radius: 50%; object-fit: cover; display: block; }
+.logo-lado.izq { grid-area: izq; justify-self: end; }
+.logo-lado.der { grid-area: der; justify-self: start; width: 104px; }
 @media (min-width: 640px) {
-  .logo-halo { width: 136px; height: 136px; }
-  .logo-halo img { width: 114px; height: 114px; }
+  .logo-lado { width: 116px; }
+  .logo-lado.der { width: 126px; }
+}
+@media (min-width: 960px) {
+  .cabecera {
+    width: min(1120px, calc(100vw - 2rem));
+    margin-left: 50%;
+    transform: translateX(-50%);
+    grid-template-columns: 170px minmax(0, 1fr) 170px;
+    grid-template-areas: "izq texto der";
+    align-items: start;
+    column-gap: 1.5rem;
+  }
+  .logo-lado, .logo-lado.der { width: 160px; justify-self: center; margin-top: .4rem; }
 }
 
 /* IEPI LAN-C: pequeño y discreto */
