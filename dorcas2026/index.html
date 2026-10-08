@@ -123,6 +123,14 @@
     </div>
   </section>
 
+  <!-- Aviso de pausa (se muestra cuando EN_PAUSA = true en comun.js) -->
+  <section class="tarjeta pausa oculto" id="pausa" aria-labelledby="titulo-pausa">
+    <div class="ornamento" aria-hidden="true"><span></span></div>
+    <h2 id="titulo-pausa">Inscripciones en pausa</h2>
+    <p>Por el momento las inscripciones para la convención no están disponibles.</p>
+    <p>Cualquier consulta, comunicarse con el <strong id="pausa-contacto"></strong>.</p>
+  </section>
+
   <p class="pie" id="ev-contacto"></p>
   <div id="prueba" class="prueba oculto">Modo de prueba: las inscripciones se guardan solo en este navegador.
     <a href="admin.html">Abrir el panel</a> (clave: <b>prueba</b>)</div>
@@ -141,7 +149,14 @@ $('ev-detalle').innerHTML = [EVENTO.fechas && '📅 ' + esc(EVENTO.fechas), EVEN
   .filter(Boolean).map(t => '<span>' + t + '</span>').join('');
 document.title = 'Inscripción · ' + EVENTO.nombre;
 if (EVENTO.contacto) $('ev-contacto').textContent = '¿Dudas? Escríbenos: ' + EVENTO.contacto;
-if (MODO_PRUEBA) $('prueba').classList.remove('oculto');
+if (MODO_PRUEBA && !EN_PAUSA) $('prueba').classList.remove('oculto');
+
+/* ---------- Pausa ---------- */
+if (EN_PAUSA) {
+  $('tarjeta').classList.add('oculto');
+  $('pausa-contacto').textContent = CONTACTO_PAUSA;
+  $('pausa').classList.remove('oculto');
+}
 
 /* ---------- Pasos ---------- */
 function marcarPaso(n) {   // n = paso activo (1, 2 o 3)
