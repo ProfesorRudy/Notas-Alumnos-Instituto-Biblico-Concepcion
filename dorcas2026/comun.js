@@ -10,6 +10,12 @@ const EVENTO = {
   contacto: '' // teléfono o correo para dudas; se muestra en el formulario y en las tarjetas
 };
 
+/* PAUSA: con true, la página de inscripción muestra un aviso de "Inscripciones en pausa"
+   en lugar del formulario. Para reabrir las inscripciones, cámbialo a false.
+   El panel de administración sigue funcionando igual. */
+const EN_PAUSA = true;
+const CONTACTO_PAUSA = 'hermano Rudy Fuentes';
+
 /* URL de la aplicación web de Google (ver dorcas2026/apps-script.gs).
    Mientras esté vacía, las páginas funcionan en MODO DE PRUEBA: los datos se
    guardan solo en este navegador y la clave del panel es "prueba". */

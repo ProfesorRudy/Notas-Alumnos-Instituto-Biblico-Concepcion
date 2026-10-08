@@ -397,6 +397,13 @@ body {
   color: var(--acento-ciruela);
 }
 
+/* ---------- Aviso de pausa ---------- */
+.pausa { text-align: center; padding-top: 2rem; padding-bottom: 2rem; }
+.pausa .ornamento { margin: 0 auto 1.1rem; }
+.pausa h2 { color: var(--morado); }
+.pausa p { color: var(--tinta-2); margin-top: .7rem; line-height: 1.6; }
+.pausa strong { color: var(--acento-ciruela); font-weight: 600; }
+
 /* ---------- Pie ---------- */
 .pie { margin-top: 1.5rem; text-align: center; font-size: .82rem; color: var(--morado-texto); }
 .pie a { color: var(--morado); }
